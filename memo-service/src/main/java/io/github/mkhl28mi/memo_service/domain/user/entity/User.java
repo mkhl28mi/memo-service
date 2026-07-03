@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.github.mkhl28mi.memo_service.domain.department_unit.entity.DepartmentUnit;
 import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo;
-import io.github.mkhl28mi.memo_service.domain.memo_labels.entity.MemoLabel;
+import io.github.mkhl28mi.memo_service.domain.memo_label.entity.MemoLabel;
 import io.github.mkhl28mi.memo_service.domain.memo_log.entity.MemoLog;
 import io.github.mkhl28mi.memo_service.domain.role.entity.Role;
 import jakarta.persistence.CascadeType;

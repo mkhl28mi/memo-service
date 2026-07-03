@@ -1,4 +1,4 @@
-package io.github.mkhl28mi.memo_service.domain.memo_labels.entity;
+package io.github.mkhl28mi.memo_service.domain.memo_label.entity;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
