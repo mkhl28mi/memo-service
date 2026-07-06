@@ -2,6 +2,7 @@ package io.github.mkhl28mi.memo_service.domain.department_unit.entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -16,6 +17,7 @@ import io.github.mkhl28mi.memo_service.domain.department.entity.Department;
 import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo;
 import io.github.mkhl28mi.memo_service.domain.memo_label.entity.MemoLabel;
 import io.github.mkhl28mi.memo_service.domain.memo_log.entity.MemoLog;
+import io.github.mkhl28mi.memo_service.domain.user.entity.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -55,7 +57,7 @@ public class DepartmentUnit {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime createdAt;
     
-    @OneToMany(mappedBy = "assigneePosition", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "position", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List <Memo> memos = new ArrayList<>();
     
     @OneToMany(mappedBy = "position", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -63,6 +65,9 @@ public class DepartmentUnit {
     
     @OneToMany(mappedBy = "position", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List <MemoLabel> memoLabels = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "position", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List <User> users = new ArrayList<>();
     
 	protected DepartmentUnit() {
 		super();
@@ -100,12 +105,12 @@ public class DepartmentUnit {
 	
 	public void addMemo(Memo memo) {
 	    this.memos.add(memo);
-	    memo.setAssigneePosition(this);
+	    memo.setPosition(this);
 	}
 	
 	public void removeMemo(Memo memo) {
 	    this.memos.remove(memo);
-	    memo.setAssigneePosition(null);
+	    memo.setPosition(null);
 	}
 	
 	public void addMemoLog(MemoLog memoLog) {
@@ -126,6 +131,32 @@ public class DepartmentUnit {
 	public void removeMemoLabel(MemoLabel memoLable) {
 	    this.memoLabels.remove(memoLable);
 	    memoLable.setPosition(null);
+	}
+	
+	public void addUser(User user) {
+	    this.users.add(user);
+	    user.setPosition(this);
+	}
+	
+	public void removeUser(User user) {
+	    this.users.remove(user);
+	    user.setPosition(null);
+	}
+	
+	public List<Memo> getMemos() {
+		return Collections.unmodifiableList(memos);
+	}
+
+	public List<MemoLog> getMemoLogs() {
+		return Collections.unmodifiableList(memoLogs);
+	}
+	
+	public List<MemoLabel> getMemoLabels() {
+		return Collections.unmodifiableList(memoLabels);
+	}
+	
+	public List<User> getUsers() {
+		return Collections.unmodifiableList(users);
 	}
 	
 	@Override

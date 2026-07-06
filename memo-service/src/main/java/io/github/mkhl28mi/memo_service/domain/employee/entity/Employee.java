@@ -2,6 +2,7 @@ package io.github.mkhl28mi.memo_service.domain.employee.entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -44,12 +45,12 @@ public class Employee {
 	@NotNull(message = "Full name cannot be null")
 	@Size(min = 1, max = 100, message = "Full name must be between 1 and 100 characters")
 	@Column(name = "full_name", nullable = false, length = 100)
-	private String fullName; // TODO pattern check
+	private String fullName;
 	
 	@NotNull(message = "Target full name cannot be null")
 	@Size(min = 1, max = 100, message = "Target full name must be between 1 and 100 characters")
 	@Column(name = "target_full_name", nullable = false, length = 100)
-	private String targetFullName; // TODO pattern check
+	private String targetFullName;
 	
 	@NotNull(message = "Emloyee position cannot be null")
 	@ManyToOne
@@ -66,7 +67,7 @@ public class Employee {
     private Set<Department> departments = new HashSet<>();
     
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List <MemoEmployee> memosEmployees = new ArrayList<>();
+    private List <MemoEmployee> memoEmployees = new ArrayList<>();
     
 	public Employee() {
 		super();
@@ -111,20 +112,24 @@ public class Employee {
 		return createdAt;
 	}
 	
-	public Set<Department> getDepartments() {
-		return departments;
-	}
-	
 	public void addMemoEmployee(MemoEmployee memoEmployee) {
-	    this.memosEmployees.add(memoEmployee);
+	    this.memoEmployees.add(memoEmployee);
 	    memoEmployee.setEmployee(this);
 	}
 	
 	public void removeMemoEmployee(MemoEmployee memoEmployee) {
-	    this.memosEmployees.remove(memoEmployee);
+	    this.memoEmployees.remove(memoEmployee);
 	    memoEmployee.setEmployee(null);
 	}
-
+	
+	public Set<Department> getDepartments() {
+		return departments;
+	}
+	
+	public List<MemoEmployee> getMemoEmployees() {
+		return Collections.unmodifiableList(memoEmployees);
+	}
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);

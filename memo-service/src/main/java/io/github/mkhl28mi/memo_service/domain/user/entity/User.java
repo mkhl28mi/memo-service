@@ -2,6 +2,7 @@ package io.github.mkhl28mi.memo_service.domain.user.entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -57,17 +58,17 @@ public class User {
 	@NotNull(message = "Full name cannot be null")
 	@Size(min = 5, max = 50, message = "Full name must be between 5 and 50 characters")
 	@Column(name = "full_name", nullable = false, length = 50)
-	private String fullName; // TODO pattern check
+	private String fullName;
 	
 	@NotNull(message = "Cell cannot be null")
 	@Size(min = 5, max = 10, message = "Cell must be between 5 and 10 characters")
 	@Column(name = "cell", nullable = false, length = 10)
-	private String cell; // TODO pattern check
+	private String cell;
 	
-	@NotNull(message = "Department unit cannot be null")
+	@NotNull(message = "Position cannot be null")
     @ManyToOne
-    @JoinColumn(name = "department_unit_id", nullable = false)
-	private DepartmentUnit departmentUnit;
+    @JoinColumn(name = "position_id", nullable = false)
+	private DepartmentUnit position;
 	
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -102,7 +103,7 @@ public class User {
 		this.password = password;
 		this.fullName = fullName;
 		this.cell = cell;
-		this.departmentUnit = departmentUnit;
+		this.position = departmentUnit;
 	}
 
 	public String getUsername() {
@@ -137,12 +138,12 @@ public class User {
 		this.cell = cell;
 	}
 	
-	public DepartmentUnit getDepartmentUnit() {
-		return departmentUnit;
+	public DepartmentUnit getPosition() {
+		return position;
 	}
-
-	public void setDepartmentUnit(DepartmentUnit departmentUnit) {
-		this.departmentUnit = departmentUnit;
+	
+	public void setPosition(DepartmentUnit position) {
+		this.position = position;
 	}
 
 	public UUID getId() {
@@ -192,7 +193,23 @@ public class User {
 	    this.memoLabels.remove(memoLable);
 	    memoLable.setCreatedBy(null);
 	}
-    
+	
+	public List<Memo> getMemos() {
+		return Collections.unmodifiableList(memos);
+	}
+
+	public List<MemoLabel> getMemoLabels() {
+		return Collections.unmodifiableList(memoLabels);
+	}
+	
+	public List<MemoLog> getMemoLogs() {
+		return Collections.unmodifiableList(memoLogs);
+	}
+	
+	public Set<Role> getRoles() {
+		return Collections.unmodifiableSet(roles);
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
@@ -212,7 +229,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [fullName=" + fullName + ", cell=" + cell + ", departmentUnit=" + departmentUnit + ", createdAt="
+		return "User [fullName=" + fullName + ", cell=" + cell + ", departmentUnit=" + position + ", createdAt="
 				+ createdAt + ", roles=" + roles + "]";
 	}
 

@@ -2,6 +2,7 @@ package io.github.mkhl28mi.memo_service.domain.memo.entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -60,10 +61,10 @@ public class Memo {
     @JoinColumn(name = "assignee_id", nullable = false)
 	private User assignee;
 	
-	@NotNull(message = "Assignee position cannot be null")
+	@NotNull(message = "Position cannot be null")
     @ManyToOne
-    @JoinColumn(name = "assignee_position_id", nullable = false)
-	private DepartmentUnit assigneePosition;
+    @JoinColumn(name = "position_id", nullable = false)
+	private DepartmentUnit position;
 	
 	@NotNull(message = "Department cannot be null")
     @ManyToOne
@@ -106,7 +107,7 @@ public class Memo {
 	public Memo(String content, 
 			Status status, 
 			User assignee, 
-			DepartmentUnit assigneePosition, 
+			DepartmentUnit position, 
 			Department department, 
 			int sequenceNumber, 
 			int year) {
@@ -114,7 +115,7 @@ public class Memo {
 		this.content = content;
 		this.status = status;
 		this.assignee = assignee;
-		this.assigneePosition = assigneePosition;
+		this.position = position;
 		this.department = department;
 		this.sequenceNumber = sequenceNumber;
 		this.year = year;
@@ -143,13 +144,13 @@ public class Memo {
 	public void setAssignee(User assignee) {
 		this.assignee = assignee;
 	}
-
-	public DepartmentUnit getAssigneePosition() {
-		return assigneePosition;
+	
+	public DepartmentUnit getPosition() {
+		return position;
 	}
 
-	public void setAssigneePosition(DepartmentUnit assigneePosition) {
-		this.assigneePosition = assigneePosition;
+	public void setPosition(DepartmentUnit position) {
+		this.position = position;
 	}
 
 	public Department getDepartment() {
@@ -217,7 +218,19 @@ public class Memo {
 	    this.memoLabels.remove(memoLable);
 	    memoLable.setMemo(null);
 	}
-
+	
+	public List<MemoEmployee> getMemoEmployees() {
+		return Collections.unmodifiableList(memoEmployees);
+	}
+	
+	public List<MemoLabel> getMemoLabels() {
+		return Collections.unmodifiableList(memoLabels);
+	}
+	
+	public List<MemoLog> getMemoLogs() {
+		return Collections.unmodifiableList(memoLogs);
+	}
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
@@ -238,7 +251,7 @@ public class Memo {
 	@Override
 	public String toString() {
 		return "Memo [id=" + id + ", content=" + content + ", status=" + status + ", assignee=" + assignee
-				+ ", assigneePosition=" + assigneePosition + ", department=" + department + ", sequenceNumber="
+				+ ", position=" + position + ", department=" + department + ", sequenceNumber="
 				+ sequenceNumber + ", year=" + year + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
 	

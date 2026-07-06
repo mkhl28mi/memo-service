@@ -2,6 +2,7 @@ package io.github.mkhl28mi.memo_service.domain.employee_position.entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -123,6 +124,10 @@ public class EmployeePosition {
 	public void removeMemoEmployee(MemoEmployee memoEmployee) {
 	    this.memoEmployees.remove(memoEmployee);
 	    memoEmployee.setEmployeePosition(null);
+	}
+	
+	public List<MemoEmployee> getMemoEmployees() {
+		return Collections.unmodifiableList(memoEmployees);
 	}
 
 	@Override

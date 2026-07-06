@@ -2,6 +2,7 @@ package io.github.mkhl28mi.memo_service.domain.department.entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -148,7 +149,19 @@ public class Department {
         this.employees.remove(employee);
         employee.getDepartments().remove(this);
     }
+    
+	public List<DepartmentUnit> getDepartmentUnits() {
+		return Collections.unmodifiableList(departmentUnits);
+	}
+
+	public List<Memo> getMemos() {
+		return Collections.unmodifiableList(memos);
+	}
 	
+	public Set<Employee> getEmployees() {
+		return Collections.unmodifiableSet(employees);
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);

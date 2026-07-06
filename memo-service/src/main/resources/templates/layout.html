@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="uk"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Мій Супер Сайт</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.8/css/bootstrap.min.css}">
+</head>
+<body>
+    <header>
+        <nav>
+            <a th:href="@{/}">Головна</a> | 
+            <a th:href="@{/about}">Про нас</a>
+        </nav>
+    </header>
+    
+    <main layout:fragment="content"></main>
+
+    <footer>
+        <p>&copy; 2026 Всі права захищені.</p>
+    </footer>
+    
+	<script th:src="@{/webjars/bootstrap/5.3.8/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
