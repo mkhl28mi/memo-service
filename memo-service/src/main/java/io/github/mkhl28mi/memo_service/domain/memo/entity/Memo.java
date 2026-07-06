@@ -76,8 +76,8 @@ public class Memo {
 	private int sequenceNumber;
 	
 	@Positive
-	@Column(name = "year", nullable = false)
-	private int year;
+	@Column(name = "creation_cyear", nullable = false)
+	private int creationYear;
 	
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -110,7 +110,7 @@ public class Memo {
 			DepartmentUnit position, 
 			Department department, 
 			int sequenceNumber, 
-			int year) {
+			int creationYear) {
 		super();
 		this.content = content;
 		this.status = status;
@@ -118,7 +118,7 @@ public class Memo {
 		this.position = position;
 		this.department = department;
 		this.sequenceNumber = sequenceNumber;
-		this.year = year;
+		this.creationYear = creationYear;
 	}
 	
 	public String getContent() {
@@ -169,12 +169,12 @@ public class Memo {
 		this.sequenceNumber = sequenceNumber;
 	}
 
-	public int getYear() {
-		return year;
+	public int getCreationYear() {
+		return creationYear;
 	}
 
-	public void setYear(int year) {
-		this.year = year;
+	public void setCreationYear(int creationYear) {
+		this.creationYear = creationYear;
 	}
 
 	public UUID getId() {
@@ -251,8 +251,8 @@ public class Memo {
 	@Override
 	public String toString() {
 		return "Memo [id=" + id + ", content=" + content + ", status=" + status + ", assignee=" + assignee
-				+ ", position=" + position + ", department=" + department + ", sequenceNumber="
-				+ sequenceNumber + ", year=" + year + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
+				+ ", position=" + position + ", department=" + department + ", sequenceNumber=" + sequenceNumber
+				+ ", creationYear=" + creationYear + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
 	
 	public enum Status {
@@ -270,4 +270,5 @@ public class Memo {
     	REJECTED
     	
     }
+	
 }

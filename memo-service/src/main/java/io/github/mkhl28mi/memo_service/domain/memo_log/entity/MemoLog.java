@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -13,15 +14,21 @@ import io.github.mkhl28mi.memo_service.domain.department_unit.entity.DepartmentU
 import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo;
 import io.github.mkhl28mi.memo_service.domain.user.entity.User;
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 
+@Entity
+@Table(name = "memo_logs")
+@EntityListeners(AuditingEntityListener.class)
 public class MemoLog {
 	
 	@Id

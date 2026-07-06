@@ -44,12 +44,12 @@ public class EmployeePosition {
 	
 	@NotNull(message = "Target name cannot be null")
 	@Size(min = 1, max = 400, message = "Target name must be between 1 and 400 characters")
-	@Column(name = "name", nullable = false, length = 400)
+	@Column(name = "target_name", nullable = false, length = 400)
 	private String targetName;
 	
 	@PositiveOrZero(message = "Order cannot be less than zero")
-	@Column(name = "order")
-	private int order;
+	@Column(name = "placement_order")
+	private int placementOrder;
 	
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -67,11 +67,11 @@ public class EmployeePosition {
 		super();
 	}
 
-	public EmployeePosition(String name, String targetName, int order) {
+	public EmployeePosition(String name, String targetName, int placementOrder) {
 		super();
 		this.name = name;
 		this.targetName = targetName;
-		this.order = order;
+		this.placementOrder = placementOrder;
 	}
 
 	public String getName() {
@@ -90,12 +90,12 @@ public class EmployeePosition {
 		this.targetName = targetName;
 	}
 
-	public int getOrder() {
-		return order;
+	public int getPlacementOrder() {
+		return placementOrder;
 	}
 
-	public void setOrder(int order) {
-		this.order = order;
+	public void setPlacementOrder(int placementOrder) {
+		this.placementOrder = placementOrder;
 	}
 
 	public UUID getId() {
@@ -149,8 +149,8 @@ public class EmployeePosition {
 
 	@Override
 	public String toString() {
-		return "EmployeePosition [id=" + id + ", name=" + name + ", targetName=" + targetName + ", order=" + order
-				+ ", createdAt=" + createdAt + "]";
+		return "EmployeePosition [id=" + id + ", name=" + name + ", targetName=" + targetName + ", placementOrder="
+				+ placementOrder + ", createdAt=" + createdAt + "]";
 	}
-	
+
 }

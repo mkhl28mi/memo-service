@@ -58,8 +58,8 @@ public class MemoEmployee {
 	private Role role;
 	
 	@Positive
-	@Column(name = "order", nullable = false)
-	private int order;
+	@Column(name = "placement_order", nullable = false)
+	private int placementOrder;
 	
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -75,13 +75,13 @@ public class MemoEmployee {
 			Employee employee, 
 			EmployeePosition employeePosition,
 			Role role,
-			int order) {
+			int placementOrder) {
 		super();
 		this.memo = memo;
 		this.employee = employee;
 		this.employeePosition = employeePosition;
 		this.role = role;
-		this.order = order;
+		this.placementOrder = placementOrder;
 	}
 	
 	public Memo getMemo() {
@@ -115,13 +115,13 @@ public class MemoEmployee {
 	public void setRole(Role role) {
 		this.role = role;
 	}
-
-	public int getOrder() {
-		return order;
+	
+	public int getPlacementOrder() {
+		return placementOrder;
 	}
 
-	public void setOrder(int order) {
-		this.order = order;
+	public void setPlacementOrder(int placementOrder) {
+		this.placementOrder = placementOrder;
 	}
 
 	public UUID getId() {
@@ -152,9 +152,10 @@ public class MemoEmployee {
 	@Override
 	public String toString() {
 		return "MemoEmployee [id=" + id + ", memo=" + memo + ", employee=" + employee + ", employeePosition="
-				+ employeePosition + ", role=" + role + ", order=" + order + ", createdAt=" + createdAt + "]";
+				+ employeePosition + ", role=" + role + ", placementOrder=" + placementOrder + ", createdAt="
+				+ createdAt + "]";
 	}
-	
+
 	public enum Role {
 		
 		RECIPIENT,
