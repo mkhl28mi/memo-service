@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+    <div th:fragment="headerFragment" class="sticky-top">
+        <header class="border-bottom">
+			<nav class="navbar navbar-expand-lg bg-body-tertiary">
+			 <div class="container-fluid">
+			    <a class="navbar-brand" href="#" th:text="#{app.title}"></a>
+			    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			      <span class="navbar-toggler-icon"></span>
+			    </button>
+			    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+			      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+			        <li class="nav-item">
+			          <a class="nav-link active" aria-current="page" href="#">Створити</a>
+			        </li>
+			        <li class="nav-item">
+			          <a class="nav-link" href="#">Книга реєстрації</a>
+			        </li>
+			        <li class="nav-item dropdown">
+			          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+			            Адміністрування 
+			          </a>
+			          <ul class="dropdown-menu">
+			          	<li><a class="dropdown-item" th:classappend="${activePage == 'departments'} ? 'active' : ''" href="/admin/departments">Відділи</a></li>
+			            <li><a class="dropdown-item" th:classappend="${activePage == 'users'} ? 'active' : ''" href="#">Користувачі</a></li>
+			            <li><a class="dropdown-item" th:classappend="${activePage == 'employees'} ? 'active' : ''" href="#">Працівники</a></li>
+			            <li><a class="dropdown-item" th:classappend="${activePage == 'employee-positions'} ? 'active' : ''" href="#">Посади</a></li>
+			            <li><a class="dropdown-item" th:classappend="${activePage == 'admin-registry'} ? 'active' : ''"  href="#">Книга реєстрації</a></li>
+			            <li><a class="dropdown-item" th:classappend="${activePage == 'settings'} ? 'active' : ''" href="#">Налаштування</a></li>
+			            <li><hr class="dropdown-divider"></li>
+			            <li><a class="dropdown-item" th:classappend="${activePage == 'statistics'} ? 'active' : ''" href="#">Статистика</a></li>
+			          </ul>
+			        </li>
+			      </ul>
+			    </div>
+			  </div>
+			</nav>
+		</header>
+    </div>
+    
+    <div th:fragment="footerFragment" class="sticky-bottom">
+  		<footer>
+        	<p>&copy; 2026 Всі права захищені.</p>
+    	</footer>
+    </div>
+    
+</body>
+</html>

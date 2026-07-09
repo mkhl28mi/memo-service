@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title></title>
+</head>
+<body>
+
+    <div layout:fragment="content" class="mx-auto w-75 mt-3">
+    	<div class="mb-5">
+    		<p>* - обов'язкові поля до заповнення</p>
+			<form th:action="@{/admin/departments}" th:object="${departmentRequest}" method="post">
+				<div>
+				  <div class="mb-2">
+				    <label for="name" class="form-label">Назва*</label>
+				    <input type="text" class="form-control" th:field="*{name}" required>
+				  </div>
+				  <div class="mb-2">
+				    <label for="code" class="form-label">Код*</label>
+				    <input type="text" class="form-control" th:field="*{code}" required>
+				  </div>
+				  <div class="mb-3">
+				    <label for="description" class="form-label">Опис*</label>
+				    <input type="text" class="form-control" th:field="*{description}" required>
+				  </div>
+				  <button type="submit" class="btn btn-outline-dark">Створити відділ</button>
+				</div>
+			</form>
+		</div>
+		
+		<table class="table">
+		  <thead>
+		    <tr>
+		      <th scope="col">#</th>
+		      <th scope="col">Назва</th>
+		      <th scope="col">Код</th>
+		      <th scope="col">Опис</th>
+		      <th scope="col">Дата створення</th>
+		      <th scope="col">Підрозділи</th>
+		      <th scope="col">Дія</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <tr th:each="department, iterStat : ${departments}">
+		      <td th:text="${iterStat.count}"></td>
+		      <td th:text="${department.name}"></td>
+		      <td th:text="${department.code}"></td>
+		      <td th:text="${department.description}"></td>
+		      <td th:text="${department.createdAt}"></td>
+		      <td>
+		      	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/departments/{id}(id=${department.id})}" role="button">Переглянути</a>
+		      </td>
+		      <td>
+		      	<div class="d-grid mb-1">
+		        	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/departments/{id}(id=${department.id})}" role="button">Редагувати</a>
+			    </div>
+		      	<form th:action="@{/admin/departments/{id}(id=${department.id})}" th:method="delete">
+					<div class="d-grid">
+						<button type="submit" class="btn btn-outline-danger btn-sm">Видалити</button>
+					</div>
+				</form>
+		      </td>
+		    </tr>
+		  </tbody>
+		</table>
+    </div>
+    
+</body>
+</html>

@@ -8,48 +8,12 @@
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.8/css/bootstrap.min.css}">
 </head>
 <body>
-    <header>
-		<nav class="navbar navbar-expand-lg bg-body-tertiary">
-		 <div class="container-fluid">
-		    <a class="navbar-brand" href="#" th:text="#{app.title}"></a>
-		    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-		      <span class="navbar-toggler-icon"></span>
-		    </button>
-		    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-		      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-		        <li class="nav-item">
-		          <a class="nav-link active" aria-current="page" href="#">Створити</a>
-		        </li>
-		        <li class="nav-item">
-		          <a class="nav-link" href="#">Книга реєстрації</a>
-		        </li>
-		        <li class="nav-item dropdown">
-		          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-		            Адміністрування 
-		          </a>
-		          <ul class="dropdown-menu">
-		          	<li><a class="dropdown-item" href="#">Відділи</a></li>
-		            <li><a class="dropdown-item" href="#">Користувачі</a></li>
-		            <li><a class="dropdown-item" href="#">Працівники</a></li>
-		            <li><a class="dropdown-item" href="#">Посади</a></li>
-		            <li><a class="dropdown-item" href="#">Книга реєстрації</a></li>
-		            <li><a class="dropdown-item" href="#">Налаштування</a></li>
-		            <li><hr class="dropdown-divider"></li>
-		            <li><a class="dropdown-item" href="#">Статистика</a></li>
-		          </ul>
-		        </li>
-		      </ul>
-		    </div>
-		  </div>
-		</nav>
-	</header>
+	<div th:replace="~{fragments/common :: headerFragment}"></div>
 	
     <main layout:fragment="content"></main>
     
-    <footer>
-        <p>&copy; 2026 Всі права захищені.</p>
-    </footer>
-    
+	<div th:replace="~{fragments/common :: footerFragment}"></div>
+	
 	<script th:src="@{/webjars/bootstrap/5.3.8/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>
