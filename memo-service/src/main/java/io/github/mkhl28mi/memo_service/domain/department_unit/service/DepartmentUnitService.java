@@ -1,7 +1,6 @@
 package io.github.mkhl28mi.memo_service.domain.department_unit.service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +29,10 @@ public class DepartmentUnitService {
 		
 	}
 	
-    public Optional<DepartmentUnitResponse> getDepartmentUnitResponseById(UUID id) {
-        return mapToDepartmentUnitResponse(departmentUnitRepository.findById(id));
+    public DepartmentUnitResponse getDepartmentUnitResponseById(UUID id) {
+    	DepartmentUnit departmentUnit = departmentUnitRepository.findById(id)
+    			.orElseThrow(() -> new ResourceNotFoundException("Department unit not found with id: " + id));
+    	return new DepartmentUnitResponse(departmentUnit);
     }
 	
 	@Transactional
@@ -53,14 +54,6 @@ public class DepartmentUnitService {
 	public void deleteDepartmentUnit(UUID id) {
 		departmentUnitRepository.deleteById(id);
 	}
-	
-    private static Optional<DepartmentUnitResponse> mapToDepartmentUnitResponse(Optional<DepartmentUnit> department) {
-    	if (department.isPresent()) {
-    		return Optional.of(new DepartmentUnitResponse(department.get()));
-    	} else {
-    		return Optional.empty();
-    	}
-    }
 	
 	private static List<DepartmentUnitResponse> mapToDepartmentUnitResponse(List<DepartmentUnit> departmentUnits) {
 		return departmentUnits.stream().map(DepartmentUnitResponse::new).toList();

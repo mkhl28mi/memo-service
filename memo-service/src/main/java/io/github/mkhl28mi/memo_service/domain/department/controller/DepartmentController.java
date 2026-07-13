@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import io.github.mkhl28mi.memo_service.domain.department.dto.request.DepartmentRequest;
 import io.github.mkhl28mi.memo_service.domain.department.dto.response.DepartmentResponse;
 import io.github.mkhl28mi.memo_service.domain.department.service.DepartmentService;
-import io.github.mkhl28mi.memo_service.exception.ResourceNotFoundException;
 
 @Controller
 @RequestMapping("/admin/departments")
@@ -31,7 +30,7 @@ public class DepartmentController {
 		model.addAttribute("departments", departmentService.getDepartments(search));
 		model.addAttribute("departmentRequest", new DepartmentRequest());
 		model.addAttribute("activePage", "admin/departments");
-        return "departments/departments";
+        return "admin/departments/departments";
     }
 	
 	@PostMapping
@@ -42,12 +41,11 @@ public class DepartmentController {
 	
 	@GetMapping("/{id}")
     public String getDepartmentById(@PathVariable UUID id, Model model) {
-		DepartmentResponse departmentResponse = departmentService.getDepartmentResponseById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + id));
+		DepartmentResponse departmentResponse = departmentService.getDepartmentResponseById(id);
 		model.addAttribute("departmentId", id);
 		model.addAttribute("departmentRequest", new DepartmentRequest(departmentResponse));
 		model.addAttribute("activePage", "admin/departments");
-		return "departments/department";
+		return "admin/departments/department";
     }
 	
 	@PutMapping("/{id}")

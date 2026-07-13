@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title></title>
+</head>
+<body>
+
+    <div layout:fragment="content" class="mx-auto w-75 mt-3">
+    	<div class="d-flex justify-content-center">
+	    	<div class="card w-75 mb-5">
+	    		<div class="card-body">
+	    			<h5 class="card-title">Створити посаду</h5>
+					<form th:action="@{/admin/employee-positions}" th:object="${employeePositionRequest}" method="post">
+						<div>
+						  <div class="mb-2">
+						    <label for="name" class="form-label">Назва (Називний відмінок. Приклад: Директор програми)*</label>
+						    <input type="text" class="form-control" th:field="*{name}" required>
+						  </div>
+						  <div class="mb-2">
+						    <label for="code" class="form-label">Назва (Давальний відмінок. Приклад: Директору програми)*</label>
+						    <input type="text" class="form-control" th:field="*{targetName}" required>
+						  </div>
+						  <div class="mb-3">
+						    <label for="description" class="form-label">Порядок розміщення*</label>
+						    <input type="number" class="form-control" th:field="*{placementOrder}" required>
+						  </div>
+						  <p>* - обов'язкові поля до заповнення</p>
+						  <button type="submit" class="btn btn-outline-dark">Створити</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		
+		<table class="table border-top">
+		  <thead>
+		    <tr>
+		      <th scope="col">#</th>
+		      <th scope="col">Назва (Називний відмінок)</th>
+		      <th scope="col">Назва (Давальний відмінок)</th>
+		      <th scope="col">Порядок розміщення</th>
+		      <th scope="col">Дата створення</th>
+		      <th scope="col">Дія</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <tr th:each="employeePosition, iterStat : ${employeePositions}">
+		      <td th:text="${iterStat.count}"></td>
+		      <td th:text="${employeePosition.name}"></td>
+		      <td th:text="${employeePosition.targetName}"></td>
+		      <td th:text="${employeePosition.placementOrder}"></td>
+		      <td th:text="${employeePosition.createdAt}"></td>
+		      <td>
+		      	<div class="d-grid mb-1">
+		        	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/employee-positions/{id}(id=${employeePosition.id})}" role="button">Редагувати</a>
+			    </div>
+		      	<form th:action="@{/admin/employee-positions/{id}(id=${employeePosition.id})}" th:method="delete">
+					<div class="d-grid">
+						<button type="submit" class="btn btn-outline-danger btn-sm">Видалити</button>
+					</div>
+				</form>
+		      </td>
+		    </tr>
+		  </tbody>
+		</table>
+    </div>
+    
+</body>
+</html>

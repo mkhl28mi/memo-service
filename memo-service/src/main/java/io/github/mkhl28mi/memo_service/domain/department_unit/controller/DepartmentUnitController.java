@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import io.github.mkhl28mi.memo_service.domain.department_unit.dto.response.DepartmentUnitResponse;
 import io.github.mkhl28mi.memo_service.domain.department_unit.service.DepartmentUnitService;
-import io.github.mkhl28mi.memo_service.exception.ResourceNotFoundException;
 
 @Controller
 @RequestMapping("/admin/departments/{departmentId}/units")
@@ -29,7 +28,7 @@ public class DepartmentUnitController {
 		model.addAttribute("units", departmentUnitService.getDepartmentUnitsByDepartmentId(departmentId));
 		model.addAttribute("departmentId", departmentId);
 		model.addAttribute("activePage", "admin/departments");
-		return "departments/units/units";
+		return "admin/departments/units/units";
 	}
 	
 	@PostMapping
@@ -40,13 +39,12 @@ public class DepartmentUnitController {
 	
 	@GetMapping("/{id}")
 	public String getDepartmentById(@PathVariable UUID departmentId, @PathVariable UUID id, Model model) {
-		DepartmentUnitResponse departmentUnitResponse = departmentUnitService.getDepartmentUnitResponseById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Department unit not found with id: " + id));
+		DepartmentUnitResponse departmentUnitResponse = departmentUnitService.getDepartmentUnitResponseById(id);
 		model.addAttribute("departmentId", departmentId);
 		model.addAttribute("unitId", id);
 		model.addAttribute("code", departmentUnitResponse.code());
 		model.addAttribute("activePage", "admin/departments");
-		return "departments/units/unit";
+		return "admin/departments/units/unit";
 	}
 	
 	@PutMapping("/{id}")

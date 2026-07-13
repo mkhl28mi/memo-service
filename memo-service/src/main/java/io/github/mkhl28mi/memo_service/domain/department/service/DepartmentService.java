@@ -33,8 +33,10 @@ public class DepartmentService {
         return departmentRepository.findById(id);
     }
     
-    public Optional<DepartmentResponse> getDepartmentResponseById(UUID id) {
-        return mapToDepartmentResponse(departmentRepository.findById(id));
+    public DepartmentResponse getDepartmentResponseById(UUID id) {
+    	Department department = departmentRepository.findById(id)
+        		.orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + id));
+        return new DepartmentResponse(department);
     }
     
     @Transactional
@@ -57,14 +59,6 @@ public class DepartmentService {
     @Transactional
     public void deleteDepartment(UUID id) {
     	departmentRepository.deleteById(id);
-    }
-    
-    private static Optional<DepartmentResponse> mapToDepartmentResponse(Optional<Department> department) {
-    	if (department.isPresent()) {
-    		return Optional.of(new DepartmentResponse(department.get()));
-    	} else {
-    		return Optional.empty();
-    	}
     }
     
     private static List<DepartmentResponse> mapToDepartmentResponse(List<Department> departments) {
