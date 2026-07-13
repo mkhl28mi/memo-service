@@ -29,7 +29,11 @@ public class DepartmentService {
     	}
     }
     
-    public Optional<DepartmentResponse> getDepartmentById(UUID id) {
+    public Optional<Department> getDepartmentById(UUID id) {
+        return departmentRepository.findById(id);
+    }
+    
+    public Optional<DepartmentResponse> getDepartmentResponseById(UUID id) {
         return mapToDepartmentResponse(departmentRepository.findById(id));
     }
     

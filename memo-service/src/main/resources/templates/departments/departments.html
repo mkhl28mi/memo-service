@@ -9,28 +9,33 @@
 <body>
 
     <div layout:fragment="content" class="mx-auto w-75 mt-3">
-    	<div class="mb-5">
-    		<p>* - обов'язкові поля до заповнення</p>
-			<form th:action="@{/admin/departments}" th:object="${departmentRequest}" method="post">
-				<div>
-				  <div class="mb-2">
-				    <label for="name" class="form-label">Назва*</label>
-				    <input type="text" class="form-control" th:field="*{name}" required>
-				  </div>
-				  <div class="mb-2">
-				    <label for="code" class="form-label">Код*</label>
-				    <input type="text" class="form-control" th:field="*{code}" required>
-				  </div>
-				  <div class="mb-3">
-				    <label for="description" class="form-label">Опис*</label>
-				    <input type="text" class="form-control" th:field="*{description}" required>
-				  </div>
-				  <button type="submit" class="btn btn-outline-dark">Створити відділ</button>
+    	<div class="d-flex justify-content-center">
+	    	<div class="card w-75 mb-5">
+	    		<div class="card-body">
+	    			<h5 class="card-title">Створити відділ</h5>
+					<form th:action="@{/admin/departments}" th:object="${departmentRequest}" method="post">
+						<div>
+						  <div class="mb-2">
+						    <label for="name" class="form-label">Назва*</label>
+						    <input type="text" class="form-control" th:field="*{name}" required>
+						  </div>
+						  <div class="mb-2">
+						    <label for="code" class="form-label">Код*</label>
+						    <input type="text" class="form-control" th:field="*{code}" required>
+						  </div>
+						  <div class="mb-3">
+						    <label for="description" class="form-label">Опис*</label>
+						    <input type="text" class="form-control" th:field="*{description}" required>
+						  </div>
+						  <p>* - обов'язкові поля до заповнення</p>
+						  <button type="submit" class="btn btn-outline-dark">Створити</button>
+						</div>
+					</form>
 				</div>
-			</form>
+			</div>
 		</div>
 		
-		<table class="table">
+		<table class="table border-top">
 		  <thead>
 		    <tr>
 		      <th scope="col">#</th>
@@ -38,7 +43,7 @@
 		      <th scope="col">Код</th>
 		      <th scope="col">Опис</th>
 		      <th scope="col">Дата створення</th>
-		      <th scope="col">Підрозділи</th>
+		      <th scope="col">Сектори</th>
 		      <th scope="col">Дія</th>
 		    </tr>
 		  </thead>
@@ -50,7 +55,7 @@
 		      <td th:text="${department.description}"></td>
 		      <td th:text="${department.createdAt}"></td>
 		      <td>
-		      	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/departments/{id}(id=${department.id})}" role="button">Переглянути</a>
+		      	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/departments/{id}/units (id=${department.id})}" role="button">Переглянути</a>
 		      </td>
 		      <td>
 		      	<div class="d-grid mb-1">

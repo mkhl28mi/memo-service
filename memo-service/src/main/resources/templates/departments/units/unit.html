@@ -11,19 +11,11 @@
     <div layout:fragment="content" class="mx-auto w-75 mt-3">
     	<div class="mb-5">
     		<p>* - обов'язкові поля до заповнення</p>
-			<form th:action="@{/admin/departments/{id}(id=${departmentId})}" th:object="${departmentRequest}" th:method="put">
+			<form th:action="@{/admin/departments/{departmentId}/units/{id} (departmentId=${departmentId}, id=${unitId})}" th:method="put">
 				<div>
 				  <div class="mb-2">
-				    <label for="name" class="form-label">Назва*</label>
-				    <input type="text" class="form-control" th:field="*{name}" required>
-				  </div>
-				  <div class="mb-2">
 				    <label for="code" class="form-label">Код*</label>
-				    <input type="text" class="form-control" th:field="*{code}" required>
-				  </div>
-				  <div class="mb-3">
-				    <label for="description" class="form-label">Опис*</label>
-				    <input type="text" class="form-control" th:field="*{description}" required>
+				    <input type="text" class="form-control" id="code" name="code" th:value="${code}" required>
 				  </div>
 				  <button type="submit" class="btn btn-outline-dark">Зберегти</button>
 				</div>

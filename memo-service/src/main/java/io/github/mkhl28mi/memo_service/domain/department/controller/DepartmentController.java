@@ -30,8 +30,8 @@ public class DepartmentController {
     public String getDepartments(@RequestParam(required = false) String search, Model model) {
 		model.addAttribute("departments", departmentService.getDepartments(search));
 		model.addAttribute("departmentRequest", new DepartmentRequest());
-		model.addAttribute("activePage", "departments");
-        return "departments";
+		model.addAttribute("activePage", "admin/departments");
+        return "departments/departments";
     }
 	
 	@PostMapping
@@ -42,12 +42,12 @@ public class DepartmentController {
 	
 	@GetMapping("/{id}")
     public String getDepartmentById(@PathVariable UUID id, Model model) {
-		DepartmentResponse departmentResponse = departmentService.getDepartmentById(id)
+		DepartmentResponse departmentResponse = departmentService.getDepartmentResponseById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + id));
 		model.addAttribute("departmentId", id);
 		model.addAttribute("departmentRequest", new DepartmentRequest(departmentResponse));
-		model.addAttribute("activePage", "departments");
-		return "department";
+		model.addAttribute("activePage", "admin/departments");
+		return "departments/department";
     }
 	
 	@PutMapping("/{id}")
