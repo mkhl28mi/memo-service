@@ -34,6 +34,12 @@
 						  <div class="mb-3">
 							<select th:field="*{departmentUnitId}" placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;"></select>
 						  </div>
+						  <div class="mb-3">
+						  	<label for="roleIds" class="form-label">Ролі:</label>
+				            <select th:field="*{roleIds}"  multiple placeholder="Оберіть декілька тегів..." autocomplete="off">
+				                <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}"></option>
+				            </select>
+						  </div>
 						  <p>* - обов'язкові поля до заповнення</p>
 						  <button type="submit" class="btn btn-outline-dark">Додати</button>
 						</div>
@@ -51,6 +57,7 @@
 		      <th scope="col">Телефон</th>
 		      <th scope="col">Посада</th>
 		      <th scope="col">Дата створення</th>
+		      <th scope="col">Ролі</th>
 		      <th scope="col">Дія</th>
 		    </tr>
 		  </thead>
@@ -62,6 +69,11 @@
 		      <td th:text="${user.cell}"></td>
 		      <td th:text="${user.departmentUnitResponse.departmentResponse.name}"></td>
 		      <td th:text="${user.createdAt}"></td>
+		      <td>
+			      <ul class="list-group">
+					  <li class="list-group-item" th:each="role : ${user.roleRespones}" th:text="${role.name}"></li>
+				  </ul>
+		      </td>
 		      <td>
 		      	<div class="d-grid mb-1">
 		        	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/users/{id}(id=${user.id})}" role="button">Редагувати</a>
@@ -80,6 +92,7 @@
     <th:block layout:fragment="scripts">
    		<script>
 			new TomSelect("#departmentUnitId", {
+				plugins: ['remove_button'],
 			    valueField: 'id',
 			    labelField: 'departmentUnitLabel',
 			    searchField: [],
@@ -103,6 +116,13 @@
 			        return query.length >= 2;
 			    }
 			});
+			
+			new TomSelect("#roleIds", {
+		        plugins: ['remove_button'],
+		        maxItems: null,            
+		        create: false,              
+		        persist: false
+		    });
    		</script>
 	</th:block>
     

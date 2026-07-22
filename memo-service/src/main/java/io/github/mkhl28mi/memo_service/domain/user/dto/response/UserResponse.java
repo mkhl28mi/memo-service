@@ -1,9 +1,11 @@
 package io.github.mkhl28mi.memo_service.domain.user.dto.response;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import io.github.mkhl28mi.memo_service.domain.department_unit.dto.response.DepartmentUnitResponse;
+import io.github.mkhl28mi.memo_service.domain.role.dto.response.RoleResponse;
 import io.github.mkhl28mi.memo_service.domain.user.entity.User;
 
 public record UserResponse(UUID id,
@@ -11,7 +13,8 @@ public record UserResponse(UUID id,
 		String fullName,
 		String cell,
 		DepartmentUnitResponse departmentUnitResponse,
-		LocalDateTime createdAt) {
+		LocalDateTime createdAt,
+		List<RoleResponse> roleRespones) {
 	
 	public UserResponse(User user) {
 		this(user.getId(),
@@ -19,7 +22,8 @@ public record UserResponse(UUID id,
 				user.getFullName(),
 				user.getCell(),
 				new DepartmentUnitResponse(user.getPosition()),
-				user.getCreatedAt());
+				user.getCreatedAt(),
+				user.getRoles().stream().map(RoleResponse::new).toList());
 	}
 	
 }

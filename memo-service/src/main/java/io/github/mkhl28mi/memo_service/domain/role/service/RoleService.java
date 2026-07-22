@@ -1,5 +1,6 @@
 package io.github.mkhl28mi.memo_service.domain.role.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,12 @@ public class RoleService {
 	
 	@Autowired
 	private RoleRepository roleRepository;
+	
+	public List<RoleResponse> getRoles() {
+		return roleRepository.findAll().stream()
+				.map(RoleResponse::new)
+				.toList();
+	}
 	
 	public Role getRoleById(UUID id) {
 		return roleRepository.findById(id)

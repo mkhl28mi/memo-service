@@ -1,5 +1,6 @@
 package io.github.mkhl28mi.memo_service.domain.user.service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.github.mkhl28mi.memo_service.domain.department_unit.entity.DepartmentUnit;
 import io.github.mkhl28mi.memo_service.domain.department_unit.service.DepartmentUnitService;
+import io.github.mkhl28mi.memo_service.domain.role.service.RoleService;
 import io.github.mkhl28mi.memo_service.domain.user.dto.request.UserRequest;
 import io.github.mkhl28mi.memo_service.domain.user.dto.response.UserResponse;
 import io.github.mkhl28mi.memo_service.domain.user.entity.User;
@@ -24,6 +26,9 @@ public class UserService {
 	
 	@Autowired
 	private DepartmentUnitService departmentUnitService;
+	
+	@Autowired
+	private RoleService roleService;
 	
 	public List<UserResponse> getUsers(String search) {
     	if (search == null || search.trim().isEmpty()) {
@@ -47,11 +52,16 @@ public class UserService {
 	@Transactional
 	public UserResponse addUser(UserRequest userRequest) {
 		DepartmentUnit departmentUnit = departmentUnitService.getDepartmentUnitById(userRequest.departmentUnitId());
-		return new UserResponse(userRepository.save(new User(userRequest.username(),
+		
+		var user = new User(userRequest.username(),
 				userRequest.password(), 
 				userRequest.fullName(), 
 				userRequest.cell(), 
-				departmentUnit)));
+				departmentUnit);
+		
+		userRequest.roleIds().forEach(roleId -> user.addRole(roleService.getRoleById(roleId)));
+		
+		return new UserResponse(userRepository.save(user));
 	}
 	
 	@Transactional
@@ -64,6 +74,11 @@ public class UserService {
 		user.setFullName(userRequest.fullName());
 		user.setCell(userRequest.cell());
 		user.setPosition(departmentUnit);
+		
+		new HashSet<>(user.getRoles()).forEach(user::removeRole);
+		
+		userRequest.roleIds().forEach(roleId -> user.addRole(roleService.getRoleById(roleId)));
+		
 		return new UserResponse(userRepository.save(user));
 	}
 	

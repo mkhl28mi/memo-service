@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import io.github.mkhl28mi.memo_service.domain.role.service.RoleService;
 import io.github.mkhl28mi.memo_service.domain.user.dto.request.UserRequest;
 import io.github.mkhl28mi.memo_service.domain.user.service.UserService;
 
@@ -24,10 +25,14 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	private RoleService roleService;
+	
 	@GetMapping
 	public String getEmployees(@RequestParam(required = false) String search, Model model) {
 		model.addAttribute("users", userService.getUsers(search));
 		model.addAttribute("userRequest", new UserRequest());
+		model.addAttribute("roles", roleService.getRoles());
 		model.addAttribute("activePage", "admin/users");
 		return "admin/users/users";
 	}
@@ -42,6 +47,7 @@ public class UserController {
 	public String getUserById(@PathVariable UUID id, Model model) {
 		model.addAttribute("userId", id);
 		model.addAttribute("userRequest", new UserRequest(userService.getUserResponseById(id)));
+		model.addAttribute("roles", roleService.getRoles());
 		model.addAttribute("activePage", "admin/users");
 		return "admin/users/user";
 	}
