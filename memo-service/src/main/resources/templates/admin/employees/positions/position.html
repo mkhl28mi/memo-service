@@ -14,7 +14,7 @@
 	    	<div class="card w-75">
 	    		<div class="card-body">
 		    		<h5 class="card-title">Редагувати посаду</h5>
-					<form th:action="@{/admin/employee-positions/{id} (id=${employeePositionId})}" th:object="${employeePositionRequest}" th:method="put">
+					<form th:action="@{/admin/employees/positions/{id} (id=${employeePositionId})}" th:object="${employeePositionRequest}" th:method="put">
 						<div>
 						  <div class="mb-2">
 						    <label for="name" class="form-label">Назва (Називний відмінок. Приклад: Директор програми)*</label>

@@ -46,7 +46,7 @@ public class User {
 	private UUID id;
 	
 	@NotNull(message = "Username cannot be null")
-	@Size(min = 5, max = 25, message = "Username must be between 5 and 25 characters")
+	@Size(min = 1, max = 25, message = "Username must be between 1 and 25 characters")
 	@Column(name = "username", nullable = false, length = 25)
 	private String username;
 	
@@ -56,13 +56,13 @@ public class User {
 	private String password;
 	
 	@NotNull(message = "Full name cannot be null")
-	@Size(min = 5, max = 50, message = "Full name must be between 5 and 50 characters")
+	@Size(min = 1, max = 50, message = "Full name must be between 1 and 50 characters")
 	@Column(name = "full_name", nullable = false, length = 50)
 	private String fullName;
 	
 	@NotNull(message = "Cell cannot be null")
-	@Size(min = 5, max = 10, message = "Cell must be between 5 and 10 characters")
-	@Column(name = "cell", nullable = false, length = 10)
+	@Size(min = 1, max = 20, message = "Cell must be between 1 and 20 characters")
+	@Column(name = "cell", nullable = false, length = 20)
 	private String cell;
 	
 	@NotNull(message = "Position cannot be null")

@@ -29,9 +29,9 @@
 			          </a>
 			          <ul class="dropdown-menu">
 			          	<li><a class="dropdown-item" th:classappend="${activePage == 'admin/departments'} ? 'active' : ''" href="/admin/departments">Відділи</a></li>
-			            <li><a class="dropdown-item" th:classappend="${activePage == 'admin/users'} ? 'active' : ''" href="#">Користувачі</a></li>
-			            <li><a class="dropdown-item" th:classappend="${activePage == 'admin/employees'} ? 'active' : ''" href="#">Працівники</a></li>
-			            <li><a class="dropdown-item" th:classappend="${activePage == 'admin/employee-positions'} ? 'active' : ''" href="/admin/employee-positions">Посади</a></li>
+			            <li><a class="dropdown-item" th:classappend="${activePage == 'admin/users'} ? 'active' : ''" href="/admin/users">Користувачі</a></li>
+			            <li><a class="dropdown-item" th:classappend="${activePage == 'admin/employees'} ? 'active' : ''" href="/admin/employees">Працівники</a></li>
+			            <li><a class="dropdown-item" th:classappend="${activePage == 'admin/employees/positions'} ? 'active' : ''" href="/admin/employees/positions">Посади</a></li>
 			            <li><a class="dropdown-item" th:classappend="${activePage == 'admin/registry'} ? 'active' : ''"  href="#">Книга реєстрації</a></li>
 			            <li><a class="dropdown-item" th:classappend="${activePage == 'admin/settings'} ? 'active' : ''" href="#">Налаштування</a></li>
 			            <li><hr class="dropdown-divider"></li>

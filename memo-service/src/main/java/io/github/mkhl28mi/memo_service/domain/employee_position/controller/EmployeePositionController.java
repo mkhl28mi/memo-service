@@ -19,7 +19,7 @@ import io.github.mkhl28mi.memo_service.domain.employee_position.dto.response.Emp
 import io.github.mkhl28mi.memo_service.domain.employee_position.service.EmployeePositionService;
 
 @Controller
-@RequestMapping("/admin/employee-positions")
+@RequestMapping("/admin/employees/positions")
 public class EmployeePositionController {
 	
 	@Autowired
@@ -29,35 +29,35 @@ public class EmployeePositionController {
 	public String getEmployeePositions(@RequestParam(required = false) String search, Model model) {
 		model.addAttribute("employeePositions", employeePositionService.getEmployeePostions(search));
 		model.addAttribute("employeePositionRequest", new EmployeePositionRequest());
-		model.addAttribute("activePage", "admin/employee-positions");
-        return "admin/employee-positions/employee-positions";
+		model.addAttribute("activePage", "admin/employees/positions");
+        return "admin/employees/positions/positions";
 	}
 	
 	@PostMapping
 	public String createEmployeePosition(@ModelAttribute("employeePositionRequest") EmployeePositionRequest employeePositionRequest) {
 		employeePositionService.saveEmployeePosition(employeePositionRequest);
-		return "redirect:/admin/employee-positions";
+		return "redirect:/admin/employees/positions";
 	}
 	
 	@GetMapping("/{id}")
 	public String getEmployeePosition(@PathVariable UUID id, Model model) {
-		EmployeePositionResponse employeePositionResponse = employeePositionService.getEmployeePositionById(id);
+		EmployeePositionResponse employeePositionResponse = employeePositionService.getEmployeePositionResponseById(id);
 		model.addAttribute("employeePositionId", id);
 		model.addAttribute("employeePositionRequest", new EmployeePositionRequest(employeePositionResponse));
-		model.addAttribute("activePage", "admin/employee-positions");
-		return "admin/employee-positions/employee-position";
+		model.addAttribute("activePage", "admin/employees/positions");
+		return "admin/employees/positions/position";
 	}
 	
 	@PutMapping("/{id}")
 	public String updateEmployeePosition(@PathVariable UUID id, @ModelAttribute("employeePositionRequest") EmployeePositionRequest employeePositionRequest) {
 		employeePositionService.updateEmployeePosition(id, employeePositionRequest);
-		return "redirect:/admin/employee-positions";
+		return "redirect:/admin/employees/positions";
 	}
 	
 	@DeleteMapping("/{id}")
 	public String deleteEmployeePosition(@PathVariable UUID id) {
 		employeePositionService.deleteEmployeePosition(id);
-		return "redirect:/admin/employee-positions";
+		return "redirect:/admin/employees/positions";
 	}
 	
 }

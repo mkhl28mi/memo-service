@@ -23,7 +23,6 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "roles")
@@ -35,7 +34,6 @@ public class Role {
 	private UUID id;
 	
 	@NotNull(message = "Name cannot be null")
-    @Size(min = 1, max = 20, message = "Name must be between 1 and 20 characters")
 	@Enumerated(EnumType.STRING)
 	@Column(name = "name", unique = true, nullable = false, length = 20)
     private RoleType name;

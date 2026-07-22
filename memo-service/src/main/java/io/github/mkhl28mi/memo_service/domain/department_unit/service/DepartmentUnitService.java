@@ -25,9 +25,19 @@ public class DepartmentUnitService {
 	private DepartmentService departmentService;
 	
 	public List<DepartmentUnitResponse> getDepartmentUnitsByDepartmentId(UUID departmentId) {
-		return mapToDepartmentUnitResponse(departmentUnitRepository.getDepartntUnitsByDepartmentId(departmentId));
+		return mapToDepartmentUnitResponse(departmentUnitRepository.findDepartntUnitsByDepartmentId(departmentId));
 		
 	}
+	
+	public List<DepartmentUnitResponse> getDepartmentUnitsByDepartmentName(String search) {
+		if (search == null) { throw new IllegalArgumentException("search cannot be null"); }
+		return mapToDepartmentUnitResponse(departmentUnitRepository.searchByDepartmentName(search.trim()));
+	}
+	
+    public DepartmentUnit getDepartmentUnitById(UUID id) {
+    	return departmentUnitRepository.findById(id)
+    			.orElseThrow(() -> new ResourceNotFoundException("Department unit not found with id: " + id));
+    }
 	
     public DepartmentUnitResponse getDepartmentUnitResponseById(UUID id) {
     	DepartmentUnit departmentUnit = departmentUnitRepository.findById(id)

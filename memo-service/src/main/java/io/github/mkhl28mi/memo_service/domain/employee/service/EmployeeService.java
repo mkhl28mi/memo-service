@@ -1,0 +1,69 @@
+package io.github.mkhl28mi.memo_service.domain.employee.service;
+
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import io.github.mkhl28mi.memo_service.domain.employee.dto.request.EmployeeRequest;
+import io.github.mkhl28mi.memo_service.domain.employee.dto.response.EmployeeResponse;
+import io.github.mkhl28mi.memo_service.domain.employee.entity.Employee;
+import io.github.mkhl28mi.memo_service.domain.employee.repository.EmployeeRepository;
+import io.github.mkhl28mi.memo_service.domain.employee_position.entity.EmployeePosition;
+import io.github.mkhl28mi.memo_service.domain.employee_position.service.EmployeePositionService;
+import io.github.mkhl28mi.memo_service.exception.ResourceNotFoundException;
+
+@Service
+@Transactional(readOnly = true)
+public class EmployeeService {
+	
+	@Autowired
+	private EmployeeRepository employeeRepository;
+	
+	@Autowired
+	private EmployeePositionService employeePositionService;
+	
+	public List<EmployeeResponse> getEmployees(String search) {
+    	if (search == null) {
+    		return mapToEmployeeResponse(employeeRepository.findAll()); 
+    	} else {
+    		return mapToEmployeeResponse(employeeRepository.searchByNameOrTargetName(search.trim()));
+    	}
+	}
+	
+	public EmployeeResponse getEmployeeById(UUID id) {
+		Employee employee = employeeRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
+		return new EmployeeResponse(employee);
+	}
+	
+	@Transactional
+	public EmployeeResponse saveEmployee(EmployeeRequest employeeRequest) {
+		EmployeePosition employeePosition = employeePositionService.getEmployeePositionById(employeeRequest.employeePositionId());
+		return new EmployeeResponse(employeeRepository.save(new Employee(employeeRequest.fullName(), employeeRequest.targetFullName(), employeePosition)));
+		
+	}
+	
+	@Transactional
+	public EmployeeResponse updateEmployee(UUID employeeId, EmployeeRequest employeeRequest) {
+		EmployeePosition employeePosition = employeePositionService.getEmployeePositionById(employeeRequest.employeePositionId());
+		Employee employee = employeeRepository.findById(employeeId)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + employeeId));
+		employee.setFullName(employeeRequest.fullName());
+		employee.setTargetFullName(employeeRequest.targetFullName());
+		employee.setEmployeePosition(employeePosition);
+		return new EmployeeResponse(employeeRepository.save(employee));
+	}
+	
+	@Transactional
+	public void deleteEmployee(UUID id) {
+		employeeRepository.deleteById(id);
+	}
+	
+    private static List<EmployeeResponse> mapToEmployeeResponse(List<Employee> employees) {
+    	return employees.stream().map(EmployeeResponse::new).toList();
+    }
+
+}

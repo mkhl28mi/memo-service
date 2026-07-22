@@ -13,7 +13,7 @@
 	    	<div class="card w-75 mb-5">
 	    		<div class="card-body">
 	    			<h5 class="card-title">Створити посаду</h5>
-					<form th:action="@{/admin/employee-positions}" th:object="${employeePositionRequest}" method="post">
+					<form th:action="@{/admin/employees/positions}" th:object="${employeePositionRequest}" method="post">
 						<div>
 						  <div class="mb-2">
 						    <label for="name" class="form-label">Назва (Називний відмінок. Приклад: Директор програми)*</label>
@@ -55,9 +55,9 @@
 		      <td th:text="${employeePosition.createdAt}"></td>
 		      <td>
 		      	<div class="d-grid mb-1">
-		        	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/employee-positions/{id}(id=${employeePosition.id})}" role="button">Редагувати</a>
+		        	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/employees/positions/{id}(id=${employeePosition.id})}" role="button">Редагувати</a>
 			    </div>
-		      	<form th:action="@{/admin/employee-positions/{id}(id=${employeePosition.id})}" th:method="delete">
+		      	<form th:action="@{/admin/employees/positions/{id}(id=${employeePosition.id})}" th:method="delete">
 					<div class="d-grid">
 						<button type="submit" class="btn btn-outline-danger btn-sm">Видалити</button>
 					</div>

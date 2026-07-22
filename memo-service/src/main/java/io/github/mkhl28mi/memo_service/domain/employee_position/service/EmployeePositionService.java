@@ -28,7 +28,12 @@ public class EmployeePositionService {
     	}
 	}
 	
-	public EmployeePositionResponse getEmployeePositionById(UUID id) {
+	public EmployeePosition getEmployeePositionById(UUID id) {
+		return employeePositionsRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee position not found with id: " + id));
+	}
+	
+	public EmployeePositionResponse getEmployeePositionResponseById(UUID id) {
 		EmployeePosition employeePosition = employeePositionsRepository.findById(id)
         		.orElseThrow(() -> new ResourceNotFoundException("Employee position not found with id: " + id));
 		return new EmployeePositionResponse(employeePosition);

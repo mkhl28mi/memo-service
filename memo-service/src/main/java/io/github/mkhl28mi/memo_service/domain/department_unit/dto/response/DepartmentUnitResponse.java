@@ -4,20 +4,28 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-import io.github.mkhl28mi.memo_service.domain.department.entity.Department;
+import io.github.mkhl28mi.memo_service.domain.department.dto.response.DepartmentResponse;
 import io.github.mkhl28mi.memo_service.domain.department_unit.entity.DepartmentUnit;
 
-public record DepartmentUnitResponse(UUID id, String code, Department department, LocalDateTime createdAt) {
+public record DepartmentUnitResponse(UUID id, String code, DepartmentResponse departmentResponse, LocalDateTime createdAt) {
 	
 	public DepartmentUnitResponse(DepartmentUnit departmentUnit) {
-		this(departmentUnit.getId(), departmentUnit.getCode(), departmentUnit.getDepartment(),departmentUnit.getCreatedAt());
+		this(departmentUnit.getId(), 
+				departmentUnit.getCode(), 
+				new DepartmentResponse(departmentUnit.getDepartment()), 
+				departmentUnit.getCreatedAt());
 	}
-
+	
+	public String getDepartmentUnitLabel() {
+		if (departmentResponse == null) { return  "(" + code + ")"; }
+		return departmentResponse.name() + " (" + code + ")";
+    }
+		
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
