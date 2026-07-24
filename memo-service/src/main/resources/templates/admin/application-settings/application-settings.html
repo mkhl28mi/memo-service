@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title></title>
+</head>
+<body>
+
+    <div layout:fragment="content" class="mx-auto w-75 mt-3">
+	   	<div class="d-grid gap-2 col-6 mx-auto">
+	    	<a class="btn btn-outline-dark" href="/admin/application-settings/page-setup" role="button">Параметри друку аркушу паперу</a>
+	    	
+	    	<a class="btn btn-outline-dark" href="/admin/application-settings/department-managers" role="button">Керівники відділів</a>
+	    </div>
+    </div>
+        
+</body>
+</html>

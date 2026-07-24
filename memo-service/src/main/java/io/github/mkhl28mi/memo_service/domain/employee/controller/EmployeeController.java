@@ -41,7 +41,7 @@ public class EmployeeController {
 	@GetMapping("/{id}")
 	public String getEmployeeById(@PathVariable UUID id, Model model) {
 		model.addAttribute("employeeId", id);
-		model.addAttribute("employeeRequest", new EmployeeRequest(employeeService.getEmployeeById(id)));
+		model.addAttribute("employeeRequest", new EmployeeRequest(employeeService.getEmployeeResponseById(id)));
 		model.addAttribute("activePage", "admin/employees");
 		return "admin/employees/employee";
 	}

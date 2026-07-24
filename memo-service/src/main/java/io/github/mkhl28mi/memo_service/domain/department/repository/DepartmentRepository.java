@@ -9,6 +9,6 @@ import io.github.mkhl28mi.memo_service.domain.department.entity.Department;
 
 public interface DepartmentRepository extends JpaRepository<Department, UUID> {
 	
-	List<Department> findByNameContaining(String name);
+	List<Department> findByNameContainingIgnoreCase(String name);
 
 }

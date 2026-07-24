@@ -35,7 +35,6 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "memos")
@@ -51,7 +50,6 @@ public class Memo {
     private String content;
 	
 	@NotNull(message = "Status cannot be null")
-    @Size(min = 1, max = 20, message = "Status must be between 1 and 20 characters")
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false, length = 20)
 	private Status status;

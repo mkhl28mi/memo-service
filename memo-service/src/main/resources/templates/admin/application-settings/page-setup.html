@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout}">
+<head>
+<title></title>
+</head>
+<body>
+
+	<div layout:fragment="content" class="mx-auto w-75 mt-3">
+		<a class="btn btn-outline-dark mb-3" href="/admin/application-settings" role="button">🡨</a>
+		<div class="d-flex justify-content-center">
+			<div class="card w-75 mb-5">
+				<div class="card-body">
+					<h5 class="card-title">Параметри друку аркушу паперу</h5>
+					<form th:action="@{/admin/application-settings/page-setup}"
+						th:object="${pageSetupRequest}" th:method="put">
+						<label for="name" class="form-label">Верхнє поле*</label> 
+						<div class="input-group mb-2">
+							<input type="number" class="form-control" th:field="*{marginTop}" min="0" step="0.5" required>
+							<span class="input-group-text">мм</span>
+						</div>
+						<label for="description" class="form-label">Ліве поле*</label> 
+						<div class="input-group  mb-3">
+							<input type="number" class="form-control" th:field="*{marginLeft}" min="0" step="0.5" required>
+							<span class="input-group-text unit-label">мм</span>
+						</div>
+						<label for="description" class="form-label">Праве поле*</label>
+						<div class="input-group mb-3">
+							<input type="number" class="form-control" th:field="*{marginRight}" min="0" step="0.5" required>
+							<span class="input-group-text unit-label">мм</span>
+						</div>
+						<label for="code" class="form-label">Нижнє поле*</label> 
+						<div class="input-group mb-2">
+							<input type="number" class="form-control" th:field="*{marginBottom}" min="0" step="0.5" required>
+							<span class="input-group-text unit-label">мм</span>
+						</div>
+						<div class="mb-3">
+							<label for="orientation" class="form-label">Орієнтація*</label>
+							<select class="form-select" th:field="*{orientation}" required>
+								<option th:value="portrait" th:text="Вертикальна"></option>
+								<option th:value="landscape" th:text="Горизонтальна"></option>
+							</select>
+						</div>
+						<div class="mb-3">
+							<label for="paperSize" class="form-label">Розмір паперу*</label>
+							<select class="form-select" th:field="*{paperSize}" required>
+								<option th:value="A3" th:text="A3"></option>
+								<option th:value="A4" th:text="A4"></option>
+								<option th:value="A5" th:text="A5"></option>
+							</select>
+						</div>
+						<p>* - обов'язкові поля до заповнення</p>
+						<button type="submit" class="btn btn-outline-dark">Зберегти</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+</body>
+</html>

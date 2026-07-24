@@ -12,6 +12,10 @@ public record DepartmentResponse(UUID id, String name, String code, String descr
 		this(department.getId(), department.getName(), department.getCode(), department.getDescription(), department.getCreatedAt());
 	}
 	
+	public String getDepartmentLabel() {
+		return name + " - " + description;
+    }
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);

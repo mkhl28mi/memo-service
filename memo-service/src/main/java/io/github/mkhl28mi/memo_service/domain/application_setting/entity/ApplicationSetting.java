@@ -12,6 +12,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -21,12 +23,12 @@ import jakarta.validation.constraints.Size;
 @Entity
 @Table(name = "aplication_settings")
 @EntityListeners(AuditingEntityListener.class)
-public class AplicationSetting {
+public class ApplicationSetting {
 	
-    @Size(min = 1, max = 50, message = "Key must be between 1 and 50 characters")
 	@Id
+	@Enumerated(EnumType.STRING)
     @Column(name = "setting_key", length = 50)
-	private String key;
+	private Key key;
 	
 	@NotNull(message = "Value cannot be null")
     @Size(min = 1, max = 50, message = "Value must be between 1 and 50 characters")
@@ -45,21 +47,21 @@ public class AplicationSetting {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime updatedAt;
 
-	public AplicationSetting() {
+	public ApplicationSetting() {
 		super();
 	}
 	
-	public AplicationSetting(String key, String value) {
+	public ApplicationSetting(Key key, String value) {
 		super();
 		this.key = key;
 		this.value = value;
 	}
 
-	public String getKey() {
+	public Key getKey() {
 		return key;
 	}
 
-	public void setKey(String key) {
+	public void setKey(Key key) {
 		this.key = key;
 	}
 
@@ -92,7 +94,7 @@ public class AplicationSetting {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AplicationSetting other = (AplicationSetting) obj;
+		ApplicationSetting other = (ApplicationSetting) obj;
 		return Objects.equals(key, other.key);
 	}
 
@@ -100,5 +102,21 @@ public class AplicationSetting {
 	public String toString() {
 		return "AplicationSetting [key=" + key + ", value=" + value + ", createdAt=" + createdAt + ", updatedAt="
 				+ updatedAt + "]";
+	}
+	
+	public enum Key {
+
+		PAGE_MARGIN_TOP,
+
+		PAGE_MARGIN_BOTTOM,
+
+		PAGE_MARGIN_LEFT,
+
+		PAGE_MARGIN_RIGHT,
+
+		PAGE_ORIENTATION,
+
+		PAPER_SIZE;
+		
 	}
 }

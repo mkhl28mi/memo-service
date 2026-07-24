@@ -33,7 +33,12 @@ public class EmployeeService {
     	}
 	}
 	
-	public EmployeeResponse getEmployeeById(UUID id) {
+	public Employee getEmployeeById(UUID id) {
+		return employeeRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
+	}
+	
+	public EmployeeResponse getEmployeeResponseById(UUID id) {
 		Employee employee = employeeRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
 		return new EmployeeResponse(employee);

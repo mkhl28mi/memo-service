@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.github.mkhl28mi.memo_service.domain.department.entity.Department;
 import io.github.mkhl28mi.memo_service.domain.department.service.DepartmentService;
 import io.github.mkhl28mi.memo_service.domain.department_unit.dto.response.DepartmentUnitResponse;
 import io.github.mkhl28mi.memo_service.domain.department_unit.entity.DepartmentUnit;
@@ -47,9 +46,7 @@ public class DepartmentUnitService {
 	
 	@Transactional
 	public DepartmentUnitResponse saveDepartmentUnit(UUID departmentId, String code) {
-		Department department = departmentService.getDepartmentById(departmentId)
-        		.orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + departmentId));
-		return new DepartmentUnitResponse(departmentUnitRepository.save(new DepartmentUnit(code, department)));
+		return new DepartmentUnitResponse(departmentUnitRepository.save(new DepartmentUnit(code, departmentService.getDepartmentById(departmentId))));
 	}
 	
 	@Transactional

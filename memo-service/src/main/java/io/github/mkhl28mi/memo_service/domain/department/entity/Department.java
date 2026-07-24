@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -151,17 +152,21 @@ public class Department {
     }
     
 	public List<DepartmentUnit> getDepartmentUnits() {
-		return Collections.unmodifiableList(departmentUnits);
+		return Collections.unmodifiableList(this.departmentUnits);
 	}
 
 	public List<Memo> getMemos() {
-		return Collections.unmodifiableList(memos);
+		return Collections.unmodifiableList(this.memos);
 	}
 	
 	public Set<Employee> getEmployees() {
-		return Collections.unmodifiableSet(employees);
+		return Collections.unmodifiableSet(this.employees);
 	}
-
+	
+	public void initializeEmployees() {
+        Hibernate.initialize(this.employees);
+    }
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
