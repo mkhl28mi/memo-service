@@ -1,5 +1,6 @@
 package io.github.mkhl28mi.memo_service.domain.employee.service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,7 +12,6 @@ import io.github.mkhl28mi.memo_service.domain.employee.dto.request.EmployeeReque
 import io.github.mkhl28mi.memo_service.domain.employee.dto.response.EmployeeResponse;
 import io.github.mkhl28mi.memo_service.domain.employee.entity.Employee;
 import io.github.mkhl28mi.memo_service.domain.employee.repository.EmployeeRepository;
-import io.github.mkhl28mi.memo_service.domain.employee_position.entity.EmployeePosition;
 import io.github.mkhl28mi.memo_service.domain.employee_position.service.EmployeePositionService;
 import io.github.mkhl28mi.memo_service.exception.ResourceNotFoundException;
 
@@ -46,19 +46,23 @@ public class EmployeeService {
 	
 	@Transactional
 	public EmployeeResponse saveEmployee(EmployeeRequest employeeRequest) {
-		EmployeePosition employeePosition = employeePositionService.getEmployeePositionById(employeeRequest.employeePositionId());
-		return new EmployeeResponse(employeeRepository.save(new Employee(employeeRequest.fullName(), employeeRequest.targetFullName(), employeePosition)));
-		
+		Employee employee = new Employee(employeeRequest.fullName(), employeeRequest.targetFullName());
+		employeeRequest.employeePositionIds().forEach(id -> employee.addEmployeePosition(employeePositionService.getEmployeePositionById(id)));
+		return new EmployeeResponse(employeeRepository.save(employee));
 	}
 	
 	@Transactional
 	public EmployeeResponse updateEmployee(UUID employeeId, EmployeeRequest employeeRequest) {
-		EmployeePosition employeePosition = employeePositionService.getEmployeePositionById(employeeRequest.employeePositionId());
 		Employee employee = employeeRepository.findById(employeeId)
 				.orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + employeeId));
 		employee.setFullName(employeeRequest.fullName());
 		employee.setTargetFullName(employeeRequest.targetFullName());
-		employee.setEmployeePosition(employeePosition);
+		employee.initializeEmployeePositions();
+		
+		new HashSet<>(employee.getEmployeePositions()).forEach(employee::removeEmployeePosition);
+		
+		employeeRequest.employeePositionIds().forEach(id -> employee.addEmployeePosition(employeePositionService.getEmployeePositionById(id)));
+		
 		return new EmployeeResponse(employeeRepository.save(employee));
 	}
 	

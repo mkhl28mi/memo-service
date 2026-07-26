@@ -27,6 +27,9 @@
 						    <label for="description" class="form-label">Опис*</label>
 						    <input type="text" class="form-control" th:field="*{description}" required>
 						  </div>
+						  <div class="mb-3">
+							<select th:field="*{employeePositionId}" placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;"></select>
+						  </div>
 						  <p>* - обов'язкові поля до заповнення</p>
 						  <button type="submit" class="btn btn-outline-dark">Створити</button>
 						</div>
@@ -42,6 +45,7 @@
 		      <th scope="col">Назва</th>
 		      <th scope="col">Код</th>
 		      <th scope="col">Опис</th>
+		      <th scope="col">Посада</th>
 		      <th scope="col">Дата створення</th>
 		      <th scope="col">Сектори</th>
 		      <th scope="col">Дія</th>
@@ -53,6 +57,7 @@
 		      <td th:text="${department.name}"></td>
 		      <td th:text="${department.code}"></td>
 		      <td th:text="${department.description}"></td>
+		      <td th:text="${department.employeePositionResponse.name}"></td>
 		      <td th:text="${department.createdAt}"></td>
 		      <td>
 		      	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/departments/{id}/units (id=${department.id})}" role="button">Переглянути</a>
@@ -71,6 +76,35 @@
 		  </tbody>
 		</table>
     </div>
+    
+    <th:block layout:fragment="scripts">
+   		<script>
+			new TomSelect("#employeePositionId", {
+			    valueField: 'id',
+			    labelField: 'name',
+			    searchField: [],
+			    
+			    load: function(query, callback) {
+			        if (!query.length) return callback();
+			
+			        const url = '/api/v1/admin/employees/positions/search?q=' + encodeURIComponent(query);
+			
+			        fetch(url)
+			            .then(response => response.json())
+			            .then(json => {
+			                callback(json);
+			            })
+			            .catch(() => {
+			                callback();
+			            });
+			    },
+			    
+			    shouldLoad: function(query) {
+			        return query.length >= 2;
+			    }
+			});
+   		</script>
+	</th:block>
     
 </body>
 </html>

@@ -3,8 +3,10 @@ package io.github.mkhl28mi.memo_service.domain.employee_position.entity;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.annotations.UuidGenerator;
@@ -21,6 +23,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -57,8 +60,8 @@ public class EmployeePosition {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime createdAt;
     
-    @OneToMany(mappedBy = "employeePosition", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List <Employee> employees = new ArrayList<>();
+    @ManyToMany(mappedBy = "employeePositions")
+    private Set<Employee> employees = new HashSet<>();
     
     @OneToMany(mappedBy = "employeePosition", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List <MemoEmployee> memoEmployees = new ArrayList<>();
@@ -106,16 +109,6 @@ public class EmployeePosition {
 		return createdAt;
 	}
 	
-	public void addEmployee(Employee employee) {
-	    this.employees.add(employee);
-	    employee.setEmployeePosition(this);
-	}
-	
-	public void removeEmployee(Employee employee) {
-	    this.employees.remove(employee);
-	    employee.setEmployeePosition(null);
-	}
-	
 	public void addMemoEmployee(MemoEmployee memoEmployee) {
 	    this.memoEmployees.add(memoEmployee);
 	    memoEmployee.setEmployeePosition(this);
@@ -126,8 +119,12 @@ public class EmployeePosition {
 	    memoEmployee.setEmployeePosition(null);
 	}
 	
+	public Set<Employee> getEmployees() {
+		return this.employees;
+	}
+	
 	public List<MemoEmployee> getMemoEmployees() {
-		return Collections.unmodifiableList(memoEmployees);
+		return Collections.unmodifiableList(this.memoEmployees);
 	}
 
 	@Override

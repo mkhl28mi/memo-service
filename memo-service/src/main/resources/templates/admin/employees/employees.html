@@ -24,7 +24,7 @@
 						    <input type="text" class="form-control" th:field="*{targetFullName}" required>
 						  </div>
 						  <div class="mb-3">
-							<select th:field="*{employeePositionId}" placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;"></select>
+							<select th:field="*{employeePositionIds}" multiple placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;"></select>
 						  </div>
 						  <p>* - обов'язкові поля до заповнення</p>
 						  <button type="submit" class="btn btn-outline-dark">Створити</button>
@@ -69,7 +69,7 @@
     
     <th:block layout:fragment="scripts">
    		<script>
-			new TomSelect("#employeePositionId", {
+			new TomSelect("#employeePositionIds", {
 			    valueField: 'id',
 			    labelField: 'name',
 			    searchField: [],

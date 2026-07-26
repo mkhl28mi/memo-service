@@ -1,6 +1,7 @@
 package io.github.mkhl28mi.memo_service.domain.employee.dto.response;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -10,15 +11,15 @@ import io.github.mkhl28mi.memo_service.domain.employee_position.dto.response.Emp
 public record EmployeeResponse(UUID id,
 		String fullName,
 		String targetFullName,
-		EmployeePositionResponse employeePositionResponse,
-		LocalDateTime createdAt) {
+		LocalDateTime createdAt,
+		List<EmployeePositionResponse> employeePositionResponses) {
 	
 	public EmployeeResponse(Employee employee) {
 		this(employee.getId(),
 				employee.getFullName(),
 				employee.getTargetFullName(),
-				new EmployeePositionResponse(employee.getEmployeePosition()),
-				employee.getCreatedAt());
+				employee.getCreatedAt(),
+				employee.getEmployeePositions().stream().map(EmployeePositionResponse::new).toList());
 	}
 	
 	@Override

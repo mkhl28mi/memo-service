@@ -36,7 +36,7 @@
 						  </div>
 						  <div class="mb-3">
 						  	<label for="roleIds" class="form-label">Ролі:</label>
-				            <select th:field="*{roleIds}"  multiple placeholder="Оберіть декілька тегів..." autocomplete="off">
+				            <select th:field="*{roleIds}" multiple placeholder="Оберіть декілька тегів..." autocomplete="off">
 				                <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}"></option>
 				            </select>
 						  </div>

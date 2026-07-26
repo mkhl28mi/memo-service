@@ -9,13 +9,13 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.github.mkhl28mi.memo_service.domain.department.entity.Department;
 import io.github.mkhl28mi.memo_service.domain.employee_position.entity.EmployeePosition;
 import io.github.mkhl28mi.memo_service.domain.memo_employee.entity.MemoEmployee;
 import jakarta.persistence.CascadeType;
@@ -25,8 +25,8 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -52,19 +52,19 @@ public class Employee {
 	@Column(name = "target_full_name", nullable = false, length = 100)
 	private String targetFullName;
 	
-	@NotNull(message = "Emloyee position cannot be null")
-	@ManyToOne
-	@JoinColumn(name = "emloyee_position_id", nullable = false)
-	private EmployeePosition employeePosition;
-	
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     @PastOrPresent
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime createdAt;
     
-    @ManyToMany(mappedBy = "employees")
-    private Set<Department> departments = new HashSet<>();
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "employee_employee_positions",
+        joinColumns = @JoinColumn(name = "employee_id"),
+        inverseJoinColumns = @JoinColumn(name = "employee_position_id")
+    )
+    private Set<EmployeePosition> employeePositions = new HashSet<>();
     
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List <MemoEmployee> memoEmployees = new ArrayList<>();
@@ -73,11 +73,10 @@ public class Employee {
 		super();
 	}
 
-	public Employee(String fullName, String targetFullName, EmployeePosition employeePosition) {
+	public Employee(String fullName, String targetFullName) {
 		super();
 		this.fullName = fullName;
 		this.targetFullName = targetFullName;
-		this.employeePosition = employeePosition;
 	}
 
 	public String getFullName() {
@@ -96,14 +95,6 @@ public class Employee {
 		this.targetFullName = targetFullName;
 	}
 	
-	public EmployeePosition getEmployeePosition() {
-		return employeePosition;
-	}
-
-	public void setEmployeePosition(EmployeePosition employeePosition) {
-		this.employeePosition = employeePosition;
-	}
-
 	public UUID getId() {
 		return id;
 	}
@@ -111,6 +102,16 @@ public class Employee {
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
+	
+	public void addEmployeePosition(EmployeePosition employeePosition) {
+        this.employeePositions.add(employeePosition);
+        employeePosition.getEmployees().add(this);
+    }
+	
+    public void removeEmployeePosition(EmployeePosition employeePosition) {
+        this.employeePositions.remove(employeePosition);
+        employeePosition.getEmployees().remove(this);
+    }
 	
 	public void addMemoEmployee(MemoEmployee memoEmployee) {
 	    this.memoEmployees.add(memoEmployee);
@@ -122,13 +123,17 @@ public class Employee {
 	    memoEmployee.setEmployee(null);
 	}
 	
-	public Set<Department> getDepartments() {
-		return departments;
+	public Set<EmployeePosition> getEmployeePositions() {
+		return Collections.unmodifiableSet(this.employeePositions);
 	}
 	
 	public List<MemoEmployee> getMemoEmployees() {
 		return Collections.unmodifiableList(memoEmployees);
 	}
+	
+	public void initializeEmployeePositions() {
+        Hibernate.initialize(this.employeePositions);
+    }
 	
 	@Override
 	public int hashCode() {
@@ -149,8 +154,8 @@ public class Employee {
 
 	@Override
 	public String toString() {
-		return "Employee [id=" + id + ", fullName=" + fullName + ", targetFullName=" + targetFullName
-				+ ", employeePosition=" + employeePosition + ", createdAt=" + createdAt + "]";
+		return "Employee [id=" + id + ", fullName=" + fullName + ", targetFullName=" + targetFullName + ", createdAt="
+				+ createdAt + "]";
 	}
 
 }
