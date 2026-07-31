@@ -43,10 +43,10 @@ public class MemoLabel {
     @JoinColumn(name = "created_by", nullable = false)
 	private User createdBy;
 	
-	@NotNull(message = "Position cannot be null")
+	@NotNull(message = "Department unit cannot be null")
     @ManyToOne
-    @JoinColumn(name = "position_id", nullable = false)
-	private DepartmentUnit position;
+    @JoinColumn(name = "department_unit_id", nullable = false)
+	private DepartmentUnit departmentUnit;
 	
 	@NotNull(message = "Name cannot be null")
 	@Size(min = 1, max = 50, message = "Name must be between 1 and 50 characters")
@@ -65,12 +65,12 @@ public class MemoLabel {
 
 	public MemoLabel(Memo memo,
 			User createdBy,
-			DepartmentUnit position,
+			DepartmentUnit departmentUnit,
 			String name) {
 		super();
 		this.memo = memo;
 		this.createdBy = createdBy;
-		this.position = position;
+		this.departmentUnit = departmentUnit;
 		this.name = name;
 	}
 
@@ -82,12 +82,12 @@ public class MemoLabel {
 		this.memo = memo;
 	}
 
-	public DepartmentUnit getPosition() {
-		return position;
+	public DepartmentUnit getDepartmentUnit() {
+		return departmentUnit;
 	}
 
-	public void setPosition(DepartmentUnit position) {
-		this.position = position;
+	public void setDepartmentUnit(DepartmentUnit departmentUnit) {
+		this.departmentUnit = departmentUnit;
 	}
 
 	public String getName() {
@@ -130,10 +130,10 @@ public class MemoLabel {
 		MemoLabel other = (MemoLabel) obj;
 		return Objects.equals(id, other.id);
 	}
-
+	
 	@Override
 	public String toString() {
-		return "MemoLabel [id=" + id + ", memo=" + memo + ", createdBy=" + createdBy + ", position=" + position
+		return "MemoLabel [id=" + id + ", memo=" + memo + ", createdBy=" + createdBy + ", departmentUnit=" + departmentUnit
 				+ ", name=" + name + ", createdAt=" + createdAt + "]";
 	}
 	

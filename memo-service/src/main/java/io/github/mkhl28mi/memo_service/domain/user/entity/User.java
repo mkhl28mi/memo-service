@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -47,7 +48,7 @@ public class User {
 	
 	@NotNull(message = "Username cannot be null")
 	@Size(min = 1, max = 25, message = "Username must be between 1 and 25 characters")
-	@Column(name = "username", nullable = false, length = 25)
+	@Column(name = "username", unique = true, nullable = false, length = 25)
 	private String username;
 	
 	@NotNull(message = "Password cannot be null")
@@ -65,16 +66,25 @@ public class User {
 	@Column(name = "cell", nullable = false, length = 20)
 	private String cell;
 	
-	@NotNull(message = "Position cannot be null")
+	@NotNull(message = "Department unit cannot be null")
     @ManyToOne
-    @JoinColumn(name = "position_id", nullable = false)
-	private DepartmentUnit position;
+    @JoinColumn(name = "department_unit_id", nullable = false)
+	private DepartmentUnit departmentUnit;
+	
+	@Column(name = "is_enabled", nullable = false)
+	private boolean enabled;
 	
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     @PastOrPresent
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime createdAt;
+    
+    @LastModifiedDate
+    @Column(name = "updated_at", nullable = false, updatable = true)
+    @PastOrPresent
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private LocalDateTime updatedAt;
     
     @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List <Memo> memos = new ArrayList<>();
@@ -97,13 +107,14 @@ public class User {
 		super();
 	}
 	
-	public User(String username, String password, String fullName, String cell, DepartmentUnit departmentUnit) {
+	public User(String username, String password, String fullName, String cell, DepartmentUnit departmentUnit, boolean isEnabled) {
 		super();
 		this.username = username;
 		this.password = password;
 		this.fullName = fullName;
 		this.cell = cell;
-		this.position = departmentUnit;
+		this.departmentUnit = departmentUnit;
+		this.enabled = isEnabled;
 	}
 
 	public String getUsername() {
@@ -138,12 +149,20 @@ public class User {
 		this.cell = cell;
 	}
 	
-	public DepartmentUnit getPosition() {
-		return position;
+	public DepartmentUnit getDepartmentUnit() {
+		return departmentUnit;
 	}
-	
-	public void setPosition(DepartmentUnit position) {
-		this.position = position;
+
+	public void setDepartmentUnit(DepartmentUnit departmentUnit) {
+		this.departmentUnit = departmentUnit;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean isEnabled) {
+		this.enabled = isEnabled;
 	}
 
 	public UUID getId() {
@@ -154,6 +173,10 @@ public class User {
 		return createdAt;
 	}
 	
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
 	public void addRole(Role role) {
         this.roles.add(role);
         role.getUsers().add(this);
@@ -226,11 +249,12 @@ public class User {
 		User other = (User) obj;
 		return Objects.equals(id, other.id);
 	}
-
+	
 	@Override
 	public String toString() {
-		return "User [fullName=" + fullName + ", cell=" + cell + ", departmentUnit=" + position + ", createdAt="
-				+ createdAt + ", roles=" + roles + "]";
+		return "User [id=" + id + ", username=" + username + ", password=" + password + ", fullName=" + fullName
+				+ ", cell=" + cell + ", departmentUnit=" + departmentUnit + ", enabled=" + enabled + ", createdAt="
+				+ createdAt + ", updatedAt=" + updatedAt + "]";
 	}
 
 }

@@ -11,8 +11,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.github.mkhl28mi.memo_service.domain.employee.entity.Employee;
-import io.github.mkhl28mi.memo_service.domain.employee_position.entity.EmployeePosition;
 import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo;
+import io.github.mkhl28mi.memo_service.domain.position.entity.Position;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -49,7 +49,7 @@ public class MemoEmployee {
 	@NotNull(message = "Employee position cannot be null")
     @ManyToOne
     @JoinColumn(name = "employee_position_id", nullable = false)
-	private EmployeePosition employeePosition;
+	private Position position;
 	
 	@NotNull(message = "Role cannot be null")
     @Size(min = 1, max = 20, message = "Role must be between 1 and 20 characters")
@@ -73,13 +73,13 @@ public class MemoEmployee {
 	
 	public MemoEmployee(Memo memo, 
 			Employee employee, 
-			EmployeePosition employeePosition,
+			Position position,
 			Role role,
 			int placementOrder) {
 		super();
 		this.memo = memo;
 		this.employee = employee;
-		this.employeePosition = employeePosition;
+		this.position = position;
 		this.role = role;
 		this.placementOrder = placementOrder;
 	}
@@ -100,12 +100,12 @@ public class MemoEmployee {
 		this.employee = employee;
 	}
 
-	public EmployeePosition getEmployeePosition() {
-		return employeePosition;
+	public Position getPosition() {
+		return position;
 	}
 
-	public void setEmployeePosition(EmployeePosition employeePosition) {
-		this.employeePosition = employeePosition;
+	public void setPosition(Position position) {
+		this.position = position;
 	}
 
 	public Role getRole() {
@@ -151,11 +151,11 @@ public class MemoEmployee {
 	
 	@Override
 	public String toString() {
-		return "MemoEmployee [id=" + id + ", memo=" + memo + ", employee=" + employee + ", employeePosition="
-				+ employeePosition + ", role=" + role + ", placementOrder=" + placementOrder + ", createdAt="
+		return "MemoEmployee [id=" + id + ", memo=" + memo + ", employee=" + employee + ", position="
+				+ position + ", role=" + role + ", placementOrder=" + placementOrder + ", createdAt="
 				+ createdAt + "]";
 	}
-
+	
 	public enum Role {
 		
 		RECIPIENT,

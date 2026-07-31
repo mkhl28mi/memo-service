@@ -8,19 +8,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.github.mkhl28mi.memo_service.domain.department.dto.response.DepartmentResponse;
-import io.github.mkhl28mi.memo_service.domain.department.service.DepartmentService;
+import io.github.mkhl28mi.memo_service.domain.position.dto.response.PositionResponse;
+import io.github.mkhl28mi.memo_service.domain.position.service.PositionService;
 
 @RestController
 @RequestMapping("/api/v1/admin/departments")
 public class DepartmentRestController {
 	
 	@Autowired
-	private DepartmentService departmentService;
+	private PositionService positionService;
 	
-	@GetMapping("/search")
-	public List<DepartmentResponse> searchDepartments(@RequestParam("q") String query) {
-		return departmentService.getDepartments(query);
+	@GetMapping("/enabled-positions")
+	public List<PositionResponse> getEnabledPositionOptions(@RequestParam("q") String query) {
+		return positionService.getEnabledPostions(query);
 	}
 	
 }

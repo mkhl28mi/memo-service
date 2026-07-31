@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title></title>
+</head>
+<body>
+
+    <div layout:fragment="content" class="mx-auto w-75 mt-3">
+		<ul class="nav nav-tabs">
+		  <li class="nav-item">
+		    <a class="nav-link active" data-bs-toggle="tab" href="#common">Головне</a>
+		  </li>
+		</ul>
+		
+		<div class="tab-content">
+		  <div class="tab-pane container active" id="common">
+	  		<form th:action="@{/memos}" th:object="${memoRequest}" method="post">
+	  			<div class="mt-3">
+					<textarea th:field="*{content}"></textarea>
+				</div>
+				<div class="mt-3">
+					<select th:field="*{recipientIds}" multiple placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;"></select>
+				</div>
+				<div class="mt-3">
+					<select th:field="*{copyRecipientIds}" multiple placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;"></select>
+				</div>
+				<div class="mt-3">
+					<select th:field="*{signerIds}" multiple placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;"></select>
+				</div>
+				<div class="mt-3">
+					<select th:field="*{approverIds}" multiple placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;"></select>
+				</div>
+				<div class="mt-3">
+					<select th:field="*{assigneeId}" placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;"></select>
+				</div>
+			</form>
+		  </div>
+		</div>
+    </div>
+    
+    <th:block layout:fragment="scripts">
+	    <script>
+	      	tinymce.init({
+	        	selector: '#content',
+	        	promotion:false,
+	        	license_key: 'gpl'
+	      	});
+	      
+			new TomSelect("#recipientIds", {
+				plugins: ['remove_button'],
+			    valueField: 'id',
+			    labelField: 'targetNameLabel',
+			    searchField: [],
+			    
+			    load: function(query, callback) {
+			        if (!query.length) return callback();
+			        
+			        const url = '/api/v1/memos/enabled-employees?q=' + encodeURIComponent(query);
+			
+			        fetch(url)
+			            .then(response => response.json())
+			            .then(json => {
+			                callback(json);
+			            })
+			            .catch(() => {
+			                callback();
+			            });
+			    },
+			    
+			    shouldLoad: function(query) {
+			        return query.length >= 2;
+			    }
+			});
+			
+			new TomSelect("#copyRecipientIds", {
+				plugins: ['remove_button'],
+			    valueField: 'id',
+			    labelField: 'targetNameLabel',
+			    searchField: [],
+			    
+			    load: function(query, callback) {
+			        if (!query.length) return callback();
+			
+			        const url = '/api/v1/memos/enabled-employees?q=' + encodeURIComponent(query);
+			
+			        fetch(url)
+			            .then(response => response.json())
+			            .then(json => {
+			                callback(json);
+			            })
+			            .catch(() => {
+			                callback();
+			            });
+			    },
+			    
+			    shouldLoad: function(query) {
+			        return query.length >= 2;
+			    }
+			});
+			
+			new TomSelect("#signerIds", {
+				plugins: ['remove_button'],
+			    valueField: 'id',
+			    labelField: 'nameLabel',
+			    searchField: [],
+			    
+			    load: function(query, callback) {
+			        if (!query.length) return callback();
+			
+			        const url = '/api/v1/memos/enabled-employees?q=' + encodeURIComponent(query);
+			
+			        fetch(url)
+			            .then(response => response.json())
+			            .then(json => {
+			                callback(json);
+			            })
+			            .catch(() => {
+			                callback();
+			            });
+			    },
+			    
+			    shouldLoad: function(query) {
+			        return query.length >= 2;
+			    }
+			});
+			
+			new TomSelect("#approverIds", {
+				plugins: ['remove_button'],
+			    valueField: 'id',
+			    labelField: 'nameLabel',
+			    searchField: [],
+			    
+			    load: function(query, callback) {
+			        if (!query.length) return callback();
+			
+			        const url = '/api/v1/memos/enabled-employees?q=' + encodeURIComponent(query);
+			
+			        fetch(url)
+			            .then(response => response.json())
+			            .then(json => {
+			                callback(json);
+			            })
+			            .catch(() => {
+			                callback();
+			            });
+			    },
+			    
+			    shouldLoad: function(query) {
+			        return query.length >= 2;
+			    }
+			});
+			
+			new TomSelect("#assigneeId", {
+				plugins: ['remove_button'],
+			    valueField: 'id',
+			    labelField: 'name',
+			    searchField: [],
+			    
+			    load: function(query, callback) {
+			        if (!query.length) return callback();
+			
+			        const url = '/api/v1/memos/enabled-assignees?q=' + encodeURIComponent(query);
+			
+			        fetch(url)
+			            .then(response => response.json())
+			            .then(json => {
+			                callback(json);
+			            })
+			            .catch(() => {
+			                callback();
+			            });
+			    },
+			    
+			    shouldLoad: function(query) {
+			        return query.length >= 2;
+			    }
+			});
+	    </script>
+	</th:block>
+	
+</body>
+</html>

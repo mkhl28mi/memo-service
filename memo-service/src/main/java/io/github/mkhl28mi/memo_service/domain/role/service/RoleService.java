@@ -1,6 +1,7 @@
 package io.github.mkhl28mi.memo_service.domain.role.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,10 @@ public class RoleService {
 	public Role getRoleById(UUID id) {
 		return roleRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " + id));
+	}
+	
+	public Optional<Role> getRoleByName(RoleType name) {
+		return roleRepository.findByName(name);
 	}
 	
 	public long getCount() {

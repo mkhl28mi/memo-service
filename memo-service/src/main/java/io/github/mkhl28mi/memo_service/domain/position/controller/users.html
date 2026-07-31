@@ -31,6 +31,10 @@
 						    <label for="cell" class="form-label">Телефон*</label>
 						    <input type="text" class="form-control" th:field="*{cell}" required>
 						  </div>
+						  <div class="mb-3 form-check">
+					      	<label class="form-check-label" for="enabled">Користувач доступний</label>
+						    <input type="checkbox" class="form-check-input" th:field="*{enabled}">
+						  </div>
 						  <div class="mb-3">
 							<select th:field="*{departmentUnitId}" placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;"></select>
 						  </div>
@@ -55,8 +59,10 @@
 		      <th scope="col">Логін</th>
 		      <th scope="col">ПІБ</th>
 		      <th scope="col">Телефон</th>
+		      <th scope="col">Доступний</th>
 		      <th scope="col">Посада</th>
 		      <th scope="col">Дата створення</th>
+		      <th scope="col">Дата оновлення</th>
 		      <th scope="col">Ролі</th>
 		      <th scope="col">Дія</th>
 		    </tr>
@@ -67,8 +73,10 @@
 		      <td th:text="${user.username}"></td>
 		      <td th:text="${user.fullName}"></td>
 		      <td th:text="${user.cell}"></td>
+		      <td th:text="${user.enabled} ? '🮱'"></td>
 		      <td th:text="${user.departmentUnitResponse.departmentResponse.name}"></td>
 		      <td th:text="${user.createdAt}"></td>
+		      <td th:text="${user.updatedAt}"></td>
 		      <td>
 			      <ul class="list-group">
 					  <li class="list-group-item" th:each="role : ${user.roleRespones}" th:text="${role.name}"></li>
@@ -99,8 +107,8 @@
 			    
 			    load: function(query, callback) {
 			        if (!query.length) return callback();
-			
-			        const url = '/api/v1/admin/department-units/search?q=' + encodeURIComponent(query);
+					
+			        const url = '/api/v1/admin/users/enabled-department-units?q=' + encodeURIComponent(query);
 			
 			        fetch(url)
 			            .then(response => response.json())

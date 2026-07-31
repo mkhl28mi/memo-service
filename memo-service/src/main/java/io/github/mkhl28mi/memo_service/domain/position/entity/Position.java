@@ -1,4 +1,4 @@
-package io.github.mkhl28mi.memo_service.domain.employee_position.entity;
+package io.github.mkhl28mi.memo_service.domain.position.entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -32,9 +33,9 @@ import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "employee_positions")
+@Table(name = "positions")
 @EntityListeners(AuditingEntityListener.class)
-public class EmployeePosition {
+public class Position {
 	
 	@Id
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
@@ -42,17 +43,20 @@ public class EmployeePosition {
 	
 	@NotNull(message = "Name cannot be null")
 	@Size(min = 1, max = 400, message = "Name must be between 1 and 400 characters")
-	@Column(name = "name", nullable = false, length = 400)
+	@Column(name = "name", unique = true, nullable = false, length = 400)
 	private String name;
 	
 	@NotNull(message = "Target name cannot be null")
 	@Size(min = 1, max = 400, message = "Target name must be between 1 and 400 characters")
-	@Column(name = "target_name", nullable = false, length = 400)
+	@Column(name = "target_name", unique = true, nullable = false, length = 400)
 	private String targetName;
 	
 	@PositiveOrZero(message = "Order cannot be less than zero")
 	@Column(name = "placement_order")
 	private int placementOrder;
+	
+	@Column(name = "is_enabled", nullable = false)
+	private boolean enabled;
 	
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -60,21 +64,28 @@ public class EmployeePosition {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime createdAt;
     
-    @ManyToMany(mappedBy = "employeePositions")
+    @LastModifiedDate
+    @Column(name = "updated_at", nullable = false, updatable = true)
+    @PastOrPresent
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private LocalDateTime updatedAt;
+    
+    @ManyToMany(mappedBy = "positions")
     private Set<Employee> employees = new HashSet<>();
     
-    @OneToMany(mappedBy = "employeePosition", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "position", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List <MemoEmployee> memoEmployees = new ArrayList<>();
     
-	public EmployeePosition() {
+	public Position() {
 		super();
 	}
 
-	public EmployeePosition(String name, String targetName, int placementOrder) {
+	public Position(String name, String targetName, int placementOrder, boolean isEnabled) {
 		super();
 		this.name = name;
 		this.targetName = targetName;
 		this.placementOrder = placementOrder;
+		this.enabled = isEnabled;
 	}
 
 	public String getName() {
@@ -100,6 +111,14 @@ public class EmployeePosition {
 	public void setPlacementOrder(int placementOrder) {
 		this.placementOrder = placementOrder;
 	}
+	
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean isEnabled) {
+		this.enabled = isEnabled;
+	}
 
 	public UUID getId() {
 		return id;
@@ -109,14 +128,18 @@ public class EmployeePosition {
 		return createdAt;
 	}
 	
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
 	public void addMemoEmployee(MemoEmployee memoEmployee) {
 	    this.memoEmployees.add(memoEmployee);
-	    memoEmployee.setEmployeePosition(this);
+	    memoEmployee.setPosition(this);
 	}
 	
 	public void removeMemoEmployee(MemoEmployee memoEmployee) {
 	    this.memoEmployees.remove(memoEmployee);
-	    memoEmployee.setEmployeePosition(null);
+	    memoEmployee.setPosition(null);
 	}
 	
 	public Set<Employee> getEmployees() {
@@ -140,14 +163,15 @@ public class EmployeePosition {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		EmployeePosition other = (EmployeePosition) obj;
+		Position other = (Position) obj;
 		return Objects.equals(id, other.id);
 	}
 
 	@Override
 	public String toString() {
-		return "EmployeePosition [id=" + id + ", name=" + name + ", targetName=" + targetName + ", placementOrder="
-				+ placementOrder + ", createdAt=" + createdAt + "]";
+		return "Position [id=" + id + ", name=" + name + ", targetName=" + targetName + ", placementOrder="
+				+ placementOrder + ", enabled=" + enabled + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt
+				+ "]";
 	}
 
 }

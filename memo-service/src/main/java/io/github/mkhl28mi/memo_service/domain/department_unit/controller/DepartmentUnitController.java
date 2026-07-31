@@ -32,8 +32,8 @@ public class DepartmentUnitController {
 	}
 	
 	@PostMapping
-	public String createDepartmentUnit(@PathVariable UUID departmentId, @RequestParam("code") String code) {
-		departmentUnitService.saveDepartmentUnit(departmentId, code);
+	public String createDepartmentUnit(@PathVariable UUID departmentId, @RequestParam("code") String code, @RequestParam(name = "enabled", defaultValue = "false") boolean enabled) {
+		departmentUnitService.addDepartmentUnit(departmentId, code, enabled);
 		return String.format("redirect:/admin/departments/%s/units", departmentId);
 	}
 	
@@ -43,13 +43,14 @@ public class DepartmentUnitController {
 		model.addAttribute("departmentId", departmentId);
 		model.addAttribute("unitId", id);
 		model.addAttribute("code", departmentUnitResponse.code());
+		model.addAttribute("enabled", departmentUnitResponse.enabled());
 		model.addAttribute("activePage", "admin/departments");
 		return "admin/departments/units/unit";
 	}
 	
 	@PutMapping("/{id}")
-    public String updateDepartmentUnit(@PathVariable UUID departmentId, @PathVariable UUID id, @RequestParam("code") String code) {
-        departmentUnitService.updateDepartmentUnit(id, code);
+    public String updateDepartmentUnit(@PathVariable UUID departmentId, @PathVariable UUID id, @RequestParam("code") String code, @RequestParam(name = "enabled", defaultValue = "false") boolean enabled) {
+        departmentUnitService.updateDepartmentUnit(id, code, enabled);
         return String.format("redirect:/admin/departments/%s/units", departmentId);
     }
 	

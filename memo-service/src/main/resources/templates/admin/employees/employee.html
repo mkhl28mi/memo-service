@@ -23,8 +23,12 @@
 						    <label for="targetFullName" class="form-label">ПІБ*</label>
 						    <input type="text" class="form-control" th:field="*{targetFullName}" required>
 						  </div>
+						  <div class="mb-3 form-check">
+					      	<label class="form-check-label" for="enabled">Працівник доступний</label>
+						    <input type="checkbox" class="form-check-input" th:field="*{enabled}">
+						  </div>
 						  <div class="mb-3">
-							<select th:field="*{employeePositionIds}" multiple placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;"></select>
+							<select th:field="*{positionIds}" multiple placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;"></select>
 						  </div>
 						  <p>* - обов'язкові поля до заповнення</p>
 						  <button type="submit" class="btn btn-outline-dark">Зберегти</button>
@@ -37,7 +41,7 @@
     
     <th:block layout:fragment="scripts">
    		<script>
-			new TomSelect("#employeePositionIds", {
+			new TomSelect("#positionIds", {
 			    valueField: 'id',
 			    labelField: 'name',
 			    searchField: [],
@@ -45,7 +49,7 @@
 			    load: function(query, callback) {
 			        if (!query.length) return callback();
 			
-			        const url = '/api/v1/admin/employees/positions/search?q=' + encodeURIComponent(query);
+			        const url = '/api/v1/admin/employees/enabled-positions?q=' + encodeURIComponent(query);
 			
 			        fetch(url)
 			            .then(response => response.json())

@@ -45,10 +45,10 @@ public class MemoLog {
     @JoinColumn(name = "created_by", nullable = false)
 	private User createdBy;
 	
-	@NotNull(message = "Position cannot be null")
+	@NotNull(message = "Department unit cannot be null")
     @ManyToOne
-    @JoinColumn(name = "position_id", nullable = false)
-	private DepartmentUnit position;
+    @JoinColumn(name = "department_unit_id", nullable = false)
+	private DepartmentUnit departmentUnit;
 	
 	@NotNull(message = "Status cannot be null")
     @Size(min = 1, max = 20, message = "Status must be between 1 and 20 characters")
@@ -68,12 +68,12 @@ public class MemoLog {
     
 	public MemoLog(Memo memo,
 			User createdBy,
-			DepartmentUnit position,
+			DepartmentUnit departmentUnit,
 			Status status) {
 		super();
 		this.memo = memo;
 		this.createdBy = createdBy;
-		this.position = position;
+		this.departmentUnit = departmentUnit;
 		this.status = status;
 	}
 
@@ -93,16 +93,12 @@ public class MemoLog {
 		this.createdBy = createdBy;
 	}
 
-	public DepartmentUnit getPosition() {
-		return position;
+	public DepartmentUnit getDepartmentUnit() {
+		return departmentUnit;
 	}
 
-	public void setPosition(DepartmentUnit position) {
-		this.position = position;
-	}
-
-	public Status getStatus() {
-		return status;
+	public void setDepartmentUnit(DepartmentUnit departmentUnit) {
+		this.departmentUnit = departmentUnit;
 	}
 
 	public void setStatus(Status status) {
@@ -136,7 +132,7 @@ public class MemoLog {
 
 	@Override
 	public String toString() {
-		return "MemoLog [id=" + id + ", memo=" + memo + ", createdBy=" + createdBy + ", position=" + position
+		return "MemoLog [id=" + id + ", memo=" + memo + ", createdBy=" + createdBy + ", departmentUnit=" + departmentUnit
 				+ ", status=" + status + ", createdAt=" + createdAt + "]";
 	}
 	

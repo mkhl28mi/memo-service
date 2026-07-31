@@ -12,7 +12,7 @@
     	<div class="d-flex justify-content-center">
 	    	<div class="card w-75 mb-5">
 	    		<div class="card-body">
-	    			<h5 class="card-title">Створити відділ</h5>
+	    			<h5 class="card-title">Додати відділ</h5>
 					<form th:action="@{/admin/departments}" th:object="${departmentRequest}" method="post">
 						<div>
 						  <div class="mb-2">
@@ -28,10 +28,14 @@
 						    <input type="text" class="form-control" th:field="*{description}" required>
 						  </div>
 						  <div class="mb-3">
-							<select th:field="*{employeePositionId}" placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;"></select>
+							<select th:field="*{positionId}" placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;"></select>
+						  </div>
+						  <div class="mb-3 form-check">
+					      	<label class="form-check-label" for="enabled">Відділ доступний</label>
+						    <input type="checkbox" class="form-check-input" th:field="*{enabled}">
 						  </div>
 						  <p>* - обов'язкові поля до заповнення</p>
-						  <button type="submit" class="btn btn-outline-dark">Створити</button>
+						  <button type="submit" class="btn btn-outline-dark">Додати</button>
 						</div>
 					</form>
 				</div>
@@ -46,7 +50,9 @@
 		      <th scope="col">Код</th>
 		      <th scope="col">Опис</th>
 		      <th scope="col">Посада</th>
+		      <th scope="col">Доступний</th>
 		      <th scope="col">Дата створення</th>
+		      <th scope="col">Дата оновлення</th>
 		      <th scope="col">Сектори</th>
 		      <th scope="col">Дія</th>
 		    </tr>
@@ -57,8 +63,10 @@
 		      <td th:text="${department.name}"></td>
 		      <td th:text="${department.code}"></td>
 		      <td th:text="${department.description}"></td>
-		      <td th:text="${department.employeePositionResponse.name}"></td>
+		      <td th:text="${department.positionResponse.name}"></td>
+		      <td th:text="${department.enabled} ? '🮱'"></td>
 		      <td th:text="${department.createdAt}"></td>
+		      <td th:text="${department.updatedAt}"></td>
 		      <td>
 		      	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/departments/{id}/units (id=${department.id})}" role="button">Переглянути</a>
 		      </td>
@@ -79,7 +87,7 @@
     
     <th:block layout:fragment="scripts">
    		<script>
-			new TomSelect("#employeePositionId", {
+			new TomSelect("#positionId", {
 			    valueField: 'id',
 			    labelField: 'name',
 			    searchField: [],
@@ -87,7 +95,7 @@
 			    load: function(query, callback) {
 			        if (!query.length) return callback();
 			
-			        const url = '/api/v1/admin/employees/positions/search?q=' + encodeURIComponent(query);
+			        const url = '/api/v1/admin/departments/enabled-positions?q=' + encodeURIComponent(query);
 			
 			        fetch(url)
 			            .then(response => response.json())

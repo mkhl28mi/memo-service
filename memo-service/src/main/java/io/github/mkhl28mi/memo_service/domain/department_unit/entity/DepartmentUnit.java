@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -43,7 +44,7 @@ public class DepartmentUnit {
 	
 	@NotNull(message = "Code cannot be null")
 	@Size(min = 1, max = 8, message = "Code must be between 1 and 8 characters")
-	@Column(name = "code", nullable = false, length = 8)
+	@Column(name = "code", unique = true, nullable = false, length = 8)
 	private String code;
 	
 	@NotNull(message = "Department cannot be null")
@@ -51,32 +52,42 @@ public class DepartmentUnit {
     @JoinColumn(name = "department_id", nullable = false)
 	private Department department;
 	
+	@Column(name = "is_enabled", nullable = false)
+	private boolean enabled;
+	
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     @PastOrPresent
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime createdAt;
     
-    @OneToMany(mappedBy = "position", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @LastModifiedDate
+    @Column(name = "updated_at", nullable = false, updatable = true)
+    @PastOrPresent
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private LocalDateTime updatedAt;
+    
+    @OneToMany(mappedBy = "departmentUnit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List <Memo> memos = new ArrayList<>();
     
-    @OneToMany(mappedBy = "position", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "departmentUnit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List <MemoLog> memoLogs = new ArrayList<>();
     
-    @OneToMany(mappedBy = "position", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "departmentUnit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List <MemoLabel> memoLabels = new ArrayList<>();
     
-    @OneToMany(mappedBy = "position", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "departmentUnit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List <User> users = new ArrayList<>();
     
 	protected DepartmentUnit() {
 		super();
 	}
 
-	public DepartmentUnit(String code, Department department) {
+	public DepartmentUnit(String code, Department department, boolean enabled) {
 		super();
 		this.code = code;
 		this.department = department;
+		this.enabled = enabled;
 	}
 	
 	public String getCode() {
@@ -95,6 +106,14 @@ public class DepartmentUnit {
 		this.department = department;
 	}
 	
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
 	public UUID getId() {
 		return id;
 	}
@@ -103,44 +122,48 @@ public class DepartmentUnit {
 		return createdAt;
 	}
 	
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
 	public void addMemo(Memo memo) {
 	    this.memos.add(memo);
-	    memo.setPosition(this);
+	    memo.setDepartmentUnit(this);
 	}
 	
 	public void removeMemo(Memo memo) {
 	    this.memos.remove(memo);
-	    memo.setPosition(null);
+	    memo.setDepartmentUnit(null);
 	}
 	
 	public void addMemoLog(MemoLog memoLog) {
 	    this.memoLogs.add(memoLog);
-	    memoLog.setPosition(this);
+	    memoLog.setDepartmentUnit(this);
 	}
 	
 	public void removeMemoLog(MemoLog memoLog) {
 	    this.memoLogs.remove(memoLog);
-	    memoLog.setPosition(null);
+	    memoLog.setDepartmentUnit(null);
 	}
 	
 	public void addMemoLabel(MemoLabel memoLabel) {
 	    this.memoLabels.add(memoLabel);
-	    memoLabel.setPosition(this);
+	    memoLabel.setDepartmentUnit(this);
 	}
 	
 	public void removeMemoLabel(MemoLabel memoLable) {
 	    this.memoLabels.remove(memoLable);
-	    memoLable.setPosition(null);
+	    memoLable.setDepartmentUnit(null);
 	}
 	
 	public void addUser(User user) {
 	    this.users.add(user);
-	    user.setPosition(this);
+	    user.setDepartmentUnit(this);
 	}
 	
 	public void removeUser(User user) {
 	    this.users.remove(user);
-	    user.setPosition(null);
+	    user.setDepartmentUnit(null);
 	}
 	
 	public List<Memo> getMemos() {
@@ -163,7 +186,7 @@ public class DepartmentUnit {
 	public int hashCode() {
 		return Objects.hash(id);
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -178,8 +201,8 @@ public class DepartmentUnit {
 
 	@Override
 	public String toString() {
-		return "DepartmentUnit [id=" + id + ", code=" + code + ", department=" + department + ", createdAt=" + createdAt
-				+ "]";
+		return "DepartmentUnit [id=" + id + ", code=" + code + ", department=" + department + ", enabled=" + enabled
+				+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
 	
 }

@@ -9,13 +9,14 @@ import java.util.UUID;
 
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.github.mkhl28mi.memo_service.domain.department_unit.entity.DepartmentUnit;
-import io.github.mkhl28mi.memo_service.domain.employee_position.entity.EmployeePosition;
 import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo;
+import io.github.mkhl28mi.memo_service.domain.position.entity.Position;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,12 +42,12 @@ public class Department {
 	
     @NotNull(message = "Name cannot be null")
     @Size(min = 1, max = 100, message = "Name must be between 1 and 100 characters")
-	@Column(name = "name", nullable = false, length = 100)
+	@Column(name = "name", unique = true, nullable = false, length = 100)
 	private String name;
     
     @NotNull(message = "Code cannot be null")
     @Size(min = 1, max = 8, message = "Code must be between 1 and 8 characters")
-	@Column(name = "code", nullable = false, length = 8)
+	@Column(name = "code", unique = true, nullable = false, length = 8)
     private String code;
     
     @NotNull(message = "Description cannot be null")
@@ -57,13 +58,22 @@ public class Department {
     @NotNull(message = "Employee position cannot be null")
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "employee_position_id", referencedColumnName = "id")
-    private EmployeePosition employeePosition;
+    private Position employeePosition;
     
+	@Column(name = "is_enabled", nullable = false)
+	private boolean enabled;
+	
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     @PastOrPresent
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime createdAt;
+    
+    @LastModifiedDate
+    @Column(name = "updated_at", nullable = false, updatable = true)
+    @PastOrPresent
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private LocalDateTime updatedAt;
     
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List <DepartmentUnit> departmentUnits = new ArrayList<>();
@@ -75,12 +85,13 @@ public class Department {
 		super();
 	}
     
-	public Department(String name, String code,String description, EmployeePosition employeePosition) {
+	public Department(String name, String code,String description, Position employeePosition, boolean enabled) {
 		super();
 		this.name = name;
 		this.code = code;
 		this.description = description;
 		this.employeePosition = employeePosition;
+		this.enabled = enabled;
 	}
 
 	public String getName() {
@@ -107,12 +118,20 @@ public class Department {
 		this.description = description;
 	}
 	
-	public EmployeePosition getEmployeePosition() {
+	public Position getEmployeePosition() {
 		return employeePosition;
 	}
 
-	public void setEmployeePosition(EmployeePosition employeePosition) {
+	public void setEmployeePosition(Position employeePosition) {
 		this.employeePosition = employeePosition;
+	}
+	
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 	public UUID getId() {
@@ -123,6 +142,10 @@ public class Department {
 		return createdAt;
 	}
 	
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
 	public void addDepartmentUnit(DepartmentUnit departmentUnit) {
 	    this.departmentUnits.add(departmentUnit);
 	    departmentUnit.setDepartment(this);
@@ -155,7 +178,7 @@ public class Department {
 	public int hashCode() {
 		return Objects.hash(id);
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -171,7 +194,8 @@ public class Department {
 	@Override
 	public String toString() {
 		return "Department [id=" + id + ", name=" + name + ", code=" + code + ", description=" + description
-				+ ", createdAt=" + createdAt + ", employeePosition=" + employeePosition + "]";
+				+ ", employeePosition=" + employeePosition + ", enabled=" + enabled + ", createdAt=" + createdAt
+				+ ", updatedAt=" + updatedAt + "]";
 	}
-	
+
 }

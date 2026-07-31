@@ -59,10 +59,10 @@ public class Memo {
     @JoinColumn(name = "assignee_id", nullable = false)
 	private User assignee;
 	
-	@NotNull(message = "Position cannot be null")
+	@NotNull(message = "Department unit cannot be null")
     @ManyToOne
-    @JoinColumn(name = "position_id", nullable = false)
-	private DepartmentUnit position;
+    @JoinColumn(name = "department_unit_id", nullable = false)
+	private DepartmentUnit departmentUnit;
 	
 	@NotNull(message = "Department cannot be null")
     @ManyToOne
@@ -105,7 +105,7 @@ public class Memo {
 	public Memo(String content, 
 			Status status, 
 			User assignee, 
-			DepartmentUnit position, 
+			DepartmentUnit departmentUnit, 
 			Department department, 
 			int sequenceNumber, 
 			int creationYear) {
@@ -113,7 +113,7 @@ public class Memo {
 		this.content = content;
 		this.status = status;
 		this.assignee = assignee;
-		this.position = position;
+		this.departmentUnit = departmentUnit;
 		this.department = department;
 		this.sequenceNumber = sequenceNumber;
 		this.creationYear = creationYear;
@@ -143,12 +143,12 @@ public class Memo {
 		this.assignee = assignee;
 	}
 	
-	public DepartmentUnit getPosition() {
-		return position;
+	public DepartmentUnit getDepartmentUnit() {
+		return departmentUnit;
 	}
 
-	public void setPosition(DepartmentUnit position) {
-		this.position = position;
+	public void setDepartmentUnit(DepartmentUnit departmentUnit) {
+		this.departmentUnit = departmentUnit;
 	}
 
 	public Department getDepartment() {
@@ -249,7 +249,7 @@ public class Memo {
 	@Override
 	public String toString() {
 		return "Memo [id=" + id + ", content=" + content + ", status=" + status + ", assignee=" + assignee
-				+ ", position=" + position + ", department=" + department + ", sequenceNumber=" + sequenceNumber
+				+ ", departmentUnit=" + departmentUnit + ", department=" + department + ", sequenceNumber=" + sequenceNumber
 				+ ", creationYear=" + creationYear + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
 	

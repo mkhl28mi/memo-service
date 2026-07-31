@@ -12,23 +12,27 @@
     	<div class="d-flex justify-content-center">
 	    	<div class="card w-75 mb-5">
 	    		<div class="card-body">
-	    			<h5 class="card-title">Створити посаду</h5>
-					<form th:action="@{/admin/employees/positions}" th:object="${employeePositionRequest}" method="post">
+	    			<h5 class="card-title">Додати посаду</h5>
+					<form th:action="@{/admin/employees/positions}" th:object="${positionRequest}" method="post">
 						<div>
 						  <div class="mb-2">
 						    <label for="name" class="form-label">Назва (Називний відмінок. Приклад: Директор програми)*</label>
 						    <input type="text" class="form-control" th:field="*{name}" required>
 						  </div>
 						  <div class="mb-2">
-						    <label for="code" class="form-label">Назва (Давальний відмінок. Приклад: Директору програми)*</label>
+						    <label for="targetName" class="form-label">Назва (Давальний відмінок. Приклад: Директору програми)*</label>
 						    <input type="text" class="form-control" th:field="*{targetName}" required>
 						  </div>
 						  <div class="mb-3">
-						    <label for="description" class="form-label">Порядок розміщення*</label>
+						    <label for="placementOrder" class="form-label">Порядок розміщення*</label>
 						    <input type="number" class="form-control" th:field="*{placementOrder}" required>
 						  </div>
+					      <div class="mb-3 form-check">
+					      	<label class="form-check-label" for="enabled">Посада доступна</label>
+						    <input type="checkbox" class="form-check-input" th:field="*{enabled}">
+						  </div>
 						  <p>* - обов'язкові поля до заповнення</p>
-						  <button type="submit" class="btn btn-outline-dark">Створити</button>
+						  <button type="submit" class="btn btn-outline-dark">Додати</button>
 						</div>
 					</form>
 				</div>
@@ -42,22 +46,26 @@
 		      <th scope="col">Назва (Називний відмінок)</th>
 		      <th scope="col">Назва (Давальний відмінок)</th>
 		      <th scope="col">Порядок розміщення</th>
+		      <th scope="col">Доступна</th>
 		      <th scope="col">Дата створення</th>
+		      <th scope="col">Дата оновлення</th>
 		      <th scope="col">Дія</th>
 		    </tr>
 		  </thead>
 		  <tbody>
-		    <tr th:each="employeePosition, iterStat : ${employeePositions}">
+		    <tr th:each="position, iterStat : ${positions}">
 		      <td th:text="${iterStat.count}"></td>
-		      <td th:text="${employeePosition.name}"></td>
-		      <td th:text="${employeePosition.targetName}"></td>
-		      <td th:text="${employeePosition.placementOrder}"></td>
-		      <td th:text="${employeePosition.createdAt}"></td>
+		      <td th:text="${position.name}"></td>
+		      <td th:text="${position.targetName}"></td>
+		      <td th:text="${position.placementOrder}"></td>
+		      <td th:text="${position.enabled} ? '🮱'"></td>
+		      <td th:text="${position.createdAt}"></td>
+		      <td th:text="${position.updatedAt}"></td>
 		      <td>
 		      	<div class="d-grid mb-1">
-		        	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/employees/positions/{id}(id=${employeePosition.id})}" role="button">Редагувати</a>
+		        	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/employees/positions/{id}(id=${position.id})}" role="button">Редагувати</a>
 			    </div>
-		      	<form th:action="@{/admin/employees/positions/{id}(id=${employeePosition.id})}" th:method="delete">
+		      	<form th:action="@{/admin/employees/positions/{id}(id=${position.id})}" th:method="delete">
 					<div class="d-grid">
 						<button type="submit" class="btn btn-outline-danger btn-sm">Видалити</button>
 					</div>

@@ -13,7 +13,9 @@ public record UserResponse(UUID id,
 		String fullName,
 		String cell,
 		DepartmentUnitResponse departmentUnitResponse,
+		boolean enabled,
 		LocalDateTime createdAt,
+		LocalDateTime updatedAt,
 		List<RoleResponse> roleRespones) {
 	
 	public UserResponse(User user) {
@@ -21,8 +23,10 @@ public record UserResponse(UUID id,
 				user.getUsername(),
 				user.getFullName(),
 				user.getCell(),
-				new DepartmentUnitResponse(user.getPosition()),
+				new DepartmentUnitResponse(user.getDepartmentUnit()),
+				user.isEnabled(),
 				user.getCreatedAt(),
+				user.getUpdatedAt(),
 				user.getRoles().stream().map(RoleResponse::new).toList());
 	}
 	

@@ -9,12 +9,12 @@
 <body>
 
     <div layout:fragment="content" class="mx-auto w-75 mt-3">
-    	<a class="btn btn-outline-dark mb-3" href="/admin/employee-positions"  role="button">🡨</a>
+    	<a class="btn btn-outline-dark mb-3" href="/admin/employees/positions"  role="button">🡨</a>
     	<div class="d-flex justify-content-center">
 	    	<div class="card w-75">
 	    		<div class="card-body">
 		    		<h5 class="card-title">Редагувати посаду</h5>
-					<form th:action="@{/admin/employees/positions/{id} (id=${employeePositionId})}" th:object="${employeePositionRequest}" th:method="put">
+					<form th:action="@{/admin/employees/positions/{id} (id=${positionId})}" th:object="${positionRequest}" th:method="put">
 						<div>
 						  <div class="mb-2">
 						    <label for="name" class="form-label">Назва (Називний відмінок. Приклад: Директор програми)*</label>
@@ -27,6 +27,10 @@
 						  <div class="mb-3">
 						    <label for="description" class="form-label">Порядок розміщення*</label>
 						    <input type="text" class="form-control" th:field="*{placementOrder}" required>
+						  </div>
+						  <div class="mb-3 form-check">
+					      	<label class="form-check-label" for="enabled">Посада доступна</label>
+						    <input type="checkbox" class="form-check-input" th:field="*{enabled}">
 						  </div>
 						  <p>* - обов'язкові поля до заповнення</p>
 						  <button type="submit" class="btn btn-outline-dark">Зберегти</button>

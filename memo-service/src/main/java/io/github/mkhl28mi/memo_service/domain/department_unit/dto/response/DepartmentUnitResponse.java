@@ -7,13 +7,15 @@ import java.util.UUID;
 import io.github.mkhl28mi.memo_service.domain.department.dto.response.DepartmentResponse;
 import io.github.mkhl28mi.memo_service.domain.department_unit.entity.DepartmentUnit;
 
-public record DepartmentUnitResponse(UUID id, String code, DepartmentResponse departmentResponse, LocalDateTime createdAt) {
+public record DepartmentUnitResponse(UUID id, String code, DepartmentResponse departmentResponse, boolean enabled, LocalDateTime createdAt, LocalDateTime updatedAt) {
 	
 	public DepartmentUnitResponse(DepartmentUnit departmentUnit) {
 		this(departmentUnit.getId(), 
 				departmentUnit.getCode(), 
 				new DepartmentResponse(departmentUnit.getDepartment()), 
-				departmentUnit.getCreatedAt());
+				departmentUnit.isEnabled(),
+				departmentUnit.getCreatedAt(),
+				departmentUnit.getUpdatedAt());
 	}
 	
 	public String getDepartmentUnitLabel() {

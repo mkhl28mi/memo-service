@@ -1,6 +1,7 @@
 package io.github.mkhl28mi.memo_service.domain.department_unit.repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,9 +12,14 @@ import io.github.mkhl28mi.memo_service.domain.department_unit.entity.DepartmentU
 
 public interface DepartmentUnitRepository extends JpaRepository<DepartmentUnit, UUID> {
 	
-	public List<DepartmentUnit> findDepartntUnitsByDepartmentId(UUID departmentId);
+	public Optional<DepartmentUnit> findByCode(String code);
 	
-	@Query("SELECT du FROM DepartmentUnit du WHERE LOWER(du.department.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
-	public List<DepartmentUnit> searchByDepartmentName(@Param("keyword") String keyword);
+	public List<DepartmentUnit> findByDepartmentId(UUID departmentId);
+	
+	@Query("SELECT du FROM DepartmentUnit du WHERE (LOWER(du.code) LIKE LOWER(CONCAT('%', :keyword, '%')) "
+			+ "OR LOWER(du.department.name) LIKE LOWER(CONCAT('%', :keyword, '%'))) "
+			+ "AND du.enabled = true "
+			+ "AND du.department.enabled = true")
+	public List<DepartmentUnit> searchEnabledByDepartmentUnitCodeOrDepartmentName(@Param("keyword") String keyword);
 	
 }

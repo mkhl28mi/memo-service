@@ -1,4 +1,4 @@
-package io.github.mkhl28mi.memo_service.domain.department_unit.controller;
+package io.github.mkhl28mi.memo_service.domain.user.controller;
 
 import java.util.List;
 
@@ -12,15 +12,15 @@ import io.github.mkhl28mi.memo_service.domain.department_unit.dto.response.Depar
 import io.github.mkhl28mi.memo_service.domain.department_unit.service.DepartmentUnitService;
 
 @RestController
-@RequestMapping("/api/v1/admin/department-units")
-public class DepartmentUnitRestController {
+@RequestMapping("/api/v1/admin/users")
+public class UserRestController {
 	
 	@Autowired
 	private DepartmentUnitService departmentUnitService;
 	
-	@GetMapping("/search")
-	public List<DepartmentUnitResponse> searchDepartmentUnits(@RequestParam("q") String query) {
-		return departmentUnitService.getDepartmentUnitsByDepartmentName(query);
+	@GetMapping("/enabled-department-units")
+	public List<DepartmentUnitResponse> getEnabledDepartmentUnitsOptions(@RequestParam("q") String query) {
+		return departmentUnitService.getEnabledDepartmentUnits(query);
 	}
-	
+
 }

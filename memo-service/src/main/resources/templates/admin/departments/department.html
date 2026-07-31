@@ -9,7 +9,7 @@
 <body>
 
     <div layout:fragment="content" class="mx-auto w-75 mt-3">
-    	<a class="btn btn-outline-dark mb-3" href="/admin/departments"  role="button">🡨</a>
+   		<a class="btn btn-outline-dark mb-3" href="/admin/departments"  role="button">🡨</a>
     	<div class="d-flex justify-content-center">
 	    	<div class="card w-75">
 	    		<div class="card-body">
@@ -29,7 +29,11 @@
 						    <input type="text" class="form-control" th:field="*{description}" required>
 						  </div>
 						  <div class="mb-3">
-							<select th:field="*{employeePositionId}" placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;"></select>
+							<select th:field="*{positionId}" placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;"></select>
+						  </div>
+						  <div class="mb-3 form-check">
+					      	<label class="form-check-label" for="enabled">Посада доступна</label>
+						    <input type="checkbox" class="form-check-input" th:field="*{enabled}">
 						  </div>
 						  <p>* - обов'язкові поля до заповнення</p>
 						  <button type="submit" class="btn btn-outline-dark">Зберегти</button>
@@ -42,7 +46,7 @@
     
     <th:block layout:fragment="scripts">
    		<script>
-			new TomSelect("#employeePositionId", {
+			new TomSelect("#positionId", {
 			    valueField: 'id',
 			    labelField: 'name',
 			    searchField: [],
@@ -50,7 +54,7 @@
 			    load: function(query, callback) {
 			        if (!query.length) return callback();
 			
-			        const url = '/api/v1/admin/employees/positions/search?q=' + encodeURIComponent(query);
+			        const url = '/api/v1/admin/departments/enabled-positions?q=' + encodeURIComponent(query);
 			
 			        fetch(url)
 			            .then(response => response.json())

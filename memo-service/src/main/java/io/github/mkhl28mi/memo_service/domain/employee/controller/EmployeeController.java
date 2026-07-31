@@ -26,23 +26,23 @@ public class EmployeeController {
 	
 	@GetMapping
 	public String getEmployees(@RequestParam(required = false) String search, Model model) {
-		model.addAttribute("employees", employeeService.getEmployees(search));
-		model.addAttribute("employeeRequest", new EmployeeRequest());
 		model.addAttribute("activePage", "admin/employees");
+		model.addAttribute("employeeRequest", new EmployeeRequest());
+		model.addAttribute("employees", employeeService.getDetailedEmployees(search));
 		return "admin/employees/employees";
 	}
 	
 	@PostMapping
 	public String saveEmployee(@ModelAttribute("employeeRequest") EmployeeRequest employeeRequest) {
-		employeeService.saveEmployee(employeeRequest);
+		employeeService.addEmployee(employeeRequest);
 		return "redirect:/admin/employees";
 	}
 	
 	@GetMapping("/{id}")
 	public String getEmployeeById(@PathVariable UUID id, Model model) {
-		model.addAttribute("employeeId", id);
-		model.addAttribute("employeeRequest", new EmployeeRequest(employeeService.getEmployeeResponseById(id)));
 		model.addAttribute("activePage", "admin/employees");
+		model.addAttribute("employeeId", id);
+		model.addAttribute("employeeRequest", new EmployeeRequest(employeeService.getEmployeeDetailedResponseById(id)));
 		return "admin/employees/employee";
 	}
 	

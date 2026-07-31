@@ -12,10 +12,11 @@ public record UserRequest(String username,
 		String fullName,
 		String cell,
 		UUID departmentUnitId,
+		boolean enabled,
 		List<UUID> roleIds) {
 	
 	public UserRequest() {
-		this("", "", "", "", null, Collections.emptyList());
+		this("", "", "", "", null, true, Collections.emptyList());
 	}
 	
 	public UserRequest(UserResponse userResponse) {
@@ -24,6 +25,7 @@ public record UserRequest(String username,
 				userResponse.fullName(),
 				userResponse.cell(),
 				userResponse.departmentUnitResponse().id(),
+				userResponse.enabled(),
 				userResponse.roleRespones().stream().map(RoleResponse::id).toList());
 	}
 	

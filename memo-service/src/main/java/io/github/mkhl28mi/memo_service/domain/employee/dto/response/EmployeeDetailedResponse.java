@@ -6,20 +6,24 @@ import java.util.Objects;
 import java.util.UUID;
 
 import io.github.mkhl28mi.memo_service.domain.employee.entity.Employee;
-import io.github.mkhl28mi.memo_service.domain.employee_position.dto.response.EmployeePositionResponse;
+import io.github.mkhl28mi.memo_service.domain.position.dto.response.PositionResponse;
 
-public record EmployeeResponse(UUID id,
+public record EmployeeDetailedResponse(UUID id,
 		String fullName,
 		String targetFullName,
+		boolean enabled,
 		LocalDateTime createdAt,
-		List<EmployeePositionResponse> employeePositionResponses) {
+		LocalDateTime updatedAt,
+		List<PositionResponse> positionResponses) {
 	
-	public EmployeeResponse(Employee employee) {
+	public EmployeeDetailedResponse(Employee employee) {
 		this(employee.getId(),
 				employee.getFullName(),
 				employee.getTargetFullName(),
+				employee.isEnabled(),
 				employee.getCreatedAt(),
-				employee.getEmployeePositions().stream().map(EmployeePositionResponse::new).toList());
+				employee.getUpdatedAt(),
+				employee.getPositions().stream().map(PositionResponse::new).toList());
 	}
 	
 	@Override
@@ -35,7 +39,7 @@ public record EmployeeResponse(UUID id,
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		EmployeeResponse other = (EmployeeResponse) obj;
+		EmployeeDetailedResponse other = (EmployeeDetailedResponse) obj;
 		return Objects.equals(id, other.id);
 	}
 	

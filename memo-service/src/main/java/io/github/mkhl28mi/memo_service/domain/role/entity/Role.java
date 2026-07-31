@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -44,6 +45,12 @@ public class Role {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime createdAt;
     
+    @LastModifiedDate
+    @Column(name = "updated_at", nullable = false, updatable = true)
+    @PastOrPresent
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private LocalDateTime updatedAt;
+    
     @ManyToMany(mappedBy = "roles")
     private Set<User> users = new HashSet<>();
     
@@ -67,11 +74,15 @@ public class Role {
 	public UUID getId() {
 		return id;
 	}
-
+	
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
 	
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
 	public Set<User> getUsers() {
 		return users;
 	}
@@ -95,7 +106,7 @@ public class Role {
 
 	@Override
 	public String toString() {
-		return "Role [id=" + id + ", name=" + name + ", createdAt=" + createdAt + "]";
+		return "Role [id=" + id + ", name=" + name + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
 
 	public enum RoleType {

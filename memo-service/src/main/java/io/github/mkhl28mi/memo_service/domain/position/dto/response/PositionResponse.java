@@ -1,23 +1,27 @@
-package io.github.mkhl28mi.memo_service.domain.employee_position.dto.response;
+package io.github.mkhl28mi.memo_service.domain.position.dto.response;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-import io.github.mkhl28mi.memo_service.domain.employee_position.entity.EmployeePosition;
+import io.github.mkhl28mi.memo_service.domain.position.entity.Position;
 
-public record EmployeePositionResponse(UUID id, 
+public record PositionResponse(UUID id, 
 		String name, 
 		String targetName, 
 		int placementOrder,
-		LocalDateTime createdAt) {
+		boolean enabled,
+		LocalDateTime createdAt,
+		LocalDateTime updatedAt) {
 	
-	public EmployeePositionResponse(EmployeePosition employeePosition) {
+	public PositionResponse(Position employeePosition) {
 		this(employeePosition.getId(),
 				employeePosition.getName(),
 				employeePosition.getTargetName(),
 				employeePosition.getPlacementOrder(),
-				employeePosition.getCreatedAt());
+				employeePosition.isEnabled(),
+				employeePosition.getCreatedAt(),
+				employeePosition.getUpdatedAt());
 	}
 	
 	@Override
@@ -33,7 +37,7 @@ public record EmployeePositionResponse(UUID id,
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		EmployeePositionResponse other = (EmployeePositionResponse) obj;
+		PositionResponse other = (PositionResponse) obj;
 		return Objects.equals(id, other.id);
 	}
 	

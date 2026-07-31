@@ -5,17 +5,19 @@ import java.util.Objects;
 import java.util.UUID;
 
 import io.github.mkhl28mi.memo_service.domain.department.entity.Department;
-import io.github.mkhl28mi.memo_service.domain.employee_position.dto.response.EmployeePositionResponse;
+import io.github.mkhl28mi.memo_service.domain.position.dto.response.PositionResponse;
 
-public record DepartmentResponse(UUID id, String name, String code, String description, EmployeePositionResponse employeePositionResponse, LocalDateTime createdAt) {
+public record DepartmentResponse(UUID id, String name, String code, String description, PositionResponse positionResponse, boolean enabled, LocalDateTime createdAt, LocalDateTime updatedAt) {
 	
 	public DepartmentResponse(Department department) {
 		this(department.getId(), 
 				department.getName(), 
 				department.getCode(), 
 				department.getDescription(), 
-				new EmployeePositionResponse(department.getEmployeePosition()), 
-				department.getCreatedAt());
+				new PositionResponse(department.getEmployeePosition()),
+				department.isEnabled(),
+				department.getCreatedAt(),
+				department.getUpdatedAt());
 	}
 	
 	public String getDepartmentLabel() {

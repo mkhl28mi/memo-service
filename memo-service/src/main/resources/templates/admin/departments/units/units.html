@@ -9,6 +9,7 @@
 <body>
 
     <div layout:fragment="content" class="mx-auto w-75 mt-3">
+       <a class="btn btn-outline-dark mb-3" href="/admin/departments"  role="button">🡨</a>
     	<div class="mb-5">
     		<p>* - обов'язкові поля до заповнення</p>
 			<form th:action="@{/admin/departments/{departmentId}/units (departmentId=${departmentId})}" method="post">
@@ -17,7 +18,11 @@
 				    <label for="code" class="form-label">Код*</label>
 				    <input type="text" class="form-control" id="code" name="code" value="" required>
 				  </div>
-				  <button type="submit" class="btn btn-outline-dark">Створити сектор</button>
+		  		  <div class="mb-3 form-check">
+			      	<label class="form-check-label" for="enabled">Сектор доступний</label>
+				    <input type="checkbox" class="form-check-input" id="enabled" name="enabled" value="true" checked>
+				  </div>
+				  <button type="submit" class="btn btn-outline-dark">Додати сектор</button>
 				</div>
 			</form>
 		</div>
@@ -27,7 +32,9 @@
 		    <tr>
 		      <th scope="col">#</th>
 		      <th scope="col">Код</th>
+		      <th scope="col">Доступний</th>
 		      <th scope="col">Дата створення</th>
+		      <th scope="col">Дата оновлення</th>
 		      <th scope="col">Дія</th>
 		    </tr>
 		  </thead>
@@ -35,7 +42,9 @@
 		    <tr th:each="unit, iterStat : ${units}">
 		      <td th:text="${iterStat.count}"></td>
 		      <td th:text="${unit.code}"></td>
+		      <td th:text="${unit.enabled} ? '🮱'"></td>
 		      <td th:text="${unit.createdAt}"></td>
+		      <td th:text="${unit.updatedAt}"></td>
 		      <td>
 		      	<div class="d-grid mb-1">
 		        	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/departments/{departmentId}/units/{id}(departmentId=${departmentId}, id=${unit.id})}" role="button">Редагувати</a>
