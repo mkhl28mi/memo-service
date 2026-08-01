@@ -82,7 +82,7 @@ public class DepartmentUnit {
 	protected DepartmentUnit() {
 		super();
 	}
-
+	
 	public DepartmentUnit(String code, Department department, boolean enabled) {
 		super();
 		this.code = code;

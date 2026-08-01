@@ -9,82 +9,86 @@
 <body>
 
     <div layout:fragment="content" class="mx-auto w-75 mt-3">
-    	<div class="d-flex justify-content-center">
-	    	<div class="card w-75 mb-5">
-	    		<div class="card-body">
-	    			<h5 class="card-title">Додати відділ</h5>
-					<form th:action="@{/admin/departments}" th:object="${departmentRequest}" method="post">
-						<div>
-						  <div class="mb-2">
-						    <label for="name" class="form-label">Назва*</label>
-						    <input type="text" class="form-control" th:field="*{name}" required>
-						  </div>
-						  <div class="mb-2">
-						    <label for="code" class="form-label">Код*</label>
-						    <input type="text" class="form-control" th:field="*{code}" required>
-						  </div>
-						  <div class="mb-3">
-						    <label for="description" class="form-label">Опис*</label>
-						    <input type="text" class="form-control" th:field="*{description}" required>
-						  </div>
-						  <div class="mb-3">
-							<select th:field="*{positionId}" placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;"></select>
-						  </div>
-						  <div class="mb-3 form-check">
-					      	<label class="form-check-label" for="enabled">Відділ доступний</label>
-						    <input type="checkbox" class="form-check-input" th:field="*{enabled}">
-						  </div>
-						  <p>* - обов'язкові поля до заповнення</p>
-						  <button type="submit" class="btn btn-outline-dark">Додати</button>
-						</div>
-					</form>
-				</div>
+	   	<div class="card w-100 mb-5">
+	   		<div class="card-body">
+	   			<h5 class="card-title">Додати відділ</h5>
+				<form th:action="@{/admin/departments}" th:object="${departmentRequest}" method="post">
+					<div>
+					  <div class="mb-2">
+					    <label for="name" class="form-label">Назва*</label>
+					    <input type="text" class="form-control" th:field="*{name}" required>
+					  </div>
+					  <div class="mb-2">
+					    <label for="code" class="form-label">Код*</label>
+					    <input type="text" class="form-control" th:field="*{code}" required>
+					  </div>
+					  <div class="mb-3">
+					    <label for="description" class="form-label">Опис*</label>
+					    <input type="text" class="form-control" th:field="*{description}" required>
+					  </div>
+					  <div class="mb-3">
+							<label for="positionId" class="form-label">Посада*</label>
+							<select th:field="*{positionId}" placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;" required>
+								<option th:each="position : ${positions}" th:value="${position.id}" th:text="${position.name}"></option>
+							</select>
+					  </div>
+					  <div class="mb-3 form-check">
+				      	<label class="form-check-label" for="enabled">Доступний</label>
+					    <input type="checkbox" class="form-check-input" th:field="*{enabled}">
+					  </div>
+					  <p>* - обов'язкові поля до заповнення</p>
+					  <button type="submit" class="btn btn-outline-dark">Додати</button>
+					</div>
+				</form>
 			</div>
 		</div>
 		
-		<table class="table border-top">
-		  <thead>
-		    <tr>
-		      <th scope="col">#</th>
-		      <th scope="col">Назва</th>
-		      <th scope="col">Код</th>
-		      <th scope="col">Опис</th>
-		      <th scope="col">Посада</th>
-		      <th scope="col">Доступний</th>
-		      <th scope="col">Дата створення</th>
-		      <th scope="col">Дата оновлення</th>
-		      <th scope="col">Сектори</th>
-		      <th scope="col">Дія</th>
-		    </tr>
-		  </thead>
-		  <tbody>
-		    <tr th:each="department, iterStat : ${departments}">
-		      <td th:text="${iterStat.count}"></td>
-		      <td th:text="${department.name}"></td>
-		      <td th:text="${department.code}"></td>
-		      <td th:text="${department.description}"></td>
-		      <td th:text="${department.positionResponse.name}"></td>
-		      <td th:text="${department.enabled} ? '🮱'"></td>
-		      <td th:text="${department.createdAt}"></td>
-		      <td th:text="${department.updatedAt}"></td>
-		      <td>
-		      	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/departments/{id}/units (id=${department.id})}" role="button">Переглянути</a>
-		      </td>
-		      <td>
-		      	<div class="d-grid mb-1">
-		        	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/departments/{id}(id=${department.id})}" role="button">Редагувати</a>
-			    </div>
-		      	<form th:action="@{/admin/departments/{id}(id=${department.id})}" th:method="delete">
-					<div class="d-grid">
-						<button type="submit" class="btn btn-outline-danger btn-sm">Видалити</button>
-					</div>
-				</form>
-		      </td>
-		    </tr>
-		  </tbody>
-		</table>
+		<div class="table-responsive" style="height: 500px;">
+			<table class="table table-sm caption-top border-top">
+			  <caption>Відділи</caption>
+			  <thead>
+			    <tr>
+			      <th scope="col">#</th>
+			      <th style="min-width: 200px;" scope="col">Назва</th>
+			      <th style="min-width: 100px;" scope="col">Код</th>
+			      <th style="min-width: 300px;" scope="col">Опис</th>
+			      <th style="min-width: 300px;" scope="col">Посада</th>
+			      <th style="min-width: 100px;" scope="col">Доступний</th>
+			      <th style="min-width: 150px;" scope="col">Дата створення</th>
+			      <th style="min-width: 150px;" scope="col">Дата оновлення</th>
+			      <th style="min-width: 150px;" scope="col">Сектори</th>
+			      <th style="min-width: 150px;" scope="col">Дія</th>
+			    </tr>
+			  </thead>
+			  <tbody>
+			    <tr th:each="department, iterStat : ${departments}">
+			      <td th:text="${iterStat.count}"></td>
+			      <td th:text="${department.name}"></td>
+			      <td th:text="${department.code}"></td>
+			      <td th:text="${department.description}"></td>
+			      <td th:text="${department.positionResponse.name}"></td>
+			      <td class="text-center" th:text="${department.enabled} ? '🮱'"></td>
+			      <td th:text="${#temporals.format(department.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
+			      <td th:text="${#temporals.format(department.updatedAt, 'dd-MM-yyyy HH:mm')}"></td>
+			      <td>
+			      	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/departments/{id}/units (id=${department.id})}" role="button">Переглянути</a>
+			      </td>
+			      <td>
+			      	<div class="d-grid mb-1">
+			        	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/departments/{id}(id=${department.id})}" role="button">Редагувати</a>
+				    </div>
+			      	<form th:action="@{/admin/departments/{id}(id=${department.id})}" th:method="delete">
+						<div class="d-grid">
+							<button type="submit" class="btn btn-outline-danger btn-sm">Видалити</button>
+						</div>
+					</form>
+			      </td>
+			    </tr>
+			  </tbody>
+			</table>
+		</div>
     </div>
-    
+      
     <th:block layout:fragment="scripts">
    		<script>
 			new TomSelect("#positionId", {
@@ -113,6 +117,6 @@
 			});
    		</script>
 	</th:block>
-    
+	
 </body>
 </html>

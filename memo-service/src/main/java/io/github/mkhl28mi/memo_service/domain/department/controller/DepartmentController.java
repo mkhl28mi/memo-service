@@ -1,5 +1,6 @@
 package io.github.mkhl28mi.memo_service.domain.department.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +28,14 @@ public class DepartmentController {
 	
 	@GetMapping
     public String getDepartments(@RequestParam(required = false) String search, Model model) {
-		model.addAttribute("departments", departmentService.getDepartments(search));
-		model.addAttribute("departmentRequest", new DepartmentRequest());
 		model.addAttribute("activePage", "admin/departments");
+		model.addAttribute("departmentRequest", new DepartmentRequest());
+		model.addAttribute("departments", departmentService.getDepartments(search));
         return "admin/departments/departments";
     }
 	
 	@PostMapping
-    public String createDepartment(@ModelAttribute("departmentRequest") DepartmentRequest departmentRequest) {
+    public String addDepartment(@ModelAttribute("departmentRequest") DepartmentRequest departmentRequest) {
 		departmentService.addDepartment(departmentRequest);
         return "redirect:/admin/departments";
     }
@@ -42,9 +43,10 @@ public class DepartmentController {
 	@GetMapping("/{id}")
     public String getDepartmentById(@PathVariable UUID id, Model model) {
 		DepartmentResponse departmentResponse = departmentService.getDepartmentResponseById(id);
+		model.addAttribute("activePage", "admin/departments");
 		model.addAttribute("departmentId", id);
 		model.addAttribute("departmentRequest", new DepartmentRequest(departmentResponse));
-		model.addAttribute("activePage", "admin/departments");
+		model.addAttribute("positions", List.of(departmentResponse.positionResponse()));
 		return "admin/departments/department";
     }
 	

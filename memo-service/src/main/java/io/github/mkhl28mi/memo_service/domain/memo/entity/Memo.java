@@ -32,12 +32,21 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 
 @Entity
-@Table(name = "memos")
+@Table(
+		name = "memos", 
+		uniqueConstraints = {
+        @UniqueConstraint(
+                name = "uk_memos_sequence_number_department_id_creation_cyear",
+                columnNames = {"sequence_number", "department_id", "creation_cyear"}
+            )
+        }
+)
 @EntityListeners(AuditingEntityListener.class)
 public class Memo {
 	

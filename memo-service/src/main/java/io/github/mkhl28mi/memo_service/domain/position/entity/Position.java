@@ -131,7 +131,7 @@ public class Position {
 	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
 	}
-
+	
 	public void addMemoEmployee(MemoEmployee memoEmployee) {
 	    this.memoEmployees.add(memoEmployee);
 	    memoEmployee.setPosition(this);
@@ -149,7 +149,7 @@ public class Position {
 	public List<MemoEmployee> getMemoEmployees() {
 		return Collections.unmodifiableList(this.memoEmployees);
 	}
-
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);

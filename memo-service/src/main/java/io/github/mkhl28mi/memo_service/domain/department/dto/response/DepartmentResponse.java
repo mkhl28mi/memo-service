@@ -14,7 +14,7 @@ public record DepartmentResponse(UUID id, String name, String code, String descr
 				department.getName(), 
 				department.getCode(), 
 				department.getDescription(), 
-				new PositionResponse(department.getEmployeePosition()),
+				new PositionResponse(department.getPosition()),
 				department.isEnabled(),
 				department.getCreatedAt(),
 				department.getUpdatedAt());

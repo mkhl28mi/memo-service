@@ -52,13 +52,13 @@ public class Department {
     
     @NotNull(message = "Description cannot be null")
     @Size(min = 1, max = 250, message = "Description must be between 1 and 250 characters")
-	@Column(name = "description", nullable = false, length = 250)
+	@Column(name = "description", unique = true, nullable = false, length = 250)
     private String description;
     
-    @NotNull(message = "Employee position cannot be null")
+    @NotNull(message = "Position cannot be null")
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "employee_position_id", referencedColumnName = "id")
-    private Position employeePosition;
+    @JoinColumn(name = "position_id", referencedColumnName = "id")
+	private Position position;
     
 	@Column(name = "is_enabled", nullable = false)
 	private boolean enabled;
@@ -85,12 +85,12 @@ public class Department {
 		super();
 	}
     
-	public Department(String name, String code,String description, Position employeePosition, boolean enabled) {
+	public Department(String name, String code,String description, Position position, boolean enabled) {
 		super();
 		this.name = name;
 		this.code = code;
 		this.description = description;
-		this.employeePosition = employeePosition;
+		this.position = position;
 		this.enabled = enabled;
 	}
 
@@ -118,14 +118,14 @@ public class Department {
 		this.description = description;
 	}
 	
-	public Position getEmployeePosition() {
-		return employeePosition;
+	public Position getPosition() {
+		return position;
 	}
 
-	public void setEmployeePosition(Position employeePosition) {
-		this.employeePosition = employeePosition;
+	public void setPosition(Position position) {
+		this.position = position;
 	}
-	
+
 	public boolean isEnabled() {
 		return enabled;
 	}
@@ -194,8 +194,7 @@ public class Department {
 	@Override
 	public String toString() {
 		return "Department [id=" + id + ", name=" + name + ", code=" + code + ", description=" + description
-				+ ", employeePosition=" + employeePosition + ", enabled=" + enabled + ", createdAt=" + createdAt
-				+ ", updatedAt=" + updatedAt + "]";
+				+ ", enabled=" + enabled + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
 
 }

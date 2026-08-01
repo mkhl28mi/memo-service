@@ -33,9 +33,9 @@ public class DepartmentService {
     		return mapToDepartmentResponse(departmentRepository.findByNameContainingIgnoreCase(search.trim()));
     	}
     }
-        
+    
     public Department getDepartmentById(UUID id) {
-        return departmentRepository.findById(id)
+    	return departmentRepository.findById(id)
         		.orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + id));
     }
     
@@ -67,7 +67,7 @@ public class DepartmentService {
         department.setName(departmentRequest.name());
         department.setCode(departmentRequest.code());
         department.setDescription(departmentRequest.description());
-        department.setEmployeePosition(employeePosition);
+        department.setPosition(employeePosition);
         department.setEnabled(departmentRequest.enabled());
         return new DepartmentResponse(departmentRepository.save(department));
     }
