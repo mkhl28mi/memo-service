@@ -10,22 +10,25 @@
 
     <div layout:fragment="content" class="mx-auto w-75 mt-3">
     	<a class="btn btn-outline-dark mb-3" th:href="@{/admin/departments/{departmentId}/units (departmentId=${departmentId})}"  role="button">🡨</a>
-    	<div class="mb-5">
-    		<p>* - обов'язкові поля до заповнення</p>
-			<form th:action="@{/admin/departments/{departmentId}/units/{id} (departmentId=${departmentId}, id=${unitId})}" th:method="put">
-				<div>
-				  <div class="mb-2">
-				    <label for="code" class="form-label">Код*</label>
-				    <input type="text" class="form-control" id="code" name="code" th:value="${code}" required>
-				  </div>
-				  <div class="mb-3 form-check">
-			      	<label class="form-check-label" for="enabled">Сектор доступний</label>
-				    <input type="checkbox" class="form-check-input" id="enabled" name="enabled" th:value="true" th:checked="${enabled}">
-				  </div>
-				  <button type="submit" class="btn btn-outline-dark">Зберегти</button>
-				</div>
-			</form>
-		</div>
+    	<div class="card w-100 mb-5">
+		   	<div class="card-body">
+		   		<h5 class="card-title">Додати сектор</h5>
+				<form th:action="@{/admin/departments/{departmentId}/units/{id} (departmentId=${departmentId}, id=${unitId})}" th:method="put">
+					<div>
+					  <div class="mb-2">
+					    <label for="code" class="form-label">Код*</label>
+					    <input type="text" class="form-control" id="code" name="code" th:value="${code}" required>
+					  </div>
+					  <div class="mb-3 form-check">
+				      	<label class="form-check-label" for="enabled">Доступний</label>
+					    <input type="checkbox" class="form-check-input" id="enabled" name="enabled" th:value="true" th:checked="${enabled}">
+					  </div>
+					  <p>* - обов'язкові поля до заповнення</p>
+					  <button type="submit" class="btn btn-outline-dark">Зберегти</button>
+					</div>
+				</form>
+			</div>
+	 	</div>
     </div>
     
 </body>

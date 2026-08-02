@@ -60,11 +60,11 @@
 			      <th style="min-width: 100px;" scope="col">Код</th>
 			      <th style="min-width: 300px;" scope="col">Опис</th>
 			      <th style="min-width: 300px;" scope="col">Посада</th>
-			      <th style="min-width: 100px;" scope="col">Доступний</th>
+			      <th class="text-center" style="min-width: 100px;" scope="col">Доступний</th>
 			      <th style="min-width: 150px;" scope="col">Дата створення</th>
 			      <th style="min-width: 150px;" scope="col">Дата оновлення</th>
-			      <th style="min-width: 150px;" scope="col">Сектори</th>
-			      <th style="min-width: 150px;" scope="col">Дія</th>
+			      <th class="text-center" style="min-width: 150px;" scope="col">Сектори</th>
+			      <th class="text-center" style="min-width: 150px;" scope="col">Дія</th>
 			    </tr>
 			  </thead>
 			  <tbody>
@@ -77,10 +77,10 @@
 			      <td class="text-center" th:text="${department.enabled} ? '🮱'"></td>
 			      <td th:text="${#temporals.format(department.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
 			      <td th:text="${#temporals.format(department.updatedAt, 'dd-MM-yyyy HH:mm')}"></td>
-			      <td>
+			      <td class="text-center">
 			      	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/departments/{id}/units (id=${department.id})}" role="button">Переглянути</a>
 			      </td>
-			      <td>
+			      <td class="text-center">
 			      	<div class="d-grid mb-1">
 			        	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/departments/{id}(id=${department.id})}" role="button">Редагувати</a>
 				    </div>
