@@ -1,5 +1,6 @@
 package io.github.mkhl28mi.memo_service.domain.user.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,10 +46,12 @@ public class UserController {
 	
 	@GetMapping("/{id}")
 	public String getUserById(@PathVariable UUID id, Model model) {
-		model.addAttribute("userId", id);
-		model.addAttribute("userRequest", new UserRequest(userService.getUserResponseById(id)));
-		model.addAttribute("roles", roleService.getRoles());
+		var userResponse = userService.getUserResponseById(id);
 		model.addAttribute("activePage", "admin/users");
+		model.addAttribute("userId", id);
+		model.addAttribute("userRequest", new UserRequest(userResponse));
+		model.addAttribute("departmentUnits", List.of(userResponse.departmentUnitResponse()));
+		model.addAttribute("roles", roleService.getRoles());
 		return "admin/users/user";
 	}
 	

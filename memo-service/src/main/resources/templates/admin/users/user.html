@@ -9,50 +9,52 @@
 <body>
 
     <div layout:fragment="content" class="mx-auto w-75 mt-3">
-    	<div class="d-flex justify-content-center">
-	    	<div class="card w-75 mb-5">
-	    		<div class="card-body">
-	    			<h5 class="card-title">Редагувати користувача</h5>
-					<form th:action="@{/admin/users/{id} (id=${userId})}" th:object="${userRequest}" th:method="put">
-						<div>
-						  <div class="mb-2">
-						    <label for="username" class="form-label">Логін*</label>
-						    <input type="text" class="form-control" th:field="*{username}" required>
-						  </div>
-						  <div class="mb-2">
-						    <label for="password" class="form-label">Пароль*</label>
-						    <input type="text" class="form-control" th:field="*{password}" required>
-						  </div>
-						  <div class="mb-2">
-						    <label for="fullName" class="form-label">ПІБ*</label>
-						    <input type="text" class="form-control" th:field="*{fullName}" required>
-						  </div>
-						  <div class="mb-2">
-						    <label for="cell" class="form-label">Телефон*</label>
-						    <input type="text" class="form-control" th:field="*{cell}" required>
-						  </div>
-						  <div class="mb-3 form-check">
-					      	<label class="form-check-label" for="enabled">Користувач доступний</label>
-						    <input type="checkbox" class="form-check-input" th:field="*{enabled}">
-						  </div>
-						  <div class="mb-3">
-							<select th:field="*{departmentUnitId}" placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;"></select>
-						  </div>
-						  <div class="mb-3">
-						  	<label for="roleIds" class="form-label">Ролі:</label>
-				            <select th:field="*{roleIds}" multiple placeholder="Оберіть декілька тегів..." autocomplete="off">
-				                <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}"></option>
-				            </select>
-						  </div>
-						  <p>* - обов'язкові поля до заповнення</p>
-						  <button type="submit" class="btn btn-outline-dark">Зберегти</button>
-						</div>
-					</form>
-				</div>
+    	<a class="btn btn-outline-dark mb-3" href="/admin/users"  role="button">🡨</a>
+    	<div class="card w-100 mb-5">
+    		<div class="card-body">
+    			<h5 class="card-title">Редагувати користувача</h5>
+				<form th:action="@{/admin/users/{id} (id=${userId})}" th:object="${userRequest}" th:method="put">
+					<div>
+					  <div class="mb-2">
+					    <label for="username" class="form-label">Логін*</label>
+					    <input type="text" class="form-control" th:field="*{username}" required>
+					  </div>
+					  <div class="mb-2">
+					    <label for="password" class="form-label">Пароль*</label>
+					    <input type="password" class="form-control" th:field="*{password}" required>
+					  </div>
+					  <div class="mb-2">
+					    <label for="fullName" class="form-label">ПІБ*</label>
+					    <input type="text" class="form-control" th:field="*{fullName}" required>
+					  </div>
+					  <div class="mb-2">
+					    <label for="cell" class="form-label">Телефон*</label>
+					    <input type="text" class="form-control" th:field="*{cell}" required>
+					  </div>
+					  <div class="mb-3">
+					  	<label for="departmentUnitId" class="form-label">Відділ та сектор:*</label>
+						<select th:field="*{departmentUnitId}" placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;" required>
+							<option th:each="departmentUnit : ${departmentUnits}" th:value="${departmentUnit.id}" th:text="${departmentUnit.departmentUnitLabel}"></option>
+						</select>
+					  </div>
+					  <div class="mb-3">
+					  	<label for="roleIds" class="form-label">Ролі:</label>
+			            <select th:field="*{roleIds}" multiple placeholder="Оберіть ролі..." autocomplete="off" required>
+			                <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}"></option>
+			            </select>
+					  </div>
+					  <div class="mb-3 form-check">
+				      	<label class="form-check-label" for="enabled">Доступний</label>
+					    <input type="checkbox" class="form-check-input" th:field="*{enabled}">
+					  </div>
+					  <p>* - обов'язкові поля до заповнення</p>
+					  <button type="submit" class="btn btn-outline-dark">Зберегти</button>
+					</div>
+				</form>
 			</div>
 		</div>
-    </div>
-    
+	</div>
+	
     <th:block layout:fragment="scripts">
    		<script>
 			new TomSelect("#departmentUnitId", {

@@ -10,7 +10,7 @@
 
     <div layout:fragment="content" class="mx-auto w-75 mt-3">
     	<div class="d-flex justify-content-center">
-	    	<div class="card w-75 mb-5">
+	    	<div class="card w-100 mb-5">
 	    		<div class="card-body">
 	    			<h5 class="card-title">Додати користувача</h5>
 					<form th:action="@{/admin/users}" th:object="${userRequest}" method="post">
@@ -21,7 +21,7 @@
 						  </div>
 						  <div class="mb-2">
 						    <label for="password" class="form-label">Пароль*</label>
-						    <input type="text" class="form-control" th:field="*{password}" required>
+						    <input type="password" class="form-control" th:field="*{password}" required>
 						  </div>
 						  <div class="mb-2">
 						    <label for="fullName" class="form-label">ПІБ*</label>
@@ -31,18 +31,19 @@
 						    <label for="cell" class="form-label">Телефон*</label>
 						    <input type="text" class="form-control" th:field="*{cell}" required>
 						  </div>
-						  <div class="mb-3 form-check">
-					      	<label class="form-check-label" for="enabled">Користувач доступний</label>
-						    <input type="checkbox" class="form-check-input" th:field="*{enabled}">
+						  <div class="mb-3">
+						  	<label for="departmentUnitId" class="form-label">Відділ та сектор:*</label>
+							<select th:field="*{departmentUnitId}" placeholder="Почніть вводити назву або номер..." autocomplete="off" style="width: 100%;" required></select>
 						  </div>
 						  <div class="mb-3">
-							<select th:field="*{departmentUnitId}" placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;"></select>
-						  </div>
-						  <div class="mb-3">
-						  	<label for="roleIds" class="form-label">Ролі:</label>
-				            <select th:field="*{roleIds}" multiple placeholder="Оберіть декілька тегів..." autocomplete="off">
+						  	<label for="roleIds" class="form-label">Ролі:*</label>
+				            <select th:field="*{roleIds}" multiple placeholder="Оберіть ролі..." autocomplete="off" required>
 				                <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}"></option>
 				            </select>
+						  </div>
+						  <div class="mb-3 form-check">
+					      	<label class="form-check-label" for="enabled">Доступний</label>
+						    <input type="checkbox" class="form-check-input" th:field="*{enabled}">
 						  </div>
 						  <p>* - обов'язкові поля до заповнення</p>
 						  <button type="submit" class="btn btn-outline-dark">Додати</button>
@@ -52,49 +53,59 @@
 			</div>
 		</div>
 		
-		<table class="table border-top">
-		  <thead>
-		    <tr>
-		      <th scope="col">#</th>
-		      <th scope="col">Логін</th>
-		      <th scope="col">ПІБ</th>
-		      <th scope="col">Телефон</th>
-		      <th scope="col">Посада</th>
-		      <th scope="col">Доступний</th>
-		      <th scope="col">Дата створення</th>
-		      <th scope="col">Дата оновлення</th>
-		      <th scope="col">Ролі</th>
-		      <th scope="col">Дія</th>
-		    </tr>
-		  </thead>
-		  <tbody>
-		    <tr th:each="user, iterStat : ${users}">
-		      <td th:text="${iterStat.count}"></td>
-		      <td th:text="${user.username}"></td>
-		      <td th:text="${user.fullName}"></td>
-		      <td th:text="${user.cell}"></td>
-		      <td th:text="${user.departmentUnitResponse.departmentResponse.name}"></td>
-		      <td th:text="${user.enabled} ? '🮱'"></td>
-		      <td th:text="${user.createdAt}"></td>
-		      <td th:text="${user.updatedAt}"></td>
-		      <td>
-			      <ul class="list-group">
-					  <li class="list-group-item" th:each="role : ${user.roleRespones}" th:text="${role.name}"></li>
-				  </ul>
-		      </td>
-		      <td>
-		      	<div class="d-grid mb-1">
-		        	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/users/{id}(id=${user.id})}" role="button">Редагувати</a>
-			    </div>
-		      	<form th:action="@{/admin/users/{id}(id=${user.id})}" th:method="delete">
-					<div class="d-grid">
-						<button type="submit" class="btn btn-outline-danger btn-sm">Видалити</button>
-					</div>
-				</form>
-		      </td>
-		    </tr>
-		  </tbody>
-		</table>
+		<div class="d-flex justify-content-end">
+		   <form class="d-flex" th:action="@{/admin/users}" method="get">
+	         <input class="form-control me-2" type="search" name="search" placeholder="Search" aria-label="Search">
+	         <button class="btn btn-outline-dark" type="submit">Search</button>
+	       </form>
+		</div>
+		
+		<div class="table-responsive" style="height: 500px;">
+			<table class="table table-sm caption-top border-top">
+			<caption>Користувачі</caption>
+			  <thead>
+			    <tr>
+			      <th scope="col">#</th>
+			      <th style="min-width: 150px;" scope="col">Логін</th>
+			      <th style="min-width: 150px;" scope="col">ПІБ</th>
+			      <th style="min-width: 150px;" scope="col">Телефон</th>
+			      <th style="min-width: 150px;" scope="col">Посада</th>
+			      <th class="text-center" style="min-width: 150px;" scope="col">Доступний</th>
+			      <th style="min-width: 150px;" scope="col">Дата створення</th>
+			      <th style="min-width: 150px;" scope="col">Дата оновлення</th>
+			      <th class="text-center" style="min-width: 150px;" scope="col">Ролі</th>
+			      <th class="text-center" style="min-width: 150px;" scope="col">Дія</th>
+			    </tr>
+			  </thead>
+			  <tbody>
+			    <tr th:each="user, iterStat : ${users}">
+			      <td th:text="${iterStat.count}"></td>
+			      <td th:text="${user.username}"></td>
+			      <td th:text="${user.fullName}"></td>
+			      <td th:text="${user.cell}"></td>
+			      <td th:text="${user.departmentUnitResponse.departmentResponse.name}"></td>
+			      <td class="text-center" th:text="${user.enabled} ? '🮱'"></td>
+			      <td th:text="${#temporals.format(user.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
+			      <td th:text="${#temporals.format(user.updatedAt, 'dd-MM-yyyy HH:mm')}"></td>
+			      <td class="text-center">
+				      <ul class="list-group">
+						  <li class="list-group-item" th:each="role : ${user.roleRespones}" th:text="${role.name}"></li>
+					  </ul>
+			      </td>
+			      <td class="text-center">
+			      	<div class="d-grid mb-1">
+			        	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/users/{id}(id=${user.id})}" role="button">Редагувати</a>
+				    </div>
+			      	<form th:action="@{/admin/users/{id}(id=${user.id})}" th:method="delete">
+						<div class="d-grid">
+							<button type="submit" class="btn btn-outline-danger btn-sm">Видалити</button>
+						</div>
+					</form>
+			      </td>
+			    </tr>
+			  </tbody>
+			</table>
+		</div>
     </div>
     
     <th:block layout:fragment="scripts">
@@ -107,8 +118,8 @@
 			    
 			    load: function(query, callback) {
 			        if (!query.length) return callback();
-			
-			        const url = '/api/v1/admin/department-units/search?q=' + encodeURIComponent(query);
+			        
+			        const url = '/api/v1/admin/users/enabled-department-units?q=' + encodeURIComponent(query);
 			
 			        fetch(url)
 			            .then(response => response.json())

@@ -17,6 +17,8 @@ public class MemoService {
 	public void addMemo(MemoRequest memoRequest) {
 		
 		
+		
+		
 		Memo memo = new Memo(null, null, null, null, null, 0, 0);
 		
 		
