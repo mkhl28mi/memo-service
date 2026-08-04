@@ -9,75 +9,83 @@
 <body>
 
     <div layout:fragment="content" class="mx-auto w-75 mt-3">
-    	<div class="d-flex justify-content-center">
-	    	<div class="card w-75 mb-5">
-	    		<div class="card-body">
-	    			<h5 class="card-title">Додати працівника</h5>
-					<form th:action="@{/admin/employees}" th:object="${employeeRequest}" method="post">
-						<div>
-						  <div class="mb-2">
-						    <label for="fullName" class="form-label">ПІБ*</label>
-						    <input type="text" class="form-control" th:field="*{fullName}" required>
-						  </div>
-						  <div class="mb-2">
-						    <label for="targetFullName" class="form-label">ПІБ*</label>
-						    <input type="text" class="form-control" th:field="*{targetFullName}" required>
-						  </div>
-						  <div class="mb-3 form-check">
-					      	<label class="form-check-label" for="enabled">Працівник доступний</label>
-						    <input type="checkbox" class="form-check-input" th:field="*{enabled}">
-						  </div>
-						  <div class="mb-3">
-							<select th:field="*{positionIds}" multiple placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;"></select>
-						  </div>
-						  <p>* - обов'язкові поля до заповнення</p>
-						  <button type="submit" class="btn btn-outline-dark">Додати</button>
-						</div>
-					</form>
-				</div>
+    	<div class="card w-100 mb-5">
+    		<div class="card-body">
+    			<h5 class="card-title">Додати працівника</h5>
+				<form th:action="@{/admin/employees}" th:object="${employeeRequest}" method="post">
+					<div>
+					  <div class="mb-2">
+					    <label for="fullName" class="form-label">ПІБ*</label>
+					    <input type="text" class="form-control" th:field="*{fullName}" required>
+					  </div>
+					  <div class="mb-2">
+					    <label for="targetFullName" class="form-label">ПІБ*</label>
+					    <input type="text" class="form-control" th:field="*{targetFullName}" required>
+					  </div>
+					  <div class="mb-3">
+					  	<label for="positionIds" class="form-label">Посада*</label>
+						<select th:field="*{positionIds}" multiple placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;" required></select>
+					  </div>
+					  <div class="mb-3 form-check">
+				      	<label class="form-check-label" for="enabled">Доступний</label>
+					    <input type="checkbox" class="form-check-input" th:field="*{enabled}">
+					  </div>
+					  <p>* - обов'язкові поля до заповнення</p>
+					  <button type="submit" class="btn btn-outline-dark">Додати</button>
+					</div>
+				</form>
 			</div>
 		</div>
 		
-		<table class="table border-top">
-		  <thead>
-		    <tr>
-		      <th scope="col">#</th>
-		      <th scope="col">ПІБ</th>
-		      <th scope="col">ПІБ</th>
-		      <th scope="col">Посади</th>
-		      <th scope="col">Доступний</th>
-		      <th scope="col">Дата створення</th>
-		      <th scope="col">Дата оновлення</th>
-		      <th scope="col">Дія</th>
-		    </tr>
-		  </thead>
-		  <tbody>
-		    <tr th:each="employee, iterStat : ${employees}">
-		      <td th:text="${iterStat.count}"></td>
-		      <td th:text="${employee.fullName}"></td>
-		      <td th:text="${employee.targetFullName}"></td>
-		      <td>
-			      <ul class="list-group">
-					  <li class="list-group-item" th:each="position : ${employee.positionResponses}" th:text="${position.name}"></li>
-				  </ul>
-		      </td>
-		      <td th:text="${employee.enabled} ? '🮱'"></td>
-		      <td th:text="${employee.createdAt}"></td>
-		      <td th:text="${employee.createdAt}"></td>
-		      <td th:text="${employee.updatedAt}"></td>
-		      <td>
-		      	<div class="d-grid mb-1">
-		        	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/employees/{id}(id=${employee.id})}" role="button">Редагувати</a>
-			    </div>
-		      	<form th:action="@{/admin/employees/{id}(id=${employee.id})}" th:method="delete">
-					<div class="d-grid">
-						<button type="submit" class="btn btn-outline-danger btn-sm">Видалити</button>
-					</div>
-				</form>
-		      </td>
-		    </tr>
-		  </tbody>
-		</table>
+		<div class="d-flex justify-content-end">
+		   <form class="d-flex" th:action="@{/admin/employees}" method="get">
+	         <input class="form-control me-2" type="search" name="search" placeholder="Search" aria-label="Search">
+	         <button class="btn btn-outline-dark" type="submit">Search</button>
+	       </form>
+		</div>
+		
+		<div class="table-responsive" style="height: 500px;">
+			<table class="table table-sm caption-top border-top">
+			<caption>Працівники</caption>
+			  <thead>
+			    <tr>
+			      <th scope="col">#</th>
+			      <th style="min-width: 250px;" scope="col">ПІБ</th>
+			      <th style="min-width: 250px;" scope="col">ПІБ</th>
+			      <th class="text-center" style="min-width: 400px;" scope="col">Посади</th>
+			      <th class="text-center" style="min-width: 150px;" scope="col">Доступний</th>
+			      <th class="text-center" style="min-width: 150px;" scope="col">Дата створення</th>
+			      <th class="text-center" style="min-width: 150px;" scope="col">Дата оновлення</th>
+			      <th class="text-center" style="min-width: 150px;" scope="col">Дія</th>
+			    </tr>
+			  </thead>
+			  <tbody>
+			    <tr th:each="employee, iterStat : ${employees}">
+			      <td th:text="${iterStat.count}"></td>
+			      <td th:text="${employee.fullName}"></td>
+			      <td th:text="${employee.targetFullName}"></td>
+			      <td class="text-center">
+				      <ul class="list-group">
+						  <li class="list-group-item" th:each="position : ${employee.positionResponses}" th:text="${position.name}"></li>
+					  </ul>
+			      </td>
+			      <td class="text-center" th:text="${employee.enabled} ? '🮱'"></td>
+			      <td class="text-center" th:text="${#temporals.format(employee.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
+			      <td class="text-center" th:text="${#temporals.format(employee.updatedAt, 'dd-MM-yyyy HH:mm')}"></td>
+			      <td class="text-center">
+			      	<div class="d-grid mb-1">
+			        	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/employees/{id}(id=${employee.id})}" role="button">Редагувати</a>
+				    </div>
+			      	<form th:action="@{/admin/employees/{id}(id=${employee.id})}" th:method="delete">
+						<div class="d-grid">
+							<button type="submit" class="btn btn-outline-danger btn-sm">Видалити</button>
+						</div>
+					</form>
+			      </td>
+			    </tr>
+			  </tbody>
+			</table>
+		</div>
     </div>
     
     <th:block layout:fragment="scripts">
