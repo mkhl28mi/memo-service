@@ -33,6 +33,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
@@ -54,7 +55,7 @@ public class Memo {
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
 	private UUID id;
 	
-	@NotNull(message = "Content cannot be null")
+	@NotEmpty(message = "Content cannot be empty")
 	@Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 	

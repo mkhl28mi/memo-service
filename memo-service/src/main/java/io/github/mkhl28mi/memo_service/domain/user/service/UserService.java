@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.github.mkhl28mi.memo_service.domain.department.entity.Department;
 import io.github.mkhl28mi.memo_service.domain.department_unit.entity.DepartmentUnit;
 import io.github.mkhl28mi.memo_service.domain.department_unit.service.DepartmentUnitService;
 import io.github.mkhl28mi.memo_service.domain.role.service.RoleService;
@@ -39,7 +40,7 @@ public class UserService {
     	if (search == null || search.trim().isEmpty()) {
     		return mapToUserResponse(userRepository.findAll()); 
     	} else {
-    		return mapToUserResponse(userRepository.searchUsers(search.trim()));
+    		return mapToUserResponse(userRepository.search(search.trim()));
     	}
 	}
 	
@@ -54,6 +55,11 @@ public class UserService {
 	public User getUserById(UUID id) throws ResourceNotFoundException {
 		return userRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+	}
+	
+	public User getEnabledUserByIdAndDepartment(UUID id, Department department) throws ResourceNotFoundException {
+		return userRepository.searchEnabled(id, department)
+				.orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id + " and department: " + department));
 	}
 	
 	public Optional<User> getUserByUsername(String username) throws IllegalArgumentException {

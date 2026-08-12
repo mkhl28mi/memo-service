@@ -2,7 +2,6 @@ package io.github.mkhl28mi.memo_service.domain.memo.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,15 +19,18 @@ import io.github.mkhl28mi.memo_service.domain.user.service.UserService;
 @RequestMapping("/api/v1/memos")
 public class MemoRestController {
 	
-	@Autowired
-	private UserService userService;
+	private final UserService userService;
 	
-	@Autowired
-	private EmployeeService employeeService;
+	private final EmployeeService employeeService;
 	
-	@Autowired
-	private MemoLabelService memoLabelService;
+	private final MemoLabelService memoLabelService;
 	
+	public MemoRestController(UserService userService, EmployeeService employeeService, MemoLabelService memoLabelService) {
+		this.userService = userService;
+		this.employeeService = employeeService;
+		this.memoLabelService = memoLabelService;
+	}
+ 	
 	@GetMapping("/enabled-assignees")
 	public List<UserResponse> getEnabledAssigneeOptions(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam("q") String query) {
 		return userService.getEnabledUsersByDepartment(userDetails.getUser(), query);
@@ -39,7 +41,7 @@ public class MemoRestController {
 		return employeeService.getEnabledEmployeeOptions(query);
 	}
 	
-	@GetMapping("/labels")
+	@GetMapping("/distinct-labels")
 	public List<String> getLabelsOptions(@RequestParam("q") String query) {
 		return memoLabelService.getDistinctLabelsAsString(query);
 	}

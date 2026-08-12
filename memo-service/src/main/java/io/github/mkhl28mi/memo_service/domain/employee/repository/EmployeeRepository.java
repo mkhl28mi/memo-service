@@ -1,6 +1,7 @@
 package io.github.mkhl28mi.memo_service.domain.employee.repository;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,20 +14,24 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
 	
 	@Query("SELECT e FROM Employee e WHERE LOWER(e.fullName) LIKE LOWER(CONCAT('%', :keyword, '%')) "
 			+ "OR LOWER(e.targetFullName) LIKE LOWER(CONCAT('%', :keyword, '%')) ")
-	List<Employee> searchByName(@Param("keyword") String keyword);
+	public List<Employee> searchByName(@Param("keyword") String keyword);
 	
 	@Query("SELECT DISTINCT e FROM Employee e JOIN FETCH e.positions")
-	List<Employee> searchAllWithPositions();
+	public List<Employee> searchAllWithPositions();
 	
 	@Query("SELECT DISTINCT e FROM Employee e JOIN FETCH e.positions WHERE LOWER(e.fullName) LIKE LOWER(CONCAT('%', :keyword, '%')) "
 			+ "OR LOWER(e.targetFullName) LIKE LOWER(CONCAT('%', :keyword, '%')) ")
-	List<Employee> searchByNameWithPositions(@Param("keyword") String keyword);
+	public List<Employee> searchByNameWithPositions(@Param("keyword") String keyword);
 	
 	@Query("SELECT DISTINCT e FROM Employee e JOIN FETCH e.positions p WHERE (LOWER(e.fullName) LIKE LOWER(CONCAT('%', :keyword, '%')) "
 			+ "OR LOWER(e.targetFullName) LIKE LOWER(CONCAT('%', :keyword, '%')) "
 			+ "OR LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) "
 			+ "OR LOWER(p.targetName) LIKE LOWER(CONCAT('%', :keyword, '%')))"
 			+ "AND e.enabled = true ")
-	List<Employee> searchEnabledByNameOrPosition(@Param("keyword") String keyword);
+	public List<Employee> searchEnabledByNameOrPosition(@Param("keyword") String keyword);
+	
+	@Query("SELECT DISTINCT e FROM Employee e JOIN FETCH e.positions p WHERE e.id IN :employeeIds "
+			+ "AND e.enabled = true")
+	List<Employee> searchEnabledByIds(@Param("employeeIds") Set<UUID> employeeIds);
 	
 }

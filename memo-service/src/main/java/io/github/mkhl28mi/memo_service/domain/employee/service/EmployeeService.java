@@ -3,9 +3,9 @@ package io.github.mkhl28mi.memo_service.domain.employee.service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,11 +23,14 @@ import io.github.mkhl28mi.memo_service.exception.ResourceNotFoundException;
 @Transactional(readOnly = true)
 public class EmployeeService {
 	
-	@Autowired
-	private EmployeeRepository employeeRepository;
+	private final EmployeeRepository employeeRepository;
 	
-	@Autowired
-	private PositionService positionService;
+	private final PositionService positionService;
+	
+	public EmployeeService(EmployeeRepository employeeRepository, PositionService positionService) {
+		this.employeeRepository = employeeRepository;
+		this.positionService = positionService;
+	}
 	
 	public List<EmployeeBasicResponse> getBasicEmployees(String search) {
     	if (search == null) {
@@ -67,6 +70,10 @@ public class EmployeeService {
 				.orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
 	}
 	
+	public List<Employee> getEnabledEmployeesByIds(Set<UUID> employeeIds) {
+		return employeeRepository.searchEnabledByIds(employeeIds);
+	}
+	
 	public EmployeeDetailedResponse getEmployeeDetailedResponseById(UUID id) {
 		Employee employee = employeeRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
@@ -76,7 +83,7 @@ public class EmployeeService {
 	@Transactional
 	public EmployeeDetailedResponse addEmployee(EmployeeRequest employeeRequest) {
 		Employee employee = new Employee(employeeRequest.fullName(), employeeRequest.targetFullName(), employeeRequest.enabled());
-		employeeRequest.positionIds().forEach(id -> employee.addPosition(positionService.getPositionById(id)));
+		employeeRequest.positionIds().forEach(id -> employee.addPosition(positionService.getPositionById(id))); // TODO Get Enabled
 		return new EmployeeDetailedResponse(employeeRepository.save(employee));
 	}
 	
@@ -89,7 +96,7 @@ public class EmployeeService {
 		employee.setEnabled(employeeRequest.enabled());
 		employee.initializePositions();
 		new HashSet<>(employee.getPositions()).forEach(employee::removePosition);
-		employeeRequest.positionIds().forEach(id -> employee.addPosition(positionService.getPositionById(id)));
+		employeeRequest.positionIds().forEach(id -> employee.addPosition(positionService.getPositionById(id))); // TODO Get Enabled
 		return new EmployeeDetailedResponse(employeeRepository.save(employee));
 	}
 	

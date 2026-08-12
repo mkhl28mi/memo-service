@@ -1,11 +1,17 @@
 package io.github.mkhl28mi.memo_service.domain.memo.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.UUID;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import io.github.mkhl28mi.memo_service.config.security.CustomUserDetails;
 import io.github.mkhl28mi.memo_service.domain.memo.dto.request.MemoRequest;
 import io.github.mkhl28mi.memo_service.domain.memo.service.MemoService;
 
@@ -13,8 +19,11 @@ import io.github.mkhl28mi.memo_service.domain.memo.service.MemoService;
 @RequestMapping("/memos")
 public class MemoController {
 	
-	@Autowired
-	private MemoService memoService;
+	private final MemoService memoService;
+	
+	public MemoController(MemoService memoService) {
+		this.memoService = memoService;
+	}
 	
 	@GetMapping("/create")
 	public String showCreateForm(Model model) {
@@ -22,5 +31,18 @@ public class MemoController {
 		model.addAttribute("memoRequest", new MemoRequest());
 		return "memos/create-form";
 	}
+	
+	@PostMapping
+	public String createMemo(@AuthenticationPrincipal CustomUserDetails userDetails, @ModelAttribute MemoRequest memoRequest) {
+		UUID memoId = memoService.createMemo(userDetails.getUser(), memoRequest);
+		return String.format("redirect:/memos/%s", memoId);
+	}
+	
+	@GetMapping("/{id}")
+	public String getMemoById(@PathVariable UUID id, Model model) {
+		model.addAttribute("activePage", "memos/create");
+		
+		return "";
+	}	
 	
 }

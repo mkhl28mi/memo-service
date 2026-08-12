@@ -4,13 +4,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public record MemoRequest(String content, 
-		List<String> recipientIds,
-		List<String> copyRecipientIds,
-		List<String> signerIds,
-		List<String> approverIds,
-		UUID assigneeId,
-		List<String> labels) {
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
+public record MemoRequest(@NotEmpty(message = "Content cannot be empty") String content,
+		@NotEmpty(message = "Recipients are required. At least 1") List<String> recipientIds,
+		@NotNull(message = "Copy recipients are required") List<String> copyRecipientIds,
+		@NotEmpty(message = "Signers are required. At least 1") List<String> signerIds,
+		@NotNull(message = "Approvers are required") List<String> approverIds,
+		@NotNull(message = "Assignee is required") UUID assigneeId,
+		@NotNull(message = "Labels are required") List<String> labels) {
 	
 	public MemoRequest() {
 		this("", 
