@@ -2,7 +2,6 @@ package io.github.mkhl28mi.memo_service.domain.memo_label.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,8 +12,11 @@ import io.github.mkhl28mi.memo_service.domain.memo_label.repository.MemoLabelRep
 @Transactional(readOnly = true)
 public class MemoLabelService {
 	
-	@Autowired
-	private MemoLabelRepository memoLabelRepository;
+	private final MemoLabelRepository memoLabelRepository;
+	
+	public MemoLabelService(MemoLabelRepository memoLabelRepository) {
+		this.memoLabelRepository = memoLabelRepository;
+	}
 	
 	public List<String> getDistinctLabelsAsString(String search) throws IllegalArgumentException {
 		if (search == null) { throw new IllegalArgumentException("search cannot be null."); }
@@ -22,7 +24,5 @@ public class MemoLabelService {
 				.map(MemoLabel::getName)
 				.toList();
 	}
-	
-	
 	
 }

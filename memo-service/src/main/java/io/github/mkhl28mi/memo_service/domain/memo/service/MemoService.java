@@ -2,6 +2,9 @@ package io.github.mkhl28mi.memo_service.domain.memo.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -14,18 +17,29 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import io.github.mkhl28mi.memo_service.domain.department.dto.response.DepartmentResponse;
+import io.github.mkhl28mi.memo_service.domain.department_unit.dto.response.DepartmentUnitResponse;
+import io.github.mkhl28mi.memo_service.domain.employee.dto.response.EmployeeBasicResponse;
 import io.github.mkhl28mi.memo_service.domain.employee.entity.Employee;
 import io.github.mkhl28mi.memo_service.domain.employee.service.EmployeeService;
 import io.github.mkhl28mi.memo_service.domain.memo.dto.EmployeePosDto;
 import io.github.mkhl28mi.memo_service.domain.memo.dto.request.MemoRequest;
+import io.github.mkhl28mi.memo_service.domain.memo.dto.response.MemoResponse;
 import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo;
 import io.github.mkhl28mi.memo_service.domain.memo.repository.MemoRepository;
+import io.github.mkhl28mi.memo_service.domain.memo_employee.dto.response.MemoEmployeeResponse;
 import io.github.mkhl28mi.memo_service.domain.memo_employee.entity.MemoEmployee;
+import io.github.mkhl28mi.memo_service.domain.memo_employee.entity.MemoEmployee.Role;
+import io.github.mkhl28mi.memo_service.domain.memo_label.dto.response.MemoLabelResponse;
 import io.github.mkhl28mi.memo_service.domain.memo_label.entity.MemoLabel;
 import io.github.mkhl28mi.memo_service.domain.memo_log.entity.MemoLog;
+import io.github.mkhl28mi.memo_service.domain.position.dto.response.PositionResponse;
 import io.github.mkhl28mi.memo_service.domain.position.entity.Position;
+import io.github.mkhl28mi.memo_service.domain.user.dto.response.UserResponse;
 import io.github.mkhl28mi.memo_service.domain.user.entity.User;
 import io.github.mkhl28mi.memo_service.domain.user.service.UserService;
+import io.github.mkhl28mi.memo_service.exception.ResourceNotFoundException;
+import jakarta.validation.constraints.NotNull;
 
 @Service
 @Transactional(readOnly = true)
@@ -41,6 +55,56 @@ public class MemoService {
 		this.memoRepository = memoRepository;
 		this.userService = userService;
 		this.employeeService = employeeService;
+	}
+	
+	public MemoResponse getMemoById(@NotNull UUID memoId) {
+		var memo = memoRepository.findById(memoId)
+				.orElseThrow(() -> new ResourceNotFoundException("Memo not found with id: " + memoId));
+		
+		memo.initializeMemoEmployees();
+		memo.initializeMemoLabels();
+		
+		var employees = memo.getMemoEmployees().stream()
+				.map(me -> new MemoEmployeeResponse(me.getId(), 
+						new EmployeeBasicResponse(me.getEmployee()), 
+						new PositionResponse(me.getPosition()), 
+						me.getRole(), 
+						me.getPlacementOrder(), 
+						me.getCreatedAt()))
+				.collect(Collectors.groupingBy(
+						MemoEmployeeResponse::role, 
+						() -> new EnumMap<>(Role.class),
+						Collectors.collectingAndThen(
+			                    Collectors.toList(),
+			                    list -> {
+			                        list.sort(Comparator.comparing(MemoEmployeeResponse::placementOrder));
+			                        return list;
+			                    }
+			               )));
+		
+		var labels = memo.getMemoLabels().stream()
+				.map(l -> new MemoLabelResponse(l.getId(),
+						new UserResponse(l.getCreatedBy()), 
+						new DepartmentUnitResponse(l.getDepartmentUnit()), 
+						l.getName(), 
+						l.getCreatedAt()))
+				.toList();
+		
+		return new MemoResponse(memo.getId(),
+				memo.getContent(), 
+				memo.getStatus(), 
+				new UserResponse(memo.getAssignee()), 
+				new DepartmentUnitResponse(memo.getDepartmentUnit()), 
+				new DepartmentResponse(memo.getDepartment()), 
+				memo.getSequenceNumber(), 
+				memo.getCreationYear(), 
+				memo.getCreatedAt(), 
+				memo.getUpdatedAt(), 
+				employees.getOrDefault(Role.RECIPIENT, Collections.emptyList()), 
+				employees.getOrDefault(Role.COPY_RECIPIENT, Collections.emptyList()), 
+				employees.getOrDefault(Role.SIGNER, Collections.emptyList()), 
+				employees.getOrDefault(Role.APPROVER, Collections.emptyList()), 
+				labels);
 	}
 	
 	@Retryable(includes = { DataIntegrityViolationException.class }, maxRetries = 5)

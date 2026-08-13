@@ -29,20 +29,30 @@ public class MemoController {
 	public String showCreateForm(Model model) {
 		model.addAttribute("activePage", "memos/create");
 		model.addAttribute("memoRequest", new MemoRequest());
+		
 		return "memos/create-form";
 	}
 	
 	@PostMapping
 	public String createMemo(@AuthenticationPrincipal CustomUserDetails userDetails, @ModelAttribute MemoRequest memoRequest) {
 		UUID memoId = memoService.createMemo(userDetails.getUser(), memoRequest);
+		
 		return String.format("redirect:/memos/%s", memoId);
 	}
 	
 	@GetMapping("/{id}")
 	public String getMemoById(@PathVariable UUID id, Model model) {
-		model.addAttribute("activePage", "memos/create");
+		var memoResponse = memoService.getMemoById(id);
 		
-		return "";
+		model.addAttribute("activePage", "memos/create");
+		model.addAttribute("memoRequest", new MemoRequest(memoResponse));
+		model.addAttribute("recipients", memoResponse.recipients());
+		model.addAttribute("copyRecipients", memoResponse.copyRecipients());
+		model.addAttribute("signers", memoResponse.signers());
+		model.addAttribute("approvers", memoResponse.approvers());
+		model.addAttribute("labels", memoResponse.labels());
+		
+		return "memos/update-form";
 	}	
 	
 }

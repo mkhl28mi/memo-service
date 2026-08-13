@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -228,15 +229,27 @@ public class Memo {
 	}
 	
 	public List<MemoEmployee> getMemoEmployees() {
-		return Collections.unmodifiableList(memoEmployees);
+		return Collections.unmodifiableList(this.memoEmployees);
 	}
 	
 	public List<MemoLabel> getMemoLabels() {
-		return Collections.unmodifiableList(memoLabels);
+		return Collections.unmodifiableList(this.memoLabels);
 	}
 	
 	public List<MemoLog> getMemoLogs() {
-		return Collections.unmodifiableList(memoLogs);
+		return Collections.unmodifiableList(this.memoLogs);
+	}
+	
+	public void initializeMemoEmployees() {
+		Hibernate.initialize(this.memoEmployees);
+	}
+	
+	public void initializeMemoLabels() {
+		Hibernate.initialize(this.memoLabels);
+	}
+	
+	public void initializeMemoLogs() {
+		Hibernate.initialize(this.memoLogs);
 	}
 	
 	@Override
