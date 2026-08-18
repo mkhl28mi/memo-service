@@ -10,7 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.github.mkhl28mi.memo_service.domain.department.entity.Department;
 import io.github.mkhl28mi.memo_service.domain.department_unit.entity.DepartmentUnit;
 import io.github.mkhl28mi.memo_service.domain.department_unit.service.DepartmentUnitService;
 import io.github.mkhl28mi.memo_service.domain.role.service.RoleService;
@@ -40,7 +39,7 @@ public class UserService {
     	if (search == null || search.trim().isEmpty()) {
     		return mapToUserResponse(userRepository.findAll()); 
     	} else {
-    		return mapToUserResponse(userRepository.search(search.trim()));
+    		return mapToUserResponse(userRepository.searchByFullnameOrUsername(search.trim()));
     	}
 	}
 	
@@ -49,7 +48,7 @@ public class UserService {
 		
 		if (search == null) { throw new IllegalArgumentException("Search cannot be null."); }
 		
-		return mapToUserResponse(userRepository.searchEnabledUsers(search, user.getDepartmentUnit().getDepartment()));		
+		return mapToUserResponse(userRepository.searchEnabledByFullnameAndDepartment(search, user.getDepartmentUnit().getDepartment()));		
  	}
 	
 	public User getUserById(UUID id) throws ResourceNotFoundException {
@@ -57,9 +56,9 @@ public class UserService {
 				.orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 	}
 	
-	public User getEnabledUserByIdAndDepartment(UUID id, Department department) throws ResourceNotFoundException {
-		return userRepository.searchEnabled(id, department)
-				.orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id + " and department: " + department));
+	public User getEnabledUserById(UUID id) throws ResourceNotFoundException {
+		return userRepository.findEnabledById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 	}
 	
 	public Optional<User> getUserByUsername(String username) throws IllegalArgumentException {

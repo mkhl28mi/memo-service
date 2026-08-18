@@ -232,7 +232,7 @@ public class User {
 	public Set<Role> getRoles() {
 		return Collections.unmodifiableSet(roles);
 	}
-
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);

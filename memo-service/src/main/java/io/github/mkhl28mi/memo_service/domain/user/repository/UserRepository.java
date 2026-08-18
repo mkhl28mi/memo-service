@@ -18,19 +18,18 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 	@Query("SELECT u FROM User u WHERE u.id = :id "
 			+ "AND u.enabled = true"
 			+ "AND u.departmentUnit.enabled = true "
-			+ "AND u.departmentUnit.department = :department "
 			+ "AND u.departmentUnit.department.enabled = true ")
-	public Optional<User> searchEnabled(@Param("id") UUID id, @Param("department") Department department);
+	public Optional<User> findEnabledById(@Param("id") UUID id);
 	
 	@Query("SELECT u FROM User u WHERE LOWER(u.fullName) LIKE LOWER(CONCAT('%', :keyword, '%')) "
 			+ "OR LOWER(u.username) LIKE LOWER(CONCAT('%', :keyword, '%')) ")
-	public List<User> search(@Param("keyword") String keyword);
+	public List<User> searchByFullnameOrUsername(@Param("keyword") String keyword);
 	
 	@Query("SELECT u FROM User u WHERE LOWER(u.fullName) LIKE LOWER(CONCAT('%', :keyword, '%')) "
 			+ "AND u.enabled = true"
 			+ "AND u.departmentUnit.enabled = true "
-			+ "AND u.departmentUnit.department = :department "
-			+ "AND u.departmentUnit.department.enabled = true ")
-	public List<User> searchEnabledUsers(@Param("keyword") String keyword, @Param("department") Department department);
+			+ "AND u.departmentUnit.department.enabled = true "
+			+ "AND u.departmentUnit.department = :department")
+	public List<User> searchEnabledByFullnameAndDepartment(@Param("keyword") String keyword, @Param("department") Department department);
 	
 }

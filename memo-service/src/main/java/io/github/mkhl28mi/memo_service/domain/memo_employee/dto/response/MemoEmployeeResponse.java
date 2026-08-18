@@ -13,4 +13,17 @@ public record MemoEmployeeResponse(UUID id,
 		Role role,
 		int placementOrder,
 		LocalDateTime createdAt) {
+	
+	public String getOptionId() {
+		return employeeBasicResponse.id() + ":" + positionResponse.id();
+	}
+	
+	public String getOptionNameLabel() {
+		return employeeBasicResponse.fullName() + " - " + positionResponse.name();
+	}
+	
+	public String getOptionTargetNameLabel() {
+		return employeeBasicResponse.targetFullName() + " - " + positionResponse.targetName();
+	}
+	
 }

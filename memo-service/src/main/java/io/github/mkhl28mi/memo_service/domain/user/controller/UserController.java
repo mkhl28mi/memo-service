@@ -3,7 +3,6 @@ package io.github.mkhl28mi.memo_service.domain.user.controller;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,14 +22,17 @@ import io.github.mkhl28mi.memo_service.domain.user.service.UserService;
 @RequestMapping("/admin/users")
 public class UserController {
 	
-	@Autowired
-	private UserService userService;
+	private final UserService userService;
 	
-	@Autowired
-	private RoleService roleService;
+	private final RoleService roleService;
+	
+	public UserController(UserService userService, RoleService roleService) {
+		this.userService = userService;
+		this.roleService = roleService;
+	}
 	
 	@GetMapping
-	public String getEmployees(@RequestParam(required = false) String search, Model model) {
+	public String getUsers(@RequestParam(required = false) String search, Model model) {
 		model.addAttribute("users", userService.getUsers(search));
 		model.addAttribute("userRequest", new UserRequest());
 		model.addAttribute("roles", roleService.getRoles());
@@ -39,7 +41,7 @@ public class UserController {
 	}
 	
 	@PostMapping
-	public String addUser(@ModelAttribute("userRequest") UserRequest userRequest) {
+	public String addUser(@ModelAttribute UserRequest userRequest) {
 		userService.addUser(userRequest);
 		return "redirect:/admin/users";
 	}
@@ -56,13 +58,13 @@ public class UserController {
 	}
 	
 	@PutMapping("/{id}")
-	public String updateUser(@PathVariable UUID id, @ModelAttribute("userRequest") UserRequest userRequest) {
+	public String updateUser(@PathVariable UUID id, @ModelAttribute UserRequest userRequest) {
 		userService.updateUser(id, userRequest);
 		return "redirect:/admin/users";
 	}
 	
 	@DeleteMapping("/{id}")
-	public String deleteEmployee(@PathVariable UUID id) {
+	public String deleteUser(@PathVariable UUID id) {
 		userService.deleteUser(id);
 		return "redirect:/admin/users";
 	}
