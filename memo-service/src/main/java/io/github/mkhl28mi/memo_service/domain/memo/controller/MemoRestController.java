@@ -33,7 +33,8 @@ public class MemoRestController {
  	
 	@GetMapping("/enabled-assignees")
 	public List<UserResponse> getEnabledAssigneeOptions(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam("q") String query) {
-		return userService.getEnabledUsersByDepartment(userDetails.getUser(), query);
+//		return userService.getEnabledUsersByDepartment(userDetails.getUser(), query);
+		return null;
 	}
 	
 	@GetMapping("/enabled-employees")

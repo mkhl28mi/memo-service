@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import io.github.mkhl28mi.memo_service.domain.department_unit.dto.response.DepartmentUnitResponse;
 import io.github.mkhl28mi.memo_service.domain.role.dto.response.RoleResponse;
 import io.github.mkhl28mi.memo_service.domain.user.entity.User;
 
@@ -12,7 +11,6 @@ public record UserResponse(UUID id,
 		String username,
 		String fullName,
 		String cell,
-		DepartmentUnitResponse departmentUnitResponse,
 		boolean enabled,
 		LocalDateTime createdAt,
 		LocalDateTime updatedAt,
@@ -23,7 +21,6 @@ public record UserResponse(UUID id,
 				user.getUsername(),
 				user.getFullName(),
 				user.getCell(),
-				new DepartmentUnitResponse(user.getDepartmentUnit()),
 				user.isEnabled(),
 				user.getCreatedAt(),
 				user.getUpdatedAt(),

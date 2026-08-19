@@ -35,7 +35,7 @@ public class DepartmentUnitService {
 	
     public DepartmentUnit getDepartmentUnitById(UUID id) {
     	return departmentUnitRepository.findById(id)
-    			.orElseThrow(() -> new ResourceNotFoundException("Department unit not found with id: " + id));
+    			.orElseThrow(() -> new ResourceNotFoundException("DepartmentUnit not found with ID: " + id));
     }
     
     public Optional<DepartmentUnit> getDepartmentUnitByCode(String code) {

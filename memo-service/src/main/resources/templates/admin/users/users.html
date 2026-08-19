@@ -32,17 +32,13 @@
 						    <input type="text" class="form-control" th:field="*{cell}" required>
 						  </div>
 						  <div class="mb-3">
-						  	<label for="departmentUnitId" class="form-label">Відділ та сектор:*</label>
-							<select th:field="*{departmentUnitId}" placeholder="Почніть вводити назву або номер..." autocomplete="off" style="width: 100%;" required></select>
-						  </div>
-						  <div class="mb-3">
 						  	<label for="roleIds" class="form-label">Ролі:*</label>
 				            <select th:field="*{roleIds}" multiple placeholder="Оберіть ролі..." autocomplete="off" required>
 				                <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}"></option>
 				            </select>
 						  </div>
 						  <div class="mb-3 form-check">
-					      	<label class="form-check-label" for="enabled">Доступний</label>
+					      	<label class="form-check-label" for="enabled">Активний</label>
 						    <input type="checkbox" class="form-check-input" th:field="*{enabled}">
 						  </div>
 						  <p>* - обов'язкові поля до заповнення</p>
@@ -69,11 +65,11 @@
 			      <th style="min-width: 150px;" scope="col">Логін</th>
 			      <th style="min-width: 150px;" scope="col">ПІБ</th>
 			      <th style="min-width: 150px;" scope="col">Телефон</th>
-			      <th style="min-width: 150px;" scope="col">Посада</th>
-			      <th class="text-center" style="min-width: 150px;" scope="col">Доступний</th>
+			      <th class="text-center" style="min-width: 150px;" scope="col">Активний</th>
 			      <th style="min-width: 150px;" scope="col">Дата створення</th>
 			      <th style="min-width: 150px;" scope="col">Дата оновлення</th>
 			      <th class="text-center" style="min-width: 150px;" scope="col">Ролі</th>
+			      <th class="text-center" style="min-width: 150px;" scope="col">Призначення</th>
 			      <th class="text-center" style="min-width: 150px;" scope="col">Дія</th>
 			    </tr>
 			  </thead>
@@ -83,7 +79,6 @@
 			      <td th:text="${user.username}"></td>
 			      <td th:text="${user.fullName}"></td>
 			      <td th:text="${user.cell}"></td>
-			      <td th:text="${user.departmentUnitResponse.departmentResponse.name}"></td>
 			      <td class="text-center" th:text="${user.enabled} ? '🮱'"></td>
 			      <td th:text="${#temporals.format(user.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
 			      <td th:text="${#temporals.format(user.updatedAt, 'dd-MM-yyyy HH:mm')}"></td>
@@ -93,8 +88,11 @@
 					  </ul>
 			      </td>
 			      <td class="text-center">
-			      	<div class="d-grid mb-1">
-			        	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/users/{id}(id=${user.id})}" role="button">Редагувати</a>
+			      	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/users/{id}/assignments (id=${user.id})}" role="button">Переглянути</a>
+			      </td>
+			      <td class="text-center">
+				    <div class="d-grid mb-1">
+				    	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/users/{id}(id=${user.id})}" role="button">Редагувати</a>
 				    </div>
 			      	<form th:action="@{/admin/users/{id}(id=${user.id})}" th:method="delete">
 						<div class="d-grid">
@@ -110,32 +108,6 @@
     
     <th:block layout:fragment="scripts">
    		<script>
-			new TomSelect("#departmentUnitId", {
-				plugins: ['remove_button'],
-			    valueField: 'id',
-			    labelField: 'departmentUnitLabel',
-			    searchField: [],
-			    
-			    load: function(query, callback) {
-			        if (!query.length) return callback();
-			        
-			        const url = '/api/v1/admin/users/enabled-department-units?q=' + encodeURIComponent(query);
-			
-			        fetch(url)
-			            .then(response => response.json())
-			            .then(json => {
-			                callback(json);
-			            })
-			            .catch(() => {
-			                callback();
-			            });
-			    },
-			    
-			    shouldLoad: function(query) {
-			        return query.length >= 2;
-			    }
-			});
-			
 			new TomSelect("#roleIds", {
 		        plugins: ['remove_button'],
 		        maxItems: null,            

@@ -16,11 +16,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.github.mkhl28mi.memo_service.domain.department_unit.entity.DepartmentUnit;
 import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo;
 import io.github.mkhl28mi.memo_service.domain.memo_label.entity.MemoLabel;
 import io.github.mkhl28mi.memo_service.domain.memo_log.entity.MemoLog;
 import io.github.mkhl28mi.memo_service.domain.role.entity.Role;
+import io.github.mkhl28mi.memo_service.domain.user.assignment.entity.UserAssignment;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,7 +30,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -66,11 +65,6 @@ public class User {
 	@Column(name = "cell", nullable = false, length = 20)
 	private String cell;
 	
-	@NotNull(message = "Department unit cannot be null")
-    @ManyToOne
-    @JoinColumn(name = "department_unit_id", nullable = false)
-	private DepartmentUnit departmentUnit;
-	
 	@Column(name = "is_enabled", nullable = false)
 	private boolean enabled;
 	
@@ -95,6 +89,9 @@ public class User {
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List <MemoLabel> memoLabels = new ArrayList<>();
     
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List <UserAssignment> departmentUnitUsers = new ArrayList<>();
+    
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "user_roles",
@@ -107,13 +104,12 @@ public class User {
 		super();
 	}
 	
-	public User(String username, String password, String fullName, String cell, DepartmentUnit departmentUnit, boolean isEnabled) {
+	public User(String username, String password, String fullName, String cell, boolean isEnabled) {
 		super();
 		this.username = username;
 		this.password = password;
 		this.fullName = fullName;
 		this.cell = cell;
-		this.departmentUnit = departmentUnit;
 		this.enabled = isEnabled;
 	}
 
@@ -149,14 +145,6 @@ public class User {
 		this.cell = cell;
 	}
 	
-	public DepartmentUnit getDepartmentUnit() {
-		return departmentUnit;
-	}
-
-	public void setDepartmentUnit(DepartmentUnit departmentUnit) {
-		this.departmentUnit = departmentUnit;
-	}
-
 	public boolean isEnabled() {
 		return enabled;
 	}
@@ -217,6 +205,16 @@ public class User {
 	    memoLable.setCreatedBy(null);
 	}
 	
+	public void addDepartmentUnitUser(UserAssignment departmentUnitUser) {
+	    this.departmentUnitUsers.add(departmentUnitUser);
+	    departmentUnitUser.setUser(this);
+	}
+	
+	public void removeDepartmentUnitUser(UserAssignment departmentUnitUser) {
+	    this.departmentUnitUsers.remove(departmentUnitUser);
+	    departmentUnitUser.setUser(null);
+	}
+	
 	public List<Memo> getMemos() {
 		return Collections.unmodifiableList(memos);
 	}
@@ -227,6 +225,10 @@ public class User {
 	
 	public List<MemoLog> getMemoLogs() {
 		return Collections.unmodifiableList(memoLogs);
+	}
+	
+	public List<UserAssignment> getDepartmentUnitUsers() {
+		return Collections.unmodifiableList(departmentUnitUsers);
 	}
 	
 	public Set<Role> getRoles() {
@@ -249,12 +251,11 @@ public class User {
 		User other = (User) obj;
 		return Objects.equals(id, other.id);
 	}
-	
+
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", username=" + username + ", password=" + password + ", fullName=" + fullName
-				+ ", cell=" + cell + ", departmentUnit=" + departmentUnit + ", enabled=" + enabled + ", createdAt="
-				+ createdAt + ", updatedAt=" + updatedAt + "]";
+		return "User [id=" + id + ", username=" + username + ", fullName=" + fullName + ", cell=" + cell + ", enabled="
+				+ enabled + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
-
+	
 }

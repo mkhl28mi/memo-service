@@ -1,8 +1,7 @@
-package io.github.mkhl28mi.memo_service.domain.user.controller;
+package io.github.mkhl28mi.memo_service.domain.user.assignment.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,11 +11,14 @@ import io.github.mkhl28mi.memo_service.domain.department_unit.dto.response.Depar
 import io.github.mkhl28mi.memo_service.domain.department_unit.service.DepartmentUnitService;
 
 @RestController
-@RequestMapping("/api/v1/admin/users")
-public class UserRestController {
+@RequestMapping("/api/v1/admin/users/assignments")
+public class UserAssignmentRestController {
 	
-	@Autowired
-	private DepartmentUnitService departmentUnitService;
+	private final DepartmentUnitService departmentUnitService;
+	
+	public UserAssignmentRestController(DepartmentUnitService departmentUnitService) {
+		this.departmentUnitService = departmentUnitService;
+	}
 	
 	@GetMapping("/enabled-department-units")
 	public List<DepartmentUnitResponse> getEnabledDepartmentUnitsOptions(@RequestParam("q") String query) {

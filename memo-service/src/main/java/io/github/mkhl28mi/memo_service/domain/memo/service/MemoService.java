@@ -113,38 +113,39 @@ public class MemoService {
 	@Retryable(includes = { DataIntegrityViolationException.class }, maxRetries = 5)
 	@Transactional
 	public UUID createMemo(User user, MemoRequest memoRequest) throws BusinessException {
-        User assignee = userService.getEnabledUserById(memoRequest.assigneeId());
-        
-        if (!Objects.equals(assignee.getDepartmentUnit().getDepartment(), user.getDepartmentUnit().getDepartment())) {
-        	throw new BusinessException("Assignee`s departmnet must be the same as user`s departmant");
-        }
-        
-		int currentYear = LocalDate.now().getYear();
-		
-        int maxNumber = memoRepository.searchMaxSequenceNumber(currentYear, assignee.getDepartmentUnit().getDepartment()).orElse(0);
-        int nextNumber = maxNumber + 1;
-        
-		Memo memo = new Memo(memoRequest.content(), 
-				Memo.Status.IN_PROGRESS, 
-				assignee, 
-				assignee.getDepartmentUnit(), 
-				assignee.getDepartmentUnit().getDepartment(), 
-				nextNumber, 
-				currentYear);
-		
-		addMemoEmployees(user, memo, memoRequest.copyRecipientIds(), MemoEmployee.Role.COPY_RECIPIENT);
-		
-		addMemoEmployees(user, memo, memoRequest.recipientIds(), MemoEmployee.Role.RECIPIENT);
-		
-		addMemoEmployees(user, memo, memoRequest.approverIds(), MemoEmployee.Role.APPROVER);
-		
-		addMemoEmployees(user, memo, memoRequest.signerIds(), MemoEmployee.Role.SIGNER);
-		
-		addMemoLabels(user, memoRequest, memo);
-		
-		memo.addMemoLog(new MemoLog(memo, user, user.getDepartmentUnit(), MemoLog.Status.CREATED));
-		
-		return memoRepository.save(memo).getId();
+//        User assignee = userService.getEnabledUserById(memoRequest.assigneeId());
+//        
+//        if (!Objects.equals(assignee.getDepartmentUnit().getDepartment(), user.getDepartmentUnit().getDepartment())) {
+//        	throw new BusinessException("Assignee`s departmnet must be the same as user`s departmant");
+//        }
+//        
+//		int currentYear = LocalDate.now().getYear();
+//		
+//        int maxNumber = memoRepository.searchMaxSequenceNumber(currentYear, assignee.getDepartmentUnit().getDepartment()).orElse(0);
+//        int nextNumber = maxNumber + 1;
+//        
+//		Memo memo = new Memo(memoRequest.content(), 
+//				Memo.Status.IN_PROGRESS, 
+//				assignee, 
+//				assignee.getDepartmentUnit(), 
+//				assignee.getDepartmentUnit().getDepartment(), 
+//				nextNumber, 
+//				currentYear);
+//		
+//		addMemoEmployees(user, memo, memoRequest.copyRecipientIds(), MemoEmployee.Role.COPY_RECIPIENT);
+//		
+//		addMemoEmployees(user, memo, memoRequest.recipientIds(), MemoEmployee.Role.RECIPIENT);
+//		
+//		addMemoEmployees(user, memo, memoRequest.approverIds(), MemoEmployee.Role.APPROVER);
+//		
+//		addMemoEmployees(user, memo, memoRequest.signerIds(), MemoEmployee.Role.SIGNER);
+//		
+//		addMemoLabels(user, memoRequest, memo);
+//		
+//		memo.addMemoLog(new MemoLog(memo, user, user.getDepartmentUnit(), MemoLog.Status.CREATED));
+//		
+//		return memoRepository.save(memo).getId();
+		return null;
 	}
 	
 	private void addMemoEmployees(User user, Memo memo, List<String> ids, MemoEmployee.Role role) throws ResourceNotFoundException {
@@ -196,52 +197,52 @@ public class MemoService {
 	}
 	
 	private void addMemoLabels(User user, MemoRequest memoRequest, Memo memo) {
-		for (String label : memoRequest.labels()) {
-			Assert.hasText(label, () -> "Label for user '" + user.getId() + "' must not be empty");
-			memo.addMemoLabel(new MemoLabel(memo, user, user.getDepartmentUnit(), label));
-		}
+//		for (String label : memoRequest.labels()) {
+//			Assert.hasText(label, () -> "Label for user '" + user.getId() + "' must not be empty");
+//			memo.addMemoLabel(new MemoLabel(memo, user, user.getDepartmentUnit(), label));
+//		}
 	}
 	
 	@Transactional
 	public void updateMemo(User user, UUID memoId, MemoRequest memoRequest) throws BusinessException {
-		Memo memo = memoRepository.findById(memoId)
-				.orElseThrow(() -> new ResourceNotFoundException("Memo not found with ID: " + memoId));
-		
-		Assert.state(memo.getStatus() == Status.IN_PROGRESS, () -> "To update memo it must be with Status: " + Status.IN_PROGRESS);
-		
-		memo.setContent(memoRequest.content());
-		
-		if (!Objects.equals(memo.getAssignee().getId(), memoRequest.assigneeId())) {
-	        User assignee = userService.getEnabledUserById(memoRequest.assigneeId());
-	        
-	        if (!Objects.equals(assignee.getDepartmentUnit().getDepartment(), user.getDepartmentUnit().getDepartment())) {
-	        	throw new BusinessException("Assignee`s departmnet must be the same as user`s departmant");
-	        }
-	        
-			memo.setAssignee(assignee);
-			memo.setDepartmentUnit(assignee.getDepartmentUnit());
-			memo.setDepartment(assignee.getDepartmentUnit().getDepartment());
-		}
-		
-		memo.initializeMemoEmployees();
-		memo.initializeMemoLabels();
-		memo.initializeMemoLogs();
-		
-		updateMemoEmployees(user, memo, memoRequest.copyRecipientIds(), Role.COPY_RECIPIENT);
-		
-		updateMemoEmployees(user, memo, memoRequest.recipientIds(), Role.RECIPIENT);
-		
-		updateMemoEmployees(user, memo, memoRequest.approverIds(), Role.APPROVER);
-		
-		updateMemoEmployees(user, memo, memoRequest.signerIds(), Role.SIGNER);
-		
-		new HashSet<>(memo.getMemoLabels()).forEach(memo::removeMemoLabel);
-		
-		addMemoLabels(user, memoRequest, memo);
-
-		memo.addMemoLog(new MemoLog(memo, user, user.getDepartmentUnit(), MemoLog.Status.EDITED));
-		
-		memoRepository.save(memo);
+//		Memo memo = memoRepository.findById(memoId)
+//				.orElseThrow(() -> new ResourceNotFoundException("Memo not found with ID: " + memoId));
+//		
+//		Assert.state(memo.getStatus() == Status.IN_PROGRESS, () -> "To update memo it must be with Status: " + Status.IN_PROGRESS);
+//		
+//		memo.setContent(memoRequest.content());
+//		
+//		if (!Objects.equals(memo.getAssignee().getId(), memoRequest.assigneeId())) {
+//	        User assignee = userService.getEnabledUserById(memoRequest.assigneeId());
+//	        
+//	        if (!Objects.equals(assignee.getDepartmentUnit().getDepartment(), user.getDepartmentUnit().getDepartment())) {
+//	        	throw new BusinessException("Assignee`s departmnet must be the same as user`s departmant");
+//	        }
+//	        
+//			memo.setAssignee(assignee);
+//			memo.setDepartmentUnit(assignee.getDepartmentUnit());
+//			memo.setDepartment(assignee.getDepartmentUnit().getDepartment());
+//		}
+//		
+//		memo.initializeMemoEmployees();
+//		memo.initializeMemoLabels();
+//		memo.initializeMemoLogs();
+//		
+//		updateMemoEmployees(user, memo, memoRequest.copyRecipientIds(), Role.COPY_RECIPIENT);
+//		
+//		updateMemoEmployees(user, memo, memoRequest.recipientIds(), Role.RECIPIENT);
+//		
+//		updateMemoEmployees(user, memo, memoRequest.approverIds(), Role.APPROVER);
+//		
+//		updateMemoEmployees(user, memo, memoRequest.signerIds(), Role.SIGNER);
+//		
+//		new HashSet<>(memo.getMemoLabels()).forEach(memo::removeMemoLabel);
+//		
+//		addMemoLabels(user, memoRequest, memo);
+//
+//		memo.addMemoLog(new MemoLog(memo, user, user.getDepartmentUnit(), MemoLog.Status.EDITED));
+//		
+//		memoRepository.save(memo);
 	}
 	
 	private void updateMemoEmployees(User user, Memo memo, List<String> newIds, Role role) throws ResourceNotFoundException {

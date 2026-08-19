@@ -32,12 +32,6 @@
 					    <input type="text" class="form-control" th:field="*{cell}" required>
 					  </div>
 					  <div class="mb-3">
-					  	<label for="departmentUnitId" class="form-label">Відділ та сектор:*</label>
-						<select th:field="*{departmentUnitId}" placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;" required>
-							<option th:each="departmentUnit : ${departmentUnits}" th:value="${departmentUnit.id}" th:text="${departmentUnit.departmentUnitLabel}"></option>
-						</select>
-					  </div>
-					  <div class="mb-3">
 					  	<label for="roleIds" class="form-label">Ролі:</label>
 			            <select th:field="*{roleIds}" multiple placeholder="Оберіть ролі..." autocomplete="off" required>
 			                <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}"></option>
@@ -55,34 +49,8 @@
 		</div>
 	</div>
 	
-    <th:block layout:fragment="scripts">
+	<th:block layout:fragment="scripts">
    		<script>
-			new TomSelect("#departmentUnitId", {
-				plugins: ['remove_button'],
-			    valueField: 'id',
-			    labelField: 'departmentUnitLabel',
-			    searchField: [],
-			    
-			    load: function(query, callback) {
-			        if (!query.length) return callback();
-			        
-			        const url = '/api/v1/admin/users/enabled-department-units?q=' + encodeURIComponent(query);
-			
-			        fetch(url)
-			            .then(response => response.json())
-			            .then(json => {
-			                callback(json);
-			            })
-			            .catch(() => {
-			                callback();
-			            });
-			    },
-			    
-			    shouldLoad: function(query) {
-			        return query.length >= 2;
-			    }
-			});
-			
 			new TomSelect("#roleIds", {
 		        plugins: ['remove_button'],
 		        maxItems: null,            
@@ -91,6 +59,6 @@
 		    });
    		</script>
 	</th:block>
-    
+	
 </body>
 </html>

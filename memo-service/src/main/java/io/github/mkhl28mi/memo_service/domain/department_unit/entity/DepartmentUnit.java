@@ -18,7 +18,7 @@ import io.github.mkhl28mi.memo_service.domain.department.entity.Department;
 import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo;
 import io.github.mkhl28mi.memo_service.domain.memo_label.entity.MemoLabel;
 import io.github.mkhl28mi.memo_service.domain.memo_log.entity.MemoLog;
-import io.github.mkhl28mi.memo_service.domain.user.entity.User;
+import io.github.mkhl28mi.memo_service.domain.user.assignment.entity.UserAssignment;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -77,7 +77,7 @@ public class DepartmentUnit {
     private List <MemoLabel> memoLabels = new ArrayList<>();
     
     @OneToMany(mappedBy = "departmentUnit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List <User> users = new ArrayList<>();
+    private List <UserAssignment> departmentUnitUsers = new ArrayList<>();
     
 	protected DepartmentUnit() {
 		super();
@@ -156,14 +156,14 @@ public class DepartmentUnit {
 	    memoLable.setDepartmentUnit(null);
 	}
 	
-	public void addUser(User user) {
-	    this.users.add(user);
-	    user.setDepartmentUnit(this);
+	public void addDepartmentUnitUser(UserAssignment departmentUnitUser) {
+	    this.departmentUnitUsers.add(departmentUnitUser);
+	    departmentUnitUser.setDepartmentUnit(this);
 	}
 	
-	public void removeUser(User user) {
-	    this.users.remove(user);
-	    user.setDepartmentUnit(null);
+	public void removeDepartmentUnitUser(UserAssignment departmentUnitUser) {
+	    this.departmentUnitUsers.remove(departmentUnitUser);
+	    departmentUnitUser.setDepartmentUnit(null);
 	}
 	
 	public List<Memo> getMemos() {
@@ -178,8 +178,8 @@ public class DepartmentUnit {
 		return Collections.unmodifiableList(memoLabels);
 	}
 	
-	public List<User> getUsers() {
-		return Collections.unmodifiableList(users);
+	public List<UserAssignment> getDepartmentUnitUsers() {
+		return Collections.unmodifiableList(departmentUnitUsers);
 	}
 	
 	@Override

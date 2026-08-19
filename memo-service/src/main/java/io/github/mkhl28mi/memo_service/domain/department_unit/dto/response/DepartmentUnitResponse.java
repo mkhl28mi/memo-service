@@ -19,8 +19,7 @@ public record DepartmentUnitResponse(UUID id, String code, DepartmentResponse de
 	}
 	
 	public String getDepartmentUnitLabel() {
-		if (departmentResponse == null) { return  "(" + code + ")"; }
-		return departmentResponse.name() + " (" + code + ")";
+		return departmentResponse == null ? "(" + code + ")" : departmentResponse.name() + " (" + code + ")";
     }
 		
 	@Override

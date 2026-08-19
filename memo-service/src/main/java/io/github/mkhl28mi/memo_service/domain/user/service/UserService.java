@@ -10,8 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.github.mkhl28mi.memo_service.domain.department_unit.entity.DepartmentUnit;
-import io.github.mkhl28mi.memo_service.domain.department_unit.service.DepartmentUnitService;
+import io.github.mkhl28mi.memo_service.domain.department.entity.Department;
 import io.github.mkhl28mi.memo_service.domain.role.service.RoleService;
 import io.github.mkhl28mi.memo_service.domain.user.dto.request.UserRequest;
 import io.github.mkhl28mi.memo_service.domain.user.dto.response.UserResponse;
@@ -30,9 +29,6 @@ public class UserService {
 	private RoleService roleService;
 	
 	@Autowired
-	private DepartmentUnitService departmentUnitService;
-	
-	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
 	public List<UserResponse> getUsers(String search) {
@@ -43,24 +39,17 @@ public class UserService {
     	}
 	}
 	
-	public List<UserResponse> getEnabledUsersByDepartment(User user, String search) throws IllegalArgumentException {
-		if (user == null) { throw new IllegalArgumentException("User cannot be null."); }
-		
-		if (search == null) { throw new IllegalArgumentException("Search cannot be null."); }
-		
-		return mapToUserResponse(userRepository.searchEnabledByFullnameAndDepartment(search, user.getDepartmentUnit().getDepartment()));		
- 	}
+//	public List<UserResponse> getEnabledUsersByDepartment(Department department, String search) throws IllegalArgumentException {
+//		if (search == null) { throw new IllegalArgumentException("Search cannot be null."); }
+//		
+//		return mapToUserResponse(userRepository.searchEnabledByFullnameAndDepartment(search, department));		
+// 	}
 	
 	public User getUserById(UUID id) throws ResourceNotFoundException {
 		return userRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+				.orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id));
 	}
-	
-	public User getEnabledUserById(UUID id) throws ResourceNotFoundException {
-		return userRepository.findEnabledById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
-	}
-	
+		
 	public Optional<User> getUserByUsername(String username) throws IllegalArgumentException {
 		if (username == null) { throw new IllegalArgumentException("Username cannot be null."); }
 		
@@ -74,13 +63,10 @@ public class UserService {
 	
 	@Transactional
 	public UserResponse addUser(UserRequest userRequest) {
-		DepartmentUnit departmentUnit = departmentUnitService.getDepartmentUnitById(userRequest.departmentUnitId());
-		
 		var user = new User(userRequest.username(),
 				passwordEncoder.encode(userRequest.password()), 
 				userRequest.fullName(), 
 				userRequest.cell(), 
-				departmentUnit,
 				true);
 		
 		userRequest.roleIds().forEach(roleId -> user.addRole(roleService.getRoleById(roleId)));
@@ -89,9 +75,7 @@ public class UserService {
 	}
 	
 	@Transactional
-	public UserResponse updateUser(UUID userId, UserRequest userRequest) throws ResourceNotFoundException {
-		DepartmentUnit departmentUnit = departmentUnitService.getDepartmentUnitById(userRequest.departmentUnitId());
-		
+	public UserResponse updateUser(UUID userId, UserRequest userRequest) throws ResourceNotFoundException {		
 		User user = userRepository.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
 		
@@ -99,7 +83,6 @@ public class UserService {
 		user.setPassword(passwordEncoder.encode(userRequest.password()));
 		user.setFullName(userRequest.fullName());
 		user.setCell(userRequest.cell());
-		user.setDepartmentUnit(departmentUnit);
 		user.setEnabled(userRequest.enabled());
 		
 		new HashSet<>(user.getRoles()).forEach(user::removeRole);
