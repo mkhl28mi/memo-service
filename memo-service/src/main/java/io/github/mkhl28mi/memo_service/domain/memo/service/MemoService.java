@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import io.github.mkhl28mi.memo_service.domain.department.dto.response.DepartmentResponse;
-import io.github.mkhl28mi.memo_service.domain.department_unit.dto.response.DepartmentUnitResponse;
+import io.github.mkhl28mi.memo_service.domain.department.unit.dto.response.DepartmentUnitResponse;
 import io.github.mkhl28mi.memo_service.domain.employee.dto.response.EmployeeBasicResponse;
 import io.github.mkhl28mi.memo_service.domain.employee.entity.Employee;
 import io.github.mkhl28mi.memo_service.domain.employee.service.EmployeeService;

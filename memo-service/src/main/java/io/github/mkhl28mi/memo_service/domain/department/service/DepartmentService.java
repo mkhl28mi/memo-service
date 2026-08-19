@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import io.github.mkhl28mi.memo_service.domain.department.dto.request.DepartmentRequest;
 import io.github.mkhl28mi.memo_service.domain.department.dto.response.DepartmentResponse;
@@ -20,11 +20,15 @@ import io.github.mkhl28mi.memo_service.exception.ResourceNotFoundException;
 @Transactional(readOnly = true)
 public class DepartmentService {
 	
-	@Autowired
-	private DepartmentRepository departmentRepository;
+	private final DepartmentRepository departmentRepository;
 	
-	@Autowired
-	private PositionService employeePositionService;
+	private final PositionService positionService;
+	
+	public DepartmentService(DepartmentRepository departmentRepository, PositionService positionService) {
+		this.departmentRepository = departmentRepository;
+		this.positionService = positionService;
+		
+	}
 	
     public List<DepartmentResponse> getDepartments(String search) {
     	if (search == null || search.trim().isEmpty()) {
@@ -36,7 +40,7 @@ public class DepartmentService {
     
     public Department getDepartmentById(UUID id) {
     	return departmentRepository.findById(id)
-        		.orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + id));
+        		.orElseThrow(() -> new ResourceNotFoundException("Department not found with ID: " + id));
     }
     
     public Optional<Department> getDepartmentByName(String name) {
@@ -45,30 +49,39 @@ public class DepartmentService {
     
     public DepartmentResponse getDepartmentResponseById(UUID id) {
     	Department department = departmentRepository.findById(id)
-        		.orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + id));
+        		.orElseThrow(() -> new ResourceNotFoundException("Department not found with ID: " + id));
+    	
         return new DepartmentResponse(department);
     }
     
     @Transactional
     public DepartmentResponse addDepartment(DepartmentRequest departmentRequest) {
-    	Position employeePosition = employeePositionService.getPositionById(departmentRequest.positionId());
+    	Position position = positionService.getPositionById(departmentRequest.positionId());
+    	
+		Assert.state(position.isEnabled(), "Position must be enabled");
+
         return new DepartmentResponse(departmentRepository.save(new Department(departmentRequest.name(),
         		departmentRequest.code(),
         		departmentRequest.description(),
-        		employeePosition,
+        		position,
         		departmentRequest.enabled())));
     }
     
     @Transactional
     public DepartmentResponse updateDepartment(UUID id, DepartmentRequest departmentRequest) {
-    	Position employeePosition = employeePositionService.getPositionById(departmentRequest.positionId());
+    	Position position = positionService.getPositionById(departmentRequest.positionId());
+    	
+    	Assert.state(position.isEnabled(), "Position must be enabled");
+    	
         Department department = departmentRepository.findById(id)
-        		.orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + id));
+        		.orElseThrow(() -> new ResourceNotFoundException("Department not found with ID: " + id));
+        
         department.setName(departmentRequest.name());
         department.setCode(departmentRequest.code());
         department.setDescription(departmentRequest.description());
-        department.setPosition(employeePosition);
+        department.setPosition(position);
         department.setEnabled(departmentRequest.enabled());
+        
         return new DepartmentResponse(departmentRepository.save(department));
     }
     

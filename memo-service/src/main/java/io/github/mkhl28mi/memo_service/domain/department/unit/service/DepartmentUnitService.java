@@ -1,4 +1,4 @@
-package io.github.mkhl28mi.memo_service.domain.department_unit.service;
+package io.github.mkhl28mi.memo_service.domain.department.unit.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.github.mkhl28mi.memo_service.domain.department.service.DepartmentService;
-import io.github.mkhl28mi.memo_service.domain.department_unit.dto.response.DepartmentUnitResponse;
-import io.github.mkhl28mi.memo_service.domain.department_unit.entity.DepartmentUnit;
-import io.github.mkhl28mi.memo_service.domain.department_unit.repository.DepartmentUnitRepository;
+import io.github.mkhl28mi.memo_service.domain.department.unit.dto.response.DepartmentUnitResponse;
+import io.github.mkhl28mi.memo_service.domain.department.unit.entity.DepartmentUnit;
+import io.github.mkhl28mi.memo_service.domain.department.unit.repository.DepartmentUnitRepository;
 import io.github.mkhl28mi.memo_service.exception.ResourceNotFoundException;
 
 @Service

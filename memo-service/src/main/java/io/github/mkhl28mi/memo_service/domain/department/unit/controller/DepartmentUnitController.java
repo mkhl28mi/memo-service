@@ -1,4 +1,4 @@
-package io.github.mkhl28mi.memo_service.domain.department_unit.controller;
+package io.github.mkhl28mi.memo_service.domain.department.unit.controller;
 
 import java.util.UUID;
 
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import io.github.mkhl28mi.memo_service.domain.department_unit.dto.response.DepartmentUnitResponse;
-import io.github.mkhl28mi.memo_service.domain.department_unit.service.DepartmentUnitService;
+import io.github.mkhl28mi.memo_service.domain.department.unit.dto.response.DepartmentUnitResponse;
+import io.github.mkhl28mi.memo_service.domain.department.unit.service.DepartmentUnitService;
 
 @Controller
 @RequestMapping("/admin/departments/{departmentId}/units")

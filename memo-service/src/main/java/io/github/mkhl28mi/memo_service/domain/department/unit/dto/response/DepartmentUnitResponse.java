@@ -1,11 +1,11 @@
-package io.github.mkhl28mi.memo_service.domain.department_unit.dto.response;
+package io.github.mkhl28mi.memo_service.domain.department.unit.dto.response;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
 import io.github.mkhl28mi.memo_service.domain.department.dto.response.DepartmentResponse;
-import io.github.mkhl28mi.memo_service.domain.department_unit.entity.DepartmentUnit;
+import io.github.mkhl28mi.memo_service.domain.department.unit.entity.DepartmentUnit;
 
 public record DepartmentUnitResponse(UUID id, String code, DepartmentResponse departmentResponse, boolean enabled, LocalDateTime createdAt, LocalDateTime updatedAt) {
 	

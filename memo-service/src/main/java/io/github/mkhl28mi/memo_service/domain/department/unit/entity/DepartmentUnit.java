@@ -1,4 +1,4 @@
-package io.github.mkhl28mi.memo_service.domain.department_unit.entity;
+package io.github.mkhl28mi.memo_service.domain.department.unit.entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

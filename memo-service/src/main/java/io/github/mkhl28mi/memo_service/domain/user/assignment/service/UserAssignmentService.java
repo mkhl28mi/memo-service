@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import io.github.mkhl28mi.memo_service.domain.department_unit.entity.DepartmentUnit;
-import io.github.mkhl28mi.memo_service.domain.department_unit.service.DepartmentUnitService;
+import io.github.mkhl28mi.memo_service.domain.department.unit.entity.DepartmentUnit;
+import io.github.mkhl28mi.memo_service.domain.department.unit.service.DepartmentUnitService;
 import io.github.mkhl28mi.memo_service.domain.user.assignment.dto.response.UserAssignmentResponse;
 import io.github.mkhl28mi.memo_service.domain.user.assignment.entity.UserAssignment;
 import io.github.mkhl28mi.memo_service.domain.user.assignment.repository.UserAssignmentRepository;

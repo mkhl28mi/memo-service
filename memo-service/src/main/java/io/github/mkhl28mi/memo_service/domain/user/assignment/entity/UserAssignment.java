@@ -10,7 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.github.mkhl28mi.memo_service.domain.department_unit.entity.DepartmentUnit;
+import io.github.mkhl28mi.memo_service.domain.department.unit.entity.DepartmentUnit;
 import io.github.mkhl28mi.memo_service.domain.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

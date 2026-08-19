@@ -1,4 +1,4 @@
-package io.github.mkhl28mi.memo_service.domain.department_unit.repository;
+package io.github.mkhl28mi.memo_service.domain.department.unit.repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import io.github.mkhl28mi.memo_service.domain.department_unit.entity.DepartmentUnit;
+import io.github.mkhl28mi.memo_service.domain.department.unit.entity.DepartmentUnit;
 
 public interface DepartmentUnitRepository extends JpaRepository<DepartmentUnit, UUID> {
 	

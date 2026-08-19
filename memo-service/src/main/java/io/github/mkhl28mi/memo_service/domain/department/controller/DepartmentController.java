@@ -3,7 +3,6 @@ package io.github.mkhl28mi.memo_service.domain.department.controller;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,8 +22,13 @@ import io.github.mkhl28mi.memo_service.domain.department.service.DepartmentServi
 @RequestMapping("/admin/departments")
 public class DepartmentController {
 	
-	@Autowired
-	private DepartmentService departmentService;
+	private static final String REDIRECT_TO_DEPARTMENTS = "redirect:/admin/departments"; 
+	
+	private final DepartmentService departmentService;
+	
+	public DepartmentController(DepartmentService departmentService) {
+		this.departmentService = departmentService;
+	}
 	
 	@GetMapping
     public String getDepartments(@RequestParam(required = false) String search, Model model) {
@@ -35,9 +39,9 @@ public class DepartmentController {
     }
 	
 	@PostMapping
-    public String addDepartment(@ModelAttribute("departmentRequest") DepartmentRequest departmentRequest) {
+    public String addDepartment(@ModelAttribute DepartmentRequest departmentRequest) {
 		departmentService.addDepartment(departmentRequest);
-        return "redirect:/admin/departments";
+        return REDIRECT_TO_DEPARTMENTS;
     }
 	
 	@GetMapping("/{id}")
@@ -51,15 +55,15 @@ public class DepartmentController {
     }
 	
 	@PutMapping("/{id}")
-    public String updateDepartment(@PathVariable UUID id, @ModelAttribute("departmentRequest") DepartmentRequest departmentRequest) {
+    public String updateDepartment(@PathVariable UUID id, @ModelAttribute DepartmentRequest departmentRequest) {
         departmentService.updateDepartment(id, departmentRequest);
-        return "redirect:/admin/departments";
+        return REDIRECT_TO_DEPARTMENTS;
     }
 	
 	@DeleteMapping("/{id}")
     public String deleteDepartment(@PathVariable UUID id) {
 		departmentService.deleteDepartment(id);
-		return "redirect:/admin/departments";
+		return REDIRECT_TO_DEPARTMENTS;
     }
 	
 }

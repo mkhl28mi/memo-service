@@ -14,7 +14,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.github.mkhl28mi.memo_service.domain.department_unit.entity.DepartmentUnit;
+import io.github.mkhl28mi.memo_service.domain.department.unit.entity.DepartmentUnit;
 import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo;
 import io.github.mkhl28mi.memo_service.domain.position.entity.Position;
 import jakarta.persistence.CascadeType;

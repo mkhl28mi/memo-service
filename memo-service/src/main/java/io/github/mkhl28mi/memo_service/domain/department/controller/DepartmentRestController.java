@@ -2,7 +2,6 @@ package io.github.mkhl28mi.memo_service.domain.department.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,8 +14,11 @@ import io.github.mkhl28mi.memo_service.domain.position.service.PositionService;
 @RequestMapping("/api/v1/admin/departments")
 public class DepartmentRestController {
 	
-	@Autowired
-	private PositionService positionService;
+	private final PositionService positionService;
+	
+	public DepartmentRestController(PositionService positionService) {
+		this.positionService = positionService;
+	}
 	
 	@GetMapping("/enabled-positions")
 	public List<PositionResponse> getEnabledPositionOptions(@RequestParam("q") String query) {
