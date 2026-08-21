@@ -8,7 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import io.github.mkhl28mi.memo_service.domain.user.entity.User;
+import io.github.mkhl28mi.memo_service.domain.admin.user.entity.User;
 
 public class CustomUserDetails implements UserDetails, Serializable {
 	private static final long serialVersionUID = 8478306862469708018L;

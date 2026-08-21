@@ -13,7 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import io.github.mkhl28mi.memo_service.domain.user.service.CustomUserDetailsService;
+import io.github.mkhl28mi.memo_service.domain.admin.user.service.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity

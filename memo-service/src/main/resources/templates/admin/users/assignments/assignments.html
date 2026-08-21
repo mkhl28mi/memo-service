@@ -31,13 +31,14 @@
 		
 		<div class="table-responsive" style="height: 500px;">
 			<table class="table table-sm caption-top border-top">
-			<caption>Призначення. Останнє додане є актуальним</caption>
+			<caption>Призначення</caption>
 			  <thead>
 			    <tr>
 			      <th scope="col">#</th>
 			      <th style="min-width: 150px;" scope="col">Відділ</th>
 			      <th style="min-width: 150px;" scope="col">Сектор</th>
-			      <th style="min-width: 150px;" scope="col">Дата створення</th>
+			      <th style="min-width: 150px;" scope="col">Дата призначення</th>
+			      <th style="min-width: 150px;" scope="col">Дата кінця повноважень</th>
 			    </tr>
 			  </thead>
 			  <tbody>
@@ -45,7 +46,8 @@
 			      <td th:text="${iterStat.count}"></td>
 			      <td th:text="${assignment.departmentUnitResponse.departmentResponse.name}"></td>
 			      <td th:text="${assignment.departmentUnitResponse.code}"></td>
-			      <td th:text="${#temporals.format(assignment.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
+			      <td th:text="${#temporals.format(assignment.startDate, 'dd-MM-yyyy HH:mm')}"></td>
+			      <td th:text="${assignment.endDate.isPresent()} ? #temporals.format(assignment.endDate.get(), 'dd-MM-yyyy HH:mm') : 'Дата відсутня'"></td>
 			    </tr>
 			  </tbody>
 			</table>

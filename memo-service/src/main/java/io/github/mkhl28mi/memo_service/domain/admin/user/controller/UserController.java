@@ -1,0 +1,78 @@
+package io.github.mkhl28mi.memo_service.domain.admin.user.controller;
+
+import java.util.UUID;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import io.github.mkhl28mi.memo_service.domain.admin.user.dto.request.UserRequest;
+import io.github.mkhl28mi.memo_service.domain.admin.user.role.service.RoleService;
+import io.github.mkhl28mi.memo_service.domain.admin.user.service.UserService;
+
+@Controller
+@RequestMapping("/admin/users")
+public class UserController {
+	
+	private static final String REDIRECT_USERS = "redirect:/admin/users";
+	
+	private final UserService userService;
+	
+	private final RoleService roleService;
+	
+	public UserController(UserService userService, RoleService roleService) {
+		this.userService = userService;
+		this.roleService = roleService;
+	}
+	
+	@GetMapping
+	public String getUsers(@RequestParam(required = false) String search, Model model) {
+		model.addAttribute("activePage", "admin/users");
+		model.addAttribute("userRequest", new UserRequest());
+		model.addAttribute("users", userService.getUsers(search));
+		model.addAttribute("roles", roleService.getRoles());
+		
+		return "admin/users/users";
+	}
+	
+	@PostMapping
+	public String addUser(@ModelAttribute UserRequest userRequest) {
+		userService.addUser(userRequest);
+		
+		return REDIRECT_USERS;
+	}
+	
+	@GetMapping("/{id}")
+	public String getUserById(@PathVariable UUID id, Model model) {
+		var userResponse = userService.getUserResponseById(id);
+		
+		model.addAttribute("activePage", "admin/users");
+		model.addAttribute("userId", id);
+		model.addAttribute("userRequest", new UserRequest(userResponse));
+		model.addAttribute("roles", roleService.getRoles());
+		
+		return "admin/users/user";
+	}
+	
+	@PutMapping("/{id}")
+	public String updateUser(@PathVariable UUID id, @ModelAttribute UserRequest userRequest) {
+		userService.updateUser(id, userRequest);
+		
+		return REDIRECT_USERS;
+	}
+	
+	@DeleteMapping("/{id}")
+	public String deleteUser(@PathVariable UUID id) {
+		userService.deleteUser(id);
+		
+		return REDIRECT_USERS;
+	}
+	
+}

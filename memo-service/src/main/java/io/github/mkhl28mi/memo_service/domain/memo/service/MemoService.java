@@ -18,11 +18,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import io.github.mkhl28mi.memo_service.domain.department.dto.response.DepartmentResponse;
-import io.github.mkhl28mi.memo_service.domain.department.unit.dto.response.DepartmentUnitResponse;
-import io.github.mkhl28mi.memo_service.domain.employee.dto.response.EmployeeBasicResponse;
-import io.github.mkhl28mi.memo_service.domain.employee.entity.Employee;
-import io.github.mkhl28mi.memo_service.domain.employee.service.EmployeeService;
+import io.github.mkhl28mi.memo_service.domain.admin.department.dto.response.DepartmentResponse;
+import io.github.mkhl28mi.memo_service.domain.admin.department.unit.dto.response.DepartmentUnitResponse;
+import io.github.mkhl28mi.memo_service.domain.admin.employee.dto.response.EmployeeResponse;
+import io.github.mkhl28mi.memo_service.domain.admin.employee.entity.Employee;
+import io.github.mkhl28mi.memo_service.domain.admin.employee.service.EmployeeService;
+import io.github.mkhl28mi.memo_service.domain.admin.position.dto.response.PositionResponse;
+import io.github.mkhl28mi.memo_service.domain.admin.position.entity.Position;
+import io.github.mkhl28mi.memo_service.domain.admin.user.dto.response.UserResponse;
+import io.github.mkhl28mi.memo_service.domain.admin.user.entity.User;
+import io.github.mkhl28mi.memo_service.domain.admin.user.service.UserService;
 import io.github.mkhl28mi.memo_service.domain.memo.dto.EmployeePosDto;
 import io.github.mkhl28mi.memo_service.domain.memo.dto.request.MemoRequest;
 import io.github.mkhl28mi.memo_service.domain.memo.dto.response.MemoResponse;
@@ -35,11 +40,6 @@ import io.github.mkhl28mi.memo_service.domain.memo_employee.entity.MemoEmployee.
 import io.github.mkhl28mi.memo_service.domain.memo_label.dto.response.MemoLabelResponse;
 import io.github.mkhl28mi.memo_service.domain.memo_label.entity.MemoLabel;
 import io.github.mkhl28mi.memo_service.domain.memo_log.entity.MemoLog;
-import io.github.mkhl28mi.memo_service.domain.position.dto.response.PositionResponse;
-import io.github.mkhl28mi.memo_service.domain.position.entity.Position;
-import io.github.mkhl28mi.memo_service.domain.user.dto.response.UserResponse;
-import io.github.mkhl28mi.memo_service.domain.user.entity.User;
-import io.github.mkhl28mi.memo_service.domain.user.service.UserService;
 import io.github.mkhl28mi.memo_service.exception.BusinessException;
 import io.github.mkhl28mi.memo_service.exception.ResourceNotFoundException;
 import jakarta.validation.constraints.NotNull;
@@ -50,11 +50,11 @@ public class MemoService {
 	
 	private final MemoRepository memoRepository;
 	
-	private final UserService userService;
+	private final EmployeeService userService;
 	
 	private final EmployeeService employeeService;
 	
-	public MemoService(MemoRepository memoRepository, UserService userService, EmployeeService employeeService) {
+	public MemoService(MemoRepository memoRepository, EmployeeService userService, EmployeeService employeeService) {
 		this.memoRepository = memoRepository;
 		this.userService = userService;
 		this.employeeService = employeeService;
@@ -69,7 +69,7 @@ public class MemoService {
 		
 		var employees = memo.getMemoEmployees().stream()
 				.map(me -> new MemoEmployeeResponse(me.getId(), 
-						new EmployeeBasicResponse(me.getEmployee()), 
+						new EmployeeResponse(me.getEmployee()), 
 						new PositionResponse(me.getPosition()), 
 						me.getRole(), 
 						me.getPlacementOrder(), 
@@ -165,27 +165,27 @@ public class MemoService {
 	        employeeIds.add(empId);
 		}
 		
-		List<Employee> employees = employeeService.getEnabledEmployeesByIds(employeeIds);
-		
-		Map<UUID, Employee> employeeMap = employees.stream()
-	            .collect(Collectors.toMap(Employee::getId, e -> e, (e1, e2) -> e1));
-		
-		int order = 0;
-		
-	    for (EmployeePosDto target : parsedTargets) {
-	        Employee employee = employeeMap.get(target.employeeId());
-	        
-	        if (employee == null) {
-	        	throw new ResourceNotFoundException("Employee not found with ID: " + target.employeeId() + " for user ID: " + user.getId());
-	        }
-	        
-	        Position position = employee.getPositions().stream()
-	                .filter(p -> p.getId().equals(target.positionId()))
-	                .findFirst()
-	                .orElseThrow(() -> new ResourceNotFoundException("Position not found with ID: " + target.positionId() + " for user ID: " + user.getId()));
-
-	        memo.addMemoEmployee(new MemoEmployee(memo, employee, position, role, order++));
-	    }
+//		List<Employee> employees = employeeService.getEnabledEmployeesByIds(employeeIds);
+//		
+//		Map<UUID, Employee> employeeMap = employees.stream()
+//	            .collect(Collectors.toMap(Employee::getId, e -> e, (e1, e2) -> e1));
+//		
+//		int order = 0;
+//		
+//	    for (EmployeePosDto target : parsedTargets) {
+//	        Employee employee = employeeMap.get(target.employeeId());
+//	        
+//	        if (employee == null) {
+//	        	throw new ResourceNotFoundException("Employee not found with ID: " + target.employeeId() + " for user ID: " + user.getId());
+//	        }
+//	        
+//	        Position position = employee.getPositions().stream()
+//	                .filter(p -> p.getId().equals(target.positionId()))
+//	                .findFirst()
+//	                .orElseThrow(() -> new ResourceNotFoundException("Position not found with ID: " + target.positionId() + " for user ID: " + user.getId()));
+//
+//	        memo.addMemoEmployee(new MemoEmployee(memo, employee, position, role, order++));
+//	    }
 	}
 	
 	private UUID parseUuid(String value, String errorMessage) {

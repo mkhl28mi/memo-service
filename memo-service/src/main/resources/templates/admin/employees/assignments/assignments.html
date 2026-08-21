@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title></title>
+</head>
+<body>
+
+    <div layout:fragment="content" class="mx-auto w-75 mt-3">
+    	<a class="btn btn-outline-dark mb-3" href="/admin/employees"  role="button">🡨</a>
+    	<p class="fs-4 fw-bold" th:text="${employee.fullName}"></p>
+    	<div class="d-flex justify-content-center">
+	    	<div class="card w-100 mb-5">
+	    		<div class="card-body">
+	    			<h5 class="card-title">Додати призначення</h5>
+					<form th:action="@{/admin/employees/{employeeId}/assignments (employeeId=${employee.id})}" method="post">
+						<div>
+						 <div class="mb-3">
+						  	<label for="positionId" class="form-label">Посада:*</label>
+							<select id="positionId" name="positionId" placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;" required></select>
+						  </div>
+						  <p>* - обов'язкові поля до заповнення</p>
+						  <button type="submit" class="btn btn-outline-dark">Додати</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		
+		<div class="table-responsive" style="height: 500px;">
+			<table class="table table-sm caption-top border-top">
+			<caption>Призначення</caption>
+			  <thead>
+			    <tr>
+			      <th scope="col">#</th>
+			      <th style="min-width: 150px;" scope="col">Посада</th>
+			      <th style="min-width: 150px;" scope="col">Дата призначення</th>
+			      <th style="min-width: 150px;" scope="col">Дата кінця повноважень</th>
+			      <th class="text-center" style="min-width: 150px;" scope="col">Дія</th>
+			    </tr>
+			  </thead>
+			  <tbody>
+			    <tr th:each="assignment, iterStat : ${assignments}">
+			      <td th:text="${iterStat.count}"></td>
+			      <td th:text="${assignment.positionResponse.name}"></td>
+			      <td th:text="${#temporals.format(assignment.startDate, 'dd-MM-yyyy HH:mm')}"></td>
+			      <td th:text="${assignment.endDate.isPresent()} ? #temporals.format(assignment.endDate.get(), 'dd-MM-yyyy HH:mm') : 'Дата відсутня'"></td>
+			      <td class="text-center">
+			      	<form th:action="@{/admin/employees/{employeeId}/assignments (employeeId=${employee.id})}" th:method="delete">
+						<div class="d-grid">
+							<button type="submit" th:disabled="${assignment.endDate.isPresent()}" class="btn btn-outline-danger btn-sm">Звільнити</button>
+						</div>
+					</form>
+			      </td>
+			    </tr>
+			  </tbody>
+			</table>
+		</div>
+    </div>
+    
+    <th:block layout:fragment="scripts">
+   		<script>
+			new TomSelect("#positionId", {
+				plugins: ['remove_button'],
+			    valueField: 'id',
+			    labelField: 'name',
+			    searchField: [],
+			    
+			    load: function(query, callback) {
+			        if (!query.length) return callback();
+			        
+			        const url = '/api/v1/admin/employees/assignments/enabled-positions?q=' + encodeURIComponent(query);
+			
+			        fetch(url)
+			            .then(response => response.json())
+			            .then(json => {
+			                callback(json);
+			            })
+			            .catch(() => {
+			                callback();
+			            });
+			    },
+			    
+			    shouldLoad: function(query) {
+			        return query.length >= 1;
+			    }
+			});
+   		</script>
+	</th:block>
+	
+</body>
+</html>

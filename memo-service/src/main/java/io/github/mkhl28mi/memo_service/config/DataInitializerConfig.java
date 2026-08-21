@@ -7,11 +7,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import io.github.mkhl28mi.memo_service.domain.role.entity.Role;
-import io.github.mkhl28mi.memo_service.domain.role.entity.Role.RoleType;
-import io.github.mkhl28mi.memo_service.domain.role.service.RoleService;
-import io.github.mkhl28mi.memo_service.domain.user.dto.request.UserRequest;
-import io.github.mkhl28mi.memo_service.domain.user.service.UserService;
+import io.github.mkhl28mi.memo_service.domain.admin.user.dto.request.UserRequest;
+import io.github.mkhl28mi.memo_service.domain.admin.user.role.entity.Role;
+import io.github.mkhl28mi.memo_service.domain.admin.user.role.entity.Role.RoleType;
+import io.github.mkhl28mi.memo_service.domain.admin.user.role.service.RoleService;
+import io.github.mkhl28mi.memo_service.domain.admin.user.service.UserService;
 
 @Configuration
 public class DataInitializerConfig {
@@ -20,15 +20,15 @@ public class DataInitializerConfig {
     CommandLineRunner initDatabase(RoleService roleService, UserService userService) {
         return args -> {
         	if (roleService.getRoleByName(RoleType.ROLE_USER).isEmpty()) {
-        		roleService.addRole(RoleType.ROLE_USER.name());
+        		roleService.addRole(RoleType.ROLE_USER);
         	}
         	
         	if (roleService.getRoleByName(RoleType.ROLE_MANAGER).isEmpty()) {
-        		roleService.addRole(RoleType.ROLE_MANAGER.name());
+        		roleService.addRole(RoleType.ROLE_MANAGER);
         	}
         	
         	if (roleService.getRoleByName(RoleType.ROLE_ADMIN).isEmpty()) {
-        		roleService.addRole(RoleType.ROLE_ADMIN.name());
+        		roleService.addRole(RoleType.ROLE_ADMIN);
         	}
         	
         	Optional<Role> role = roleService.getRoleByName(RoleType.ROLE_ADMIN);

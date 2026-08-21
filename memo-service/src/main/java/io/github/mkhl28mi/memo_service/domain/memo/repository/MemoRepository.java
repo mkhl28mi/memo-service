@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import io.github.mkhl28mi.memo_service.domain.department.entity.Department;
+import io.github.mkhl28mi.memo_service.domain.admin.department.entity.Department;
 import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo;
 
 public interface MemoRepository extends JpaRepository<Memo, UUID> {

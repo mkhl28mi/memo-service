@@ -3,8 +3,8 @@ package io.github.mkhl28mi.memo_service.domain.memo_label.dto.response;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import io.github.mkhl28mi.memo_service.domain.department.unit.dto.response.DepartmentUnitResponse;
-import io.github.mkhl28mi.memo_service.domain.user.dto.response.UserResponse;
+import io.github.mkhl28mi.memo_service.domain.admin.department.unit.dto.response.DepartmentUnitResponse;
+import io.github.mkhl28mi.memo_service.domain.admin.user.dto.response.UserResponse;
 
 public record MemoLabelResponse(UUID id,
 		UserResponse createdBy,

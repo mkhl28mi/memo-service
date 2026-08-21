@@ -22,10 +22,6 @@
 					    <label for="targetFullName" class="form-label">ПІБ*</label>
 					    <input type="text" class="form-control" th:field="*{targetFullName}" required>
 					  </div>
-					  <div class="mb-3">
-					  	<label for="positionIds" class="form-label">Посада*</label>
-						<select th:field="*{positionIds}" multiple placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;" required></select>
-					  </div>
 					  <div class="mb-3 form-check">
 				      	<label class="form-check-label" for="enabled">Доступний</label>
 					    <input type="checkbox" class="form-check-input" th:field="*{enabled}">
@@ -52,7 +48,6 @@
 			      <th scope="col">#</th>
 			      <th style="min-width: 250px;" scope="col">ПІБ</th>
 			      <th style="min-width: 250px;" scope="col">ПІБ</th>
-			      <th class="text-center" style="min-width: 400px;" scope="col">Посади</th>
 			      <th class="text-center" style="min-width: 150px;" scope="col">Доступний</th>
 			      <th class="text-center" style="min-width: 150px;" scope="col">Дата створення</th>
 			      <th class="text-center" style="min-width: 150px;" scope="col">Дата оновлення</th>
@@ -64,17 +59,12 @@
 			      <td th:text="${iterStat.count}"></td>
 			      <td th:text="${employee.fullName}"></td>
 			      <td th:text="${employee.targetFullName}"></td>
-			      <td class="text-center">
-				      <ul class="list-group">
-						  <li class="list-group-item" th:each="position : ${employee.positionResponses}" th:text="${position.name}"></li>
-					  </ul>
-			      </td>
 			      <td class="text-center" th:text="${employee.enabled} ? '🮱'"></td>
 			      <td class="text-center" th:text="${#temporals.format(employee.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
 			      <td class="text-center" th:text="${#temporals.format(employee.updatedAt, 'dd-MM-yyyy HH:mm')}"></td>
 			      <td class="text-center">
 			      	<div class="d-grid mb-1">
-			        	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/employees/{id}(id=${employee.id})}" role="button">Редагувати</a>
+			        	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/employees/{id} (id=${employee.id})}" role="button">Редагувати</a>
 				    </div>
 			      	<form th:action="@{/admin/employees/{id}(id=${employee.id})}" th:method="delete">
 						<div class="d-grid">
@@ -88,34 +78,5 @@
 		</div>
     </div>
     
-    <th:block layout:fragment="scripts">
-   		<script>
-			new TomSelect("#positionIds", {
-			    valueField: 'id',
-			    labelField: 'name',
-			    searchField: [],
-			    
-			    load: function(query, callback) {
-			        if (!query.length) return callback();
-			
-			        const url = '/api/v1/admin/employees/enabled-positions?q=' + encodeURIComponent(query);
-			
-			        fetch(url)
-			            .then(response => response.json())
-			            .then(json => {
-			                callback(json);
-			            })
-			            .catch(() => {
-			                callback();
-			            });
-			    },
-			    
-			    shouldLoad: function(query) {
-			        return query.length >= 2;
-			    }
-			});
-   		</script>
-	</th:block>
-	  
 </body>
 </html>
