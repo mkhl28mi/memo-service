@@ -51,6 +51,7 @@
 			      <th class="text-center" style="min-width: 150px;" scope="col">Доступний</th>
 			      <th class="text-center" style="min-width: 150px;" scope="col">Дата створення</th>
 			      <th class="text-center" style="min-width: 150px;" scope="col">Дата оновлення</th>
+			      <th class="text-center" style="min-width: 150px;" scope="col">Призначення</th>
 			      <th class="text-center" style="min-width: 150px;" scope="col">Дія</th>
 			    </tr>
 			  </thead>
@@ -62,6 +63,9 @@
 			      <td class="text-center" th:text="${employee.enabled} ? '🮱'"></td>
 			      <td class="text-center" th:text="${#temporals.format(employee.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
 			      <td class="text-center" th:text="${#temporals.format(employee.updatedAt, 'dd-MM-yyyy HH:mm')}"></td>
+			      <td class="text-center">
+			      	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/employees/{id}/assignments (id=${employee.id})}" role="button">Переглянути</a>
+			      </td>
 			      <td class="text-center">
 			      	<div class="d-grid mb-1">
 			        	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/employees/{id} (id=${employee.id})}" role="button">Редагувати</a>

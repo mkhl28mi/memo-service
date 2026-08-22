@@ -18,9 +18,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.entity.UserAssignment;
 import io.github.mkhl28mi.memo_service.domain.admin.user.role.entity.Role;
-import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo;
-import io.github.mkhl28mi.memo_service.domain.memo_label.entity.MemoLabel;
-import io.github.mkhl28mi.memo_service.domain.memo_log.entity.MemoLog;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -79,15 +76,6 @@ public class User {
     @PastOrPresent
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime updatedAt;
-    
-    @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List <Memo> memos = new ArrayList<>();
-    
-    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List <MemoLog> memoLogs = new ArrayList<>();
-    
-    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List <MemoLabel> memoLabels = new ArrayList<>();
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List <UserAssignment> userAssignments = new ArrayList<>();
@@ -175,36 +163,6 @@ public class User {
         role.getUsers().remove(this);
     }
     
-	public void addMemo(Memo memo) {
-	    this.memos.add(memo);
-	    memo.setAssignee(this);
-	}
-	
-	public void removeMemo(Memo memo) {
-	    this.memos.remove(memo);
-	    memo.setAssignee(null);
-	}
-	
-	public void addMemoLog(MemoLog memoLog) {
-	    this.memoLogs.add(memoLog);
-	    memoLog.setCreatedBy(this);
-	}
-	
-	public void removeMemoLog(MemoLog memoLog) {
-	    this.memoLogs.remove(memoLog);
-	    memoLog.setCreatedBy(null);
-	}
-	
-	public void addMemoLabel(MemoLabel memoLabel) {
-	    this.memoLabels.add(memoLabel);
-	    memoLabel.setCreatedBy(this);
-	}
-	
-	public void removeMemoLabel(MemoLabel memoLable) {
-	    this.memoLabels.remove(memoLable);
-	    memoLable.setCreatedBy(null);
-	}
-	
 	public void addUserAssignment(UserAssignment userAssignment) {
 	    this.userAssignments.add(userAssignment);
 	    userAssignment.setUser(this);
@@ -213,18 +171,6 @@ public class User {
 	public void removeUserAssignment(UserAssignment userAssignment) {
 	    this.userAssignments.remove(userAssignment);
 	    userAssignment.setUser(null);
-	}
-	
-	public List<Memo> getMemos() {
-		return Collections.unmodifiableList(memos);
-	}
-
-	public List<MemoLabel> getMemoLabels() {
-		return Collections.unmodifiableList(memoLabels);
-	}
-	
-	public List<MemoLog> getMemoLogs() {
-		return Collections.unmodifiableList(memoLogs);
 	}
 	
 	public List<UserAssignment> getUserAssignments() {

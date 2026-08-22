@@ -16,9 +16,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.github.mkhl28mi.memo_service.domain.admin.department.entity.Department;
 import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.entity.UserAssignment;
-import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo;
-import io.github.mkhl28mi.memo_service.domain.memo_label.entity.MemoLabel;
-import io.github.mkhl28mi.memo_service.domain.memo_log.entity.MemoLog;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -66,18 +63,9 @@ public class DepartmentUnit {
     @PastOrPresent
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime updatedAt;
-    
+   
     @OneToMany(mappedBy = "departmentUnit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List <Memo> memos = new ArrayList<>();
-    
-    @OneToMany(mappedBy = "departmentUnit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List <MemoLog> memoLogs = new ArrayList<>();
-    
-    @OneToMany(mappedBy = "departmentUnit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List <MemoLabel> memoLabels = new ArrayList<>();
-    
-    @OneToMany(mappedBy = "departmentUnit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List <UserAssignment> departmentUnitUsers = new ArrayList<>();
+    private List <UserAssignment> userAssignments = new ArrayList<>();
     
 	protected DepartmentUnit() {
 		super();
@@ -126,60 +114,18 @@ public class DepartmentUnit {
 		return updatedAt;
 	}
 
-	public void addMemo(Memo memo) {
-	    this.memos.add(memo);
-	    memo.setDepartmentUnit(this);
+	public void addUserAssignment(UserAssignment userAssignment) {
+	    this.userAssignments.add(userAssignment);
+	    userAssignment.setDepartmentUnit(this);
 	}
 	
-	public void removeMemo(Memo memo) {
-	    this.memos.remove(memo);
-	    memo.setDepartmentUnit(null);
+	public void removeUserAssignment(UserAssignment userAssignment) {
+	    this.userAssignments.remove(userAssignment);
+	    userAssignment.setDepartmentUnit(null);
 	}
 	
-	public void addMemoLog(MemoLog memoLog) {
-	    this.memoLogs.add(memoLog);
-	    memoLog.setDepartmentUnit(this);
-	}
-	
-	public void removeMemoLog(MemoLog memoLog) {
-	    this.memoLogs.remove(memoLog);
-	    memoLog.setDepartmentUnit(null);
-	}
-	
-	public void addMemoLabel(MemoLabel memoLabel) {
-	    this.memoLabels.add(memoLabel);
-	    memoLabel.setDepartmentUnit(this);
-	}
-	
-	public void removeMemoLabel(MemoLabel memoLable) {
-	    this.memoLabels.remove(memoLable);
-	    memoLable.setDepartmentUnit(null);
-	}
-	
-	public void addDepartmentUnitUser(UserAssignment departmentUnitUser) {
-	    this.departmentUnitUsers.add(departmentUnitUser);
-	    departmentUnitUser.setDepartmentUnit(this);
-	}
-	
-	public void removeDepartmentUnitUser(UserAssignment departmentUnitUser) {
-	    this.departmentUnitUsers.remove(departmentUnitUser);
-	    departmentUnitUser.setDepartmentUnit(null);
-	}
-	
-	public List<Memo> getMemos() {
-		return Collections.unmodifiableList(memos);
-	}
-
-	public List<MemoLog> getMemoLogs() {
-		return Collections.unmodifiableList(memoLogs);
-	}
-	
-	public List<MemoLabel> getMemoLabels() {
-		return Collections.unmodifiableList(memoLabels);
-	}
-	
-	public List<UserAssignment> getDepartmentUnitUsers() {
-		return Collections.unmodifiableList(departmentUnitUsers);
+	public List<UserAssignment> getUserAssignments() {
+		return Collections.unmodifiableList(userAssignments);
 	}
 	
 	@Override

@@ -1,9 +1,6 @@
 package io.github.mkhl28mi.memo_service.domain.admin.employee.entity;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -14,14 +11,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.github.mkhl28mi.memo_service.domain.memo_employee.entity.MemoEmployee;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -60,9 +53,6 @@ public class Employee {
     @PastOrPresent
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime updatedAt;
-    
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List <MemoEmployee> memoEmployees = new ArrayList<>();
     
 	public Employee() {
 		super();
@@ -111,20 +101,6 @@ public class Employee {
 		return updatedAt;
 	}
 
-	public void addMemoEmployee(MemoEmployee memoEmployee) {
-	    this.memoEmployees.add(memoEmployee);
-	    memoEmployee.setEmployee(this);
-	}
-	
-	public void removeMemoEmployee(MemoEmployee memoEmployee) {
-	    this.memoEmployees.remove(memoEmployee);
-	    memoEmployee.setEmployee(null);
-	}
-
-	public List<MemoEmployee> getMemoEmployees() {
-		return Collections.unmodifiableList(memoEmployees);
-	}
-	
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);

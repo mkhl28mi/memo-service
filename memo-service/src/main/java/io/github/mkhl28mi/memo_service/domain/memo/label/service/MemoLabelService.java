@@ -1,12 +1,12 @@
-package io.github.mkhl28mi.memo_service.domain.memo_label.service;
+package io.github.mkhl28mi.memo_service.domain.memo.label.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.github.mkhl28mi.memo_service.domain.memo_label.entity.MemoLabel;
-import io.github.mkhl28mi.memo_service.domain.memo_label.repository.MemoLabelRepository;
+import io.github.mkhl28mi.memo_service.domain.memo.label.entity.MemoLabel;
+import io.github.mkhl28mi.memo_service.domain.memo.label.repository.MemoLabelRepository;
 
 @Service
 @Transactional(readOnly = true)
@@ -20,6 +20,7 @@ public class MemoLabelService {
 	
 	public List<String> getDistinctLabelsAsString(String search) throws IllegalArgumentException {
 		if (search == null) { throw new IllegalArgumentException("search cannot be null."); }
+		
 		return memoLabelRepository.searchDistinctByName(search).stream()
 				.map(MemoLabel::getName)
 				.toList();

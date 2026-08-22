@@ -1,4 +1,4 @@
-package io.github.mkhl28mi.memo_service.domain.memo_log.entity;
+package io.github.mkhl28mi.memo_service.domain.memo.label.entity;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -10,14 +10,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.github.mkhl28mi.memo_service.domain.admin.department.unit.entity.DepartmentUnit;
-import io.github.mkhl28mi.memo_service.domain.admin.user.entity.User;
+import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.entity.UserAssignment;
 import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -27,9 +24,9 @@ import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "memo_logs")
+@Table(name = "memo_labels")
 @EntityListeners(AuditingEntityListener.class)
-public class MemoLog {
+public class MemoLabel {
 	
 	@Id
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
@@ -40,41 +37,33 @@ public class MemoLog {
     @JoinColumn(name = "memo_id", nullable = false)
 	private Memo memo;
 	
-	@NotNull(message = "User cannot be null")
+	@NotNull(message = "UserAssignment cannot be null")
     @ManyToOne
     @JoinColumn(name = "created_by", nullable = false)
-	private User createdBy;
+	private UserAssignment createdBy;
 	
-	@NotNull(message = "Department unit cannot be null")
-    @ManyToOne
-    @JoinColumn(name = "department_unit_id", nullable = false)
-	private DepartmentUnit departmentUnit;
-	
-	@NotNull(message = "Status cannot be null")
-    @Size(min = 1, max = 20, message = "Status must be between 1 and 20 characters")
-	@Enumerated(EnumType.STRING)
-	@Column(name = "status", nullable = false, length = 20)
-	private Status status;
+	@NotNull(message = "Name cannot be null")
+	@Size(min = 1, max = 50, message = "Name must be between 1 and 50 characters")
+	@Column(name = "name", nullable = false, length = 50)
+	private String name;
 	
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     @PastOrPresent
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime createdAt;
-    
-    public MemoLog() {
+
+	public MemoLabel() {
 		super();
 	}
-    
-	public MemoLog(Memo memo,
-			User createdBy,
-			DepartmentUnit departmentUnit,
-			Status status) {
+	
+	public MemoLabel(Memo memo,
+			UserAssignment createdBy,
+			String name) {
 		super();
 		this.memo = memo;
 		this.createdBy = createdBy;
-		this.departmentUnit = departmentUnit;
-		this.status = status;
+		this.name = name;
 	}
 
 	public Memo getMemo() {
@@ -85,26 +74,22 @@ public class MemoLog {
 		this.memo = memo;
 	}
 
-	public User getCreatedBy() {
-		return createdBy;
+	public String getName() {
+		return name;
 	}
 
-	public void setCreatedBy(User createdBy) {
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public void setCreatedBy(UserAssignment createdBy) {
 		this.createdBy = createdBy;
 	}
 
-	public DepartmentUnit getDepartmentUnit() {
-		return departmentUnit;
+	public UserAssignment getCreatedBy() {
+		return createdBy;
 	}
-
-	public void setDepartmentUnit(DepartmentUnit departmentUnit) {
-		this.departmentUnit = departmentUnit;
-	}
-
-	public void setStatus(Status status) {
-		this.status = status;
-	}
-
+	
 	public UUID getId() {
 		return id;
 	}
@@ -112,7 +97,7 @@ public class MemoLog {
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
@@ -126,41 +111,14 @@ public class MemoLog {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		MemoLog other = (MemoLog) obj;
+		MemoLabel other = (MemoLabel) obj;
 		return Objects.equals(id, other.id);
 	}
 
 	@Override
 	public String toString() {
-		return "MemoLog [id=" + id + ", memo=" + memo + ", createdBy=" + createdBy + ", departmentUnit=" + departmentUnit
-				+ ", status=" + status + ", createdAt=" + createdAt + "]";
+		return "MemoLabel [id=" + id + ", memo=" + memo + ", createdBy=" + createdBy + ", name=" + name + ", createdAt="
+				+ createdAt + "]";
 	}
 	
-	public enum Status {
-    	
-    	CREATED,
-    	
-    	EDITED,
-    	
-    	DELETED,
-    	
-    	SUBMITTED,
-    	
-    	REVIEWED,
-    	
-    	APPROVED,
-    	
-    	REJECTED,
-    	
-    	SIGNED,
-    	
-    	SENT,
-    	
-    	VIEWED,
-    	
-    	ACKNOWLEDGED,
-    	
-    	CANCELLED
-    	
-    }
 }

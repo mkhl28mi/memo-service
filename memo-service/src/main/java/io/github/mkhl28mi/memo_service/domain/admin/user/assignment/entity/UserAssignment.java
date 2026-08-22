@@ -1,6 +1,9 @@
 package io.github.mkhl28mi.memo_service.domain.admin.user.assignment.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -9,11 +12,15 @@ import org.hibernate.annotations.UuidGenerator;
 
 import io.github.mkhl28mi.memo_service.domain.admin.department.unit.entity.DepartmentUnit;
 import io.github.mkhl28mi.memo_service.domain.admin.user.entity.User;
+import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
@@ -41,6 +48,9 @@ public class UserAssignment {
     
     @Column(name = "end_date")
     private LocalDateTime endDate;
+    
+    @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List <Memo> memos = new ArrayList<>();
 
 	public UserAssignment() {
 		super();
@@ -88,6 +98,20 @@ public class UserAssignment {
 	
 	public UUID getId() {
 		return id;
+	}
+	
+	public void addMemo(Memo memo) {
+	    this.memos.add(memo);
+	    memo.setAssignee(this);
+	}
+	
+	public void removeMemo(Memo memo) {
+	    this.memos.remove(memo);
+	    memo.setAssignee(null);
+	}
+	
+	public List<Memo> getMemos() {
+		return Collections.unmodifiableList(this.memos);
 	}
 
 	@Override

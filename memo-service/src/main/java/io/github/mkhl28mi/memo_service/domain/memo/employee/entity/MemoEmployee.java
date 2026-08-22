@@ -1,4 +1,4 @@
-package io.github.mkhl28mi.memo_service.domain.memo_employee.entity;
+package io.github.mkhl28mi.memo_service.domain.memo.employee.entity;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -10,8 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.github.mkhl28mi.memo_service.domain.admin.employee.entity.Employee;
-import io.github.mkhl28mi.memo_service.domain.admin.position.entity.Position;
+import io.github.mkhl28mi.memo_service.domain.admin.employee.assignment.entity.EmployeeAssignment;
 import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,15 +40,10 @@ public class MemoEmployee {
     @JoinColumn(name = "memo_id", nullable = false)
 	private Memo memo;
 	
-	@NotNull(message = "Employee cannot be null")
+	@NotNull(message = "EmployeeAssignment cannot be null")
     @ManyToOne
-    @JoinColumn(name = "employee_id", nullable = false)
-	private Employee employee;
-	
-	@NotNull(message = "Employee position cannot be null")
-    @ManyToOne
-    @JoinColumn(name = "employee_position_id", nullable = false)
-	private Position position;
+    @JoinColumn(name = "employee_assignment_id", nullable = false)
+	private EmployeeAssignment employeeAssignment;
 	
 	@NotNull(message = "Role cannot be null")
     @Size(min = 1, max = 20, message = "Role must be between 1 and 20 characters")
@@ -72,14 +66,12 @@ public class MemoEmployee {
 	}
 	
 	public MemoEmployee(Memo memo, 
-			Employee employee, 
-			Position position,
+			EmployeeAssignment employeeAssignment, 
 			Role role,
 			int placementOrder) {
 		super();
 		this.memo = memo;
-		this.employee = employee;
-		this.position = position;
+		this.employeeAssignment = employeeAssignment;
 		this.role = role;
 		this.placementOrder = placementOrder;
 	}
@@ -92,20 +84,12 @@ public class MemoEmployee {
 		this.memo = memo;
 	}
 
-	public Employee getEmployee() {
-		return employee;
+	public EmployeeAssignment getEmployeeAssignment() {
+		return employeeAssignment;
 	}
 
-	public void setEmployee(Employee employee) {
-		this.employee = employee;
-	}
-
-	public Position getPosition() {
-		return position;
-	}
-
-	public void setPosition(Position position) {
-		this.position = position;
+	public void setEmployeeAssignment(EmployeeAssignment employeeAssignment) {
+		this.employeeAssignment = employeeAssignment;
 	}
 
 	public Role getRole() {
@@ -151,11 +135,10 @@ public class MemoEmployee {
 	
 	@Override
 	public String toString() {
-		return "MemoEmployee [id=" + id + ", memo=" + memo + ", employee=" + employee + ", position="
-				+ position + ", role=" + role + ", placementOrder=" + placementOrder + ", createdAt="
-				+ createdAt + "]";
+		return "MemoEmployee [id=" + id + ", memo=" + memo + ", employeeAssignment=" + employeeAssignment + ", role="
+				+ role + ", placementOrder=" + placementOrder + ", createdAt=" + createdAt + "]";
 	}
-	
+
 	public enum Role {
 		
 		RECIPIENT,

@@ -68,4 +68,20 @@ public class MemoController {
 		return String.format("redirect:/memos/%s", id);
 	}
 	
+	@GetMapping("/create-based-on/{id}")
+	public String showCreateBasedOnForm(@PathVariable UUID id, Model model) {
+		var memoResponse = memoService.getMemoById(id);
+		
+		model.addAttribute("activePage", "memos/create");
+		model.addAttribute("memoRequest", new MemoRequest(memoResponse));
+		model.addAttribute("recipients", memoResponse.recipients());
+		model.addAttribute("copyRecipients", memoResponse.copyRecipients());
+		model.addAttribute("signers", memoResponse.signers());
+		model.addAttribute("approvers", memoResponse.approvers());
+		model.addAttribute("assignees", List.of(memoResponse.assignee()));
+		model.addAttribute("labels", memoResponse.labels());
+		
+		return "memos/create-based-on-form";
+	}
+	
 }

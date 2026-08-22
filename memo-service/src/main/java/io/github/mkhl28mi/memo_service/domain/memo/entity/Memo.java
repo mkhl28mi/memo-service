@@ -16,11 +16,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.github.mkhl28mi.memo_service.domain.admin.department.entity.Department;
-import io.github.mkhl28mi.memo_service.domain.admin.department.unit.entity.DepartmentUnit;
-import io.github.mkhl28mi.memo_service.domain.admin.user.entity.User;
-import io.github.mkhl28mi.memo_service.domain.memo_employee.entity.MemoEmployee;
-import io.github.mkhl28mi.memo_service.domain.memo_label.entity.MemoLabel;
-import io.github.mkhl28mi.memo_service.domain.memo_log.entity.MemoLog;
+import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.entity.UserAssignment;
+import io.github.mkhl28mi.memo_service.domain.memo.employee.entity.MemoEmployee;
+import io.github.mkhl28mi.memo_service.domain.memo.label.entity.MemoLabel;
+import io.github.mkhl28mi.memo_service.domain.memo.log.entity.MemoLog;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -65,15 +64,10 @@ public class Memo {
 	@Column(name = "status", nullable = false, length = 20)
 	private Status status;
 	
-	@NotNull(message = "Assignee cannot be null")
+	@NotNull(message = "UserAssignment cannot be null")
     @ManyToOne
     @JoinColumn(name = "assignee_id", nullable = false)
-	private User assignee;
-	
-	@NotNull(message = "Department unit cannot be null")
-    @ManyToOne
-    @JoinColumn(name = "department_unit_id", nullable = false)
-	private DepartmentUnit departmentUnit;
+	private UserAssignment assignee;
 	
 	@NotNull(message = "Department cannot be null")
     @ManyToOne
@@ -115,8 +109,7 @@ public class Memo {
     
 	public Memo(String content, 
 			Status status, 
-			User assignee, 
-			DepartmentUnit departmentUnit, 
+			UserAssignment assignee, 
 			Department department, 
 			int sequenceNumber, 
 			int creationYear) {
@@ -124,7 +117,6 @@ public class Memo {
 		this.content = content;
 		this.status = status;
 		this.assignee = assignee;
-		this.departmentUnit = departmentUnit;
 		this.department = department;
 		this.sequenceNumber = sequenceNumber;
 		this.creationYear = creationYear;
@@ -146,22 +138,14 @@ public class Memo {
 		this.status = status;
 	}
 
-	public User getAssignee() {
+	public UserAssignment getAssignee() {
 		return assignee;
 	}
 
-	public void setAssignee(User assignee) {
+	public void setAssignee(UserAssignment assignee) {
 		this.assignee = assignee;
 	}
 	
-	public DepartmentUnit getDepartmentUnit() {
-		return departmentUnit;
-	}
-
-	public void setDepartmentUnit(DepartmentUnit departmentUnit) {
-		this.departmentUnit = departmentUnit;
-	}
-
 	public Department getDepartment() {
 		return department;
 	}
@@ -272,8 +256,8 @@ public class Memo {
 	@Override
 	public String toString() {
 		return "Memo [id=" + id + ", content=" + content + ", status=" + status + ", assignee=" + assignee
-				+ ", departmentUnit=" + departmentUnit + ", department=" + department + ", sequenceNumber=" + sequenceNumber
-				+ ", creationYear=" + creationYear + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
+				+ ", department=" + department + ", sequenceNumber=" + sequenceNumber + ", creationYear=" + creationYear
+				+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
 	
 	public enum Status {

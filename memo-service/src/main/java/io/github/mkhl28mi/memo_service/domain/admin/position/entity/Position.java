@@ -1,12 +1,7 @@
 package io.github.mkhl28mi.memo_service.domain.admin.position.entity;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.annotations.UuidGenerator;
@@ -16,16 +11,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.github.mkhl28mi.memo_service.domain.admin.employee.entity.Employee;
-import io.github.mkhl28mi.memo_service.domain.memo_employee.entity.MemoEmployee;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -70,16 +59,10 @@ public class Position {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime updatedAt;
     
-    @ManyToMany(mappedBy = "positions")
-    private Set<Employee> employees = new HashSet<>();
-    
-    @OneToMany(mappedBy = "position", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List <MemoEmployee> memoEmployees = new ArrayList<>();
-    
 	public Position() {
 		super();
 	}
-
+	
 	public Position(String name, String targetName, int placementOrder, boolean isEnabled) {
 		super();
 		this.name = name;
@@ -130,24 +113,6 @@ public class Position {
 	
 	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
-	}
-	
-	public void addMemoEmployee(MemoEmployee memoEmployee) {
-	    this.memoEmployees.add(memoEmployee);
-	    memoEmployee.setPosition(this);
-	}
-	
-	public void removeMemoEmployee(MemoEmployee memoEmployee) {
-	    this.memoEmployees.remove(memoEmployee);
-	    memoEmployee.setPosition(null);
-	}
-	
-	public Set<Employee> getEmployees() {
-		return this.employees;
-	}
-	
-	public List<MemoEmployee> getMemoEmployees() {
-		return Collections.unmodifiableList(this.memoEmployees);
 	}
 	
 	@Override

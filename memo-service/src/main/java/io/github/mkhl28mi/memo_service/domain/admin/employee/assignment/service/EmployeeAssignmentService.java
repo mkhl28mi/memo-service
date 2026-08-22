@@ -41,6 +41,12 @@ public class EmployeeAssignmentService {
 				.toList();
 	}
 	
+	public List<EmployeeAssignmentResponse> getEnabledEmployeeAssignments(String query) {
+		return employeeAssignmentRepository.findAllEnabledByEmployeeFullname(query).stream()
+		.map(EmployeeAssignmentResponse::new)
+		.toList();
+	}
+	
 	@Transactional
 	public EmployeeAssignmentResponse addEmployeeAssignment(UUID positionId, UUID employeeId) {
 		Position position = positionService.getPositionById(positionId);

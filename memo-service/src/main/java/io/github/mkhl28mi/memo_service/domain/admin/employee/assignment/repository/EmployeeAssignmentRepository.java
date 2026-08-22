@@ -14,6 +14,12 @@ public interface EmployeeAssignmentRepository extends JpaRepository<EmployeeAssi
 	@Query("SELECT ea FROM EmployeeAssignment ea WHERE ea.employee.id = :employeeId AND up.endDate IS NULL")
 	public List<EmployeeAssignment> findAllCurrentByEmployeeId(@Param("employeeId") UUID employeeId);
 	
+	@Query("SELECT ea FROM EmployeeAssignment ea WHERE (LOWER(ea.employee.fullName) LIKE LOWER(CONCAT('%', :keyword, '%')) "
+			+ "OR LOWER(ea.employee.targetFullName) LIKE LOWER(CONCAT('%', :keyword, '%'))) "
+			+ "AND ea.employee.enabled = true "
+			+ "AND ea.endDate IS NULL ")
+	public List<EmployeeAssignment> findAllEnabledByEmployeeFullname(@Param("keyword") String keyword);
+	
 	@Query("SELECT ea FROM EmployeeAssignment ea WHERE ea.employee.id = :employeeId")
 	public List<EmployeeAssignment> searchByEmployeeId(@Param("employeeId") UUID employeeId);
 	

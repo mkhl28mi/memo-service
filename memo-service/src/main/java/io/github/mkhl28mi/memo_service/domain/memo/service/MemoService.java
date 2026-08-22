@@ -1,45 +1,20 @@
 package io.github.mkhl28mi.memo_service.domain.memo.service;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.EnumMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.resilience.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
-import io.github.mkhl28mi.memo_service.domain.admin.department.dto.response.DepartmentResponse;
-import io.github.mkhl28mi.memo_service.domain.admin.department.unit.dto.response.DepartmentUnitResponse;
-import io.github.mkhl28mi.memo_service.domain.admin.employee.dto.response.EmployeeResponse;
-import io.github.mkhl28mi.memo_service.domain.admin.employee.entity.Employee;
 import io.github.mkhl28mi.memo_service.domain.admin.employee.service.EmployeeService;
-import io.github.mkhl28mi.memo_service.domain.admin.position.dto.response.PositionResponse;
-import io.github.mkhl28mi.memo_service.domain.admin.position.entity.Position;
-import io.github.mkhl28mi.memo_service.domain.admin.user.dto.response.UserResponse;
 import io.github.mkhl28mi.memo_service.domain.admin.user.entity.User;
-import io.github.mkhl28mi.memo_service.domain.admin.user.service.UserService;
-import io.github.mkhl28mi.memo_service.domain.memo.dto.EmployeePosDto;
 import io.github.mkhl28mi.memo_service.domain.memo.dto.request.MemoRequest;
 import io.github.mkhl28mi.memo_service.domain.memo.dto.response.MemoResponse;
+import io.github.mkhl28mi.memo_service.domain.memo.employee.entity.MemoEmployee.Role;
 import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo;
-import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo.Status;
 import io.github.mkhl28mi.memo_service.domain.memo.repository.MemoRepository;
-import io.github.mkhl28mi.memo_service.domain.memo_employee.dto.response.MemoEmployeeResponse;
-import io.github.mkhl28mi.memo_service.domain.memo_employee.entity.MemoEmployee;
-import io.github.mkhl28mi.memo_service.domain.memo_employee.entity.MemoEmployee.Role;
-import io.github.mkhl28mi.memo_service.domain.memo_label.dto.response.MemoLabelResponse;
-import io.github.mkhl28mi.memo_service.domain.memo_label.entity.MemoLabel;
-import io.github.mkhl28mi.memo_service.domain.memo_log.entity.MemoLog;
 import io.github.mkhl28mi.memo_service.exception.BusinessException;
 import io.github.mkhl28mi.memo_service.exception.ResourceNotFoundException;
 import jakarta.validation.constraints.NotNull;
@@ -61,53 +36,54 @@ public class MemoService {
 	}
 	
 	public MemoResponse getMemoById(@NotNull UUID memoId) {
-		var memo = memoRepository.findById(memoId)
-				.orElseThrow(() -> new ResourceNotFoundException("Memo not found with id: " + memoId));
-		
-		memo.initializeMemoEmployees();
-		memo.initializeMemoLabels();
-		
-		var employees = memo.getMemoEmployees().stream()
-				.map(me -> new MemoEmployeeResponse(me.getId(), 
-						new EmployeeResponse(me.getEmployee()), 
-						new PositionResponse(me.getPosition()), 
-						me.getRole(), 
-						me.getPlacementOrder(), 
-						me.getCreatedAt()))
-				.collect(Collectors.groupingBy(
-						MemoEmployeeResponse::role, 
-						() -> new EnumMap<>(Role.class),
-						Collectors.collectingAndThen(
-			                    Collectors.toList(),
-			                    list -> {
-			                        list.sort(Comparator.comparing(MemoEmployeeResponse::placementOrder));
-			                        return list;
-			                    }
-			               )));
-		
-		var labels = memo.getMemoLabels().stream()
-				.map(l -> new MemoLabelResponse(l.getId(),
-						new UserResponse(l.getCreatedBy()), 
-						new DepartmentUnitResponse(l.getDepartmentUnit()), 
-						l.getName(), 
-						l.getCreatedAt()))
-				.toList();
-		
-		return new MemoResponse(memo.getId(),
-				memo.getContent(), 
-				memo.getStatus(), 
-				new UserResponse(memo.getAssignee()), 
-				new DepartmentUnitResponse(memo.getDepartmentUnit()), 
-				new DepartmentResponse(memo.getDepartment()), 
-				memo.getSequenceNumber(), 
-				memo.getCreationYear(), 
-				memo.getCreatedAt(), 
-				memo.getUpdatedAt(), 
-				employees.getOrDefault(Role.RECIPIENT, Collections.emptyList()), 
-				employees.getOrDefault(Role.COPY_RECIPIENT, Collections.emptyList()), 
-				employees.getOrDefault(Role.SIGNER, Collections.emptyList()), 
-				employees.getOrDefault(Role.APPROVER, Collections.emptyList()), 
-				labels);
+//		var memo = memoRepository.findById(memoId)
+//				.orElseThrow(() -> new ResourceNotFoundException("Memo not found with id: " + memoId));
+//		
+//		memo.initializeMemoEmployees();
+//		memo.initializeMemoLabels();
+//		
+//		var employees = memo.getMemoEmployees().stream()
+//				.map(me -> new MemoEmployeeResponse(me.getId(), 
+//						new EmployeeResponse(me.getEmployee()), 
+//						new PositionResponse(me.getPosition()), 
+//						me.getRole(), 
+//						me.getPlacementOrder(), 
+//						me.getCreatedAt()))
+//				.collect(Collectors.groupingBy(
+//						MemoEmployeeResponse::role, 
+//						() -> new EnumMap<>(Role.class),
+//						Collectors.collectingAndThen(
+//			                    Collectors.toList(),
+//			                    list -> {
+//			                        list.sort(Comparator.comparing(MemoEmployeeResponse::placementOrder));
+//			                        return list;
+//			                    }
+//			               )));
+//		
+//		var labels = memo.getMemoLabels().stream()
+//				.map(l -> new MemoLabelResponse(l.getId(),
+//						new UserResponse(l.getCreatedBy()), 
+//						new DepartmentUnitResponse(l.getDepartmentUnit()), 
+//						l.getName(), 
+//						l.getCreatedAt()))
+//				.toList();
+//		
+//		return new MemoResponse(memo.getId(),
+//				memo.getContent(), 
+//				memo.getStatus(), 
+//				new UserResponse(memo.getAssignee()), 
+//				new DepartmentUnitResponse(memo.getDepartmentUnit()), 
+//				new DepartmentResponse(memo.getDepartment()), 
+//				memo.getSequenceNumber(), 
+//				memo.getCreationYear(), 
+//				memo.getCreatedAt(), 
+//				memo.getUpdatedAt(), 
+//				employees.getOrDefault(Role.RECIPIENT, Collections.emptyList()), 
+//				employees.getOrDefault(Role.COPY_RECIPIENT, Collections.emptyList()), 
+//				employees.getOrDefault(Role.SIGNER, Collections.emptyList()), 
+//				employees.getOrDefault(Role.APPROVER, Collections.emptyList()), 
+//				labels);
+		return null;
 	}
 	
 	@Retryable(includes = { DataIntegrityViolationException.class }, maxRetries = 5)
@@ -148,22 +124,22 @@ public class MemoService {
 		return null;
 	}
 	
-	private void addMemoEmployees(User user, Memo memo, List<String> ids, MemoEmployee.Role role) throws ResourceNotFoundException {
-		var parsedTargets = new ArrayList<EmployeePosDto>();
-		var employeeIds = new HashSet<UUID>();
-		
-		for (String id : ids) {
-			Assert.hasText(id, () -> role + " id is required for user ID: " + user.getId());
-
-	        String[] parts = id.split(":");
-	        Assert.isTrue(parts.length == 2, () -> "Employee ID and position ID are required for user ID: " + user.getId());
-
-	        UUID empId = parseUuid(parts[0], "Invalid employee UUID for user ID: " + user.getId());
-	        UUID posId = parseUuid(parts[1], "Invalid position UUID for user ID: " + user.getId());
-
-	        parsedTargets.add(new EmployeePosDto(empId, posId));
-	        employeeIds.add(empId);
-		}
+//	private void addMemoEmployees(User user, Memo memo, List<String> ids, MemoEmployee.Role role) throws ResourceNotFoundException {
+//		var parsedTargets = new ArrayList<EmployeePosDto>();
+//		var employeeIds = new HashSet<UUID>();
+//		
+//		for (String id : ids) {
+//			Assert.hasText(id, () -> role + " id is required for user ID: " + user.getId());
+//
+//	        String[] parts = id.split(":");
+//	        Assert.isTrue(parts.length == 2, () -> "Employee ID and position ID are required for user ID: " + user.getId());
+//
+//	        UUID empId = parseUuid(parts[0], "Invalid employee UUID for user ID: " + user.getId());
+//	        UUID posId = parseUuid(parts[1], "Invalid position UUID for user ID: " + user.getId());
+//
+//	        parsedTargets.add(new EmployeePosDto(empId, posId));
+//	        employeeIds.add(empId);
+//		}
 		
 //		List<Employee> employees = employeeService.getEnabledEmployeesByIds(employeeIds);
 //		
@@ -186,7 +162,7 @@ public class MemoService {
 //
 //	        memo.addMemoEmployee(new MemoEmployee(memo, employee, position, role, order++));
 //	    }
-	}
+//	}
 	
 	private UUID parseUuid(String value, String errorMessage) {
 	    try {
@@ -246,47 +222,47 @@ public class MemoService {
 	}
 	
 	private void updateMemoEmployees(User user, Memo memo, List<String> newIds, Role role) throws ResourceNotFoundException {
-		var newIdsSet = new HashSet<>(newIds);
-		
-		var existingEmployees = memo.getMemoEmployees().stream()
-	            .filter(me -> me.getRole() == role)
-	            .collect(Collectors.toMap(
-	                me -> me.getEmployee().getId() + ":" + me.getPosition().getId(), 
-	                me -> me
-	            ));
-		
-		existingEmployees.forEach((id, memoEmployee) -> {
-	        if (!newIdsSet.contains(id)) {
-	            memo.removeMemoEmployee(memoEmployee);
-	        }
-	    });
-		
-		var toAdd = newIds.stream()
-	            .filter(id -> !existingEmployees.containsKey(id))
-	            .toList();
-		
-		if (!toAdd.isEmpty()) {
-	        addMemoEmployees(user, memo, toAdd, role);
-	    }
-		
-		var currentEmployeesMap = memo.getMemoEmployees().stream()
-	            .filter(me -> me.getRole() == role)
-	            .collect(Collectors.toMap(
-	                me -> me.getEmployee().getId() + ":" + me.getPosition().getId(), 
-	                me -> me
-	            )); // TODO fix with several the same employees
-		
-		for (int i = 0; i < newIds.size(); i++) {
-	        String id = newIds.get(i);
-	        
-	        MemoEmployee memoEmployee = currentEmployeesMap.get(id);
-
-	        if (memoEmployee == null) {
-	            throw new ResourceNotFoundException("MemoEmployee not found with ID: " + id + " for user ID: " + user.getId());
-	        }
-
-	        memoEmployee.setPlacementOrder(i);
-	    }
+//		var newIdsSet = new HashSet<>(newIds);
+//		
+//		var existingEmployees = memo.getMemoEmployees().stream()
+//	            .filter(me -> me.getRole() == role)
+//	            .collect(Collectors.toMap(
+//	                me -> me.getEmployee().getId() + ":" + me.getPosition().getId(), 
+//	                me -> me
+//	            ));
+//		
+//		existingEmployees.forEach((id, memoEmployee) -> {
+//	        if (!newIdsSet.contains(id)) {
+//	            memo.removeMemoEmployee(memoEmployee);
+//	        }
+//	    });
+//		
+//		var toAdd = newIds.stream()
+//	            .filter(id -> !existingEmployees.containsKey(id))
+//	            .toList();
+//		
+//		if (!toAdd.isEmpty()) {
+//	        addMemoEmployees(user, memo, toAdd, role);
+//	    }
+//		
+//		var currentEmployeesMap = memo.getMemoEmployees().stream()
+//	            .filter(me -> me.getRole() == role)
+//	            .collect(Collectors.toMap(
+//	                me -> me.getEmployee().getId() + ":" + me.getPosition().getId(), 
+//	                me -> me
+//	            )); // TODO fix with several the same employees
+//		
+//		for (int i = 0; i < newIds.size(); i++) {
+//	        String id = newIds.get(i);
+//	        
+//	        MemoEmployee memoEmployee = currentEmployeesMap.get(id);
+//
+//	        if (memoEmployee == null) {
+//	            throw new ResourceNotFoundException("MemoEmployee not found with ID: " + id + " for user ID: " + user.getId());
+//	        }
+//
+//	        memoEmployee.setPlacementOrder(i);
+//	    }
 	}
 	
 }

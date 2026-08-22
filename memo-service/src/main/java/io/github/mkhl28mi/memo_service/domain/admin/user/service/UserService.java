@@ -9,7 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.github.mkhl28mi.memo_service.domain.admin.department.entity.Department;
 import io.github.mkhl28mi.memo_service.domain.admin.user.dto.request.UserRequest;
 import io.github.mkhl28mi.memo_service.domain.admin.user.dto.response.UserResponse;
 import io.github.mkhl28mi.memo_service.domain.admin.user.entity.User;
@@ -41,12 +40,6 @@ public class UserService {
     	}
 	}
 	
-	public List<UserResponse> getEnabledUsersByDepartment(Department department, String search) throws IllegalArgumentException {
-		if (search == null) { throw new IllegalArgumentException("Search cannot be null."); }
-		
-		return mapToUserResponse(userRepository.searchEnabledByFullnameAndDepartment(search, department));		
- 	}
-		
 	public User getUserById(UUID id) throws ResourceNotFoundException {
 		return userRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id));

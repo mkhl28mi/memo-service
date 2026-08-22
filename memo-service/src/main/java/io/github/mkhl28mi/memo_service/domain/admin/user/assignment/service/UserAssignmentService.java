@@ -15,6 +15,7 @@ import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.entity.UserA
 import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.repository.UserAssignmentRepository;
 import io.github.mkhl28mi.memo_service.domain.admin.user.entity.User;
 import io.github.mkhl28mi.memo_service.domain.admin.user.service.UserService;
+import io.github.mkhl28mi.memo_service.exception.ResourceNotFoundException;
 
 
 @Service
@@ -38,6 +39,17 @@ public class UserAssignmentService {
 				.map(UserAssignmentResponse::new)
 				.toList();
 	}
+	
+	public List<UserAssignmentResponse> getEnabledUserAssignments(User user, String search) throws IllegalArgumentException {
+		if (search == null) { throw new IllegalArgumentException("Search cannot be null."); }
+		
+		UserAssignment userAssignment =  userAssignmentRepository.findCurrentByUserId(user.getId())
+				.orElseThrow(() -> new ResourceNotFoundException("UserAssignment not found with user: " + user));
+		
+		return userAssignmentRepository.searchEnabledByFullnameAndDepartment(search, userAssignment.getDepartmentUnit().getDepartment()).stream()
+				.map(UserAssignmentResponse::new)
+				.toList();
+ 	}
 	
 	@Transactional
 	public UserAssignmentResponse addUserAssignment(UUID departmentUintId, UUID userId) {
