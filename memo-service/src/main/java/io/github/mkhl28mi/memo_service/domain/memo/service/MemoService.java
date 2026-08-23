@@ -1,19 +1,38 @@
 package io.github.mkhl28mi.memo_service.domain.memo.service;
 
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.resilience.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
-import io.github.mkhl28mi.memo_service.domain.admin.employee.service.EmployeeService;
+import io.github.mkhl28mi.memo_service.domain.admin.department.dto.response.DepartmentResponse;
+import io.github.mkhl28mi.memo_service.domain.admin.employee.assignment.dto.response.EmployeeAssignmentResponse;
+import io.github.mkhl28mi.memo_service.domain.admin.employee.assignment.entity.EmployeeAssignment;
+import io.github.mkhl28mi.memo_service.domain.admin.employee.assignment.service.EmployeeAssignmentService;
+import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.dto.response.UserAssignmentResponse;
+import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.entity.UserAssignment;
+import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.service.UserAssignmentService;
 import io.github.mkhl28mi.memo_service.domain.admin.user.entity.User;
 import io.github.mkhl28mi.memo_service.domain.memo.dto.request.MemoRequest;
 import io.github.mkhl28mi.memo_service.domain.memo.dto.response.MemoResponse;
+import io.github.mkhl28mi.memo_service.domain.memo.employee.dto.response.MemoEmployeeResponse;
+import io.github.mkhl28mi.memo_service.domain.memo.employee.entity.MemoEmployee;
 import io.github.mkhl28mi.memo_service.domain.memo.employee.entity.MemoEmployee.Role;
 import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo;
+import io.github.mkhl28mi.memo_service.domain.memo.label.dto.response.MemoLabelResponse;
+import io.github.mkhl28mi.memo_service.domain.memo.label.entity.MemoLabel;
+import io.github.mkhl28mi.memo_service.domain.memo.log.entity.MemoLog;
 import io.github.mkhl28mi.memo_service.domain.memo.repository.MemoRepository;
 import io.github.mkhl28mi.memo_service.exception.BusinessException;
 import io.github.mkhl28mi.memo_service.exception.ResourceNotFoundException;
@@ -25,158 +44,130 @@ public class MemoService {
 	
 	private final MemoRepository memoRepository;
 	
-	private final EmployeeService userService;
+	private final EmployeeAssignmentService employeeAssignmentService;
 	
-	private final EmployeeService employeeService;
+	private final UserAssignmentService userAssignmentService;
 	
-	public MemoService(MemoRepository memoRepository, EmployeeService userService, EmployeeService employeeService) {
+	public MemoService(MemoRepository memoRepository, EmployeeAssignmentService employeeAssignmentService, UserAssignmentService userAssignmentService) {
+		super();
 		this.memoRepository = memoRepository;
-		this.userService = userService;
-		this.employeeService = employeeService;
+		this.employeeAssignmentService = employeeAssignmentService;
+		this.userAssignmentService = userAssignmentService;
 	}
 	
 	public MemoResponse getMemoById(@NotNull UUID memoId) {
-//		var memo = memoRepository.findById(memoId)
-//				.orElseThrow(() -> new ResourceNotFoundException("Memo not found with id: " + memoId));
-//		
-//		memo.initializeMemoEmployees();
-//		memo.initializeMemoLabels();
-//		
-//		var employees = memo.getMemoEmployees().stream()
-//				.map(me -> new MemoEmployeeResponse(me.getId(), 
-//						new EmployeeResponse(me.getEmployee()), 
-//						new PositionResponse(me.getPosition()), 
-//						me.getRole(), 
-//						me.getPlacementOrder(), 
-//						me.getCreatedAt()))
-//				.collect(Collectors.groupingBy(
-//						MemoEmployeeResponse::role, 
-//						() -> new EnumMap<>(Role.class),
-//						Collectors.collectingAndThen(
-//			                    Collectors.toList(),
-//			                    list -> {
-//			                        list.sort(Comparator.comparing(MemoEmployeeResponse::placementOrder));
-//			                        return list;
-//			                    }
-//			               )));
-//		
-//		var labels = memo.getMemoLabels().stream()
-//				.map(l -> new MemoLabelResponse(l.getId(),
-//						new UserResponse(l.getCreatedBy()), 
-//						new DepartmentUnitResponse(l.getDepartmentUnit()), 
-//						l.getName(), 
-//						l.getCreatedAt()))
-//				.toList();
-//		
-//		return new MemoResponse(memo.getId(),
-//				memo.getContent(), 
-//				memo.getStatus(), 
-//				new UserResponse(memo.getAssignee()), 
-//				new DepartmentUnitResponse(memo.getDepartmentUnit()), 
-//				new DepartmentResponse(memo.getDepartment()), 
-//				memo.getSequenceNumber(), 
-//				memo.getCreationYear(), 
-//				memo.getCreatedAt(), 
-//				memo.getUpdatedAt(), 
-//				employees.getOrDefault(Role.RECIPIENT, Collections.emptyList()), 
-//				employees.getOrDefault(Role.COPY_RECIPIENT, Collections.emptyList()), 
-//				employees.getOrDefault(Role.SIGNER, Collections.emptyList()), 
-//				employees.getOrDefault(Role.APPROVER, Collections.emptyList()), 
-//				labels);
-		return null;
+		var memo = memoRepository.findById(memoId)
+				.orElseThrow(() -> new ResourceNotFoundException("Memo not found with id: " + memoId));
+		
+		memo.initializeMemoEmployees();
+		
+		memo.initializeMemoLabels();
+		
+		var employees = memo.getMemoEmployees().stream()
+				.map(me -> new MemoEmployeeResponse(me.getId(), 
+						new EmployeeAssignmentResponse(me.getEmployeeAssignment()), 
+						me.getRole(), 
+						me.getPlacementOrder(), 
+						me.getCreatedAt()))
+				.collect(Collectors.groupingBy(
+						MemoEmployeeResponse::role, 
+						() -> new EnumMap<>(Role.class),
+						Collectors.collectingAndThen(
+			                    Collectors.toList(),
+			                    list -> {
+			                        list.sort(Comparator.comparing(MemoEmployeeResponse::placementOrder));
+			                        return list;
+			                    }
+			               )));
+		
+		var labels = memo.getMemoLabels().stream()
+				.map(l -> new MemoLabelResponse(l.getId(),
+						new UserAssignmentResponse(l.getCreatedBy()), 
+						l.getName(), 
+						l.getCreatedAt()))
+				.toList();
+		
+		return new MemoResponse(memo.getId(),
+				memo.getContent(), 
+				memo.getStatus(), 
+				new UserAssignmentResponse(memo.getAssignee()), 
+				new DepartmentResponse(memo.getDepartment()), 
+				memo.getSequenceNumber(), 
+				memo.getCreationYear(), 
+				memo.getCreatedAt(), 
+				memo.getUpdatedAt(), 
+				employees.getOrDefault(Role.RECIPIENT, Collections.emptyList()), 
+				employees.getOrDefault(Role.COPY_RECIPIENT, Collections.emptyList()), 
+				employees.getOrDefault(Role.SIGNER, Collections.emptyList()), 
+				employees.getOrDefault(Role.APPROVER, Collections.emptyList()), 
+				labels);
 	}
 	
 	@Retryable(includes = { DataIntegrityViolationException.class }, maxRetries = 5)
 	@Transactional
 	public UUID createMemo(User user, MemoRequest memoRequest) throws BusinessException {
-//        User assignee = userService.getEnabledUserById(memoRequest.assigneeId());
-//        
-//        if (!Objects.equals(assignee.getDepartmentUnit().getDepartment(), user.getDepartmentUnit().getDepartment())) {
-//        	throw new BusinessException("Assignee`s departmnet must be the same as user`s departmant");
-//        }
-//        
-//		int currentYear = LocalDate.now().getYear();
-//		
-//        int maxNumber = memoRepository.searchMaxSequenceNumber(currentYear, assignee.getDepartmentUnit().getDepartment()).orElse(0);
-//        int nextNumber = maxNumber + 1;
-//        
-//		Memo memo = new Memo(memoRequest.content(), 
-//				Memo.Status.IN_PROGRESS, 
-//				assignee, 
-//				assignee.getDepartmentUnit(), 
-//				assignee.getDepartmentUnit().getDepartment(), 
-//				nextNumber, 
-//				currentYear);
-//		
-//		addMemoEmployees(user, memo, memoRequest.copyRecipientIds(), MemoEmployee.Role.COPY_RECIPIENT);
-//		
-//		addMemoEmployees(user, memo, memoRequest.recipientIds(), MemoEmployee.Role.RECIPIENT);
-//		
-//		addMemoEmployees(user, memo, memoRequest.approverIds(), MemoEmployee.Role.APPROVER);
-//		
-//		addMemoEmployees(user, memo, memoRequest.signerIds(), MemoEmployee.Role.SIGNER);
-//		
-//		addMemoLabels(user, memoRequest, memo);
-//		
-//		memo.addMemoLog(new MemoLog(memo, user, user.getDepartmentUnit(), MemoLog.Status.CREATED));
-//		
-//		return memoRepository.save(memo).getId();
-		return null;
+		UserAssignment currentUserAssgnment = userAssignmentService.getCurrentUserAssignmentByUserId(user.getId());
+		
+		UserAssignment assignee = userAssignmentService.getUserAssignmentById(memoRequest.assigneeId());
+		
+        if (!Objects.equals(assignee.getDepartmentUnit().getDepartment(), currentUserAssgnment.getDepartmentUnit().getDepartment())) {
+        	throw new BusinessException("Assignee`s departmnet must be the same as user`s departmant");
+        }
+        
+		int currentYear = LocalDate.now().getYear();
+		
+        int maxNumber = memoRepository.searchMaxSequenceNumber(currentYear, assignee.getDepartmentUnit().getDepartment()).orElse(0);
+        int nextNumber = maxNumber + 1;
+        
+		Memo memo = new Memo(memoRequest.content(), 
+				Memo.Status.IN_PROGRESS, 
+				assignee, 
+				assignee.getDepartmentUnit().getDepartment(), 
+				nextNumber, 
+				currentYear);
+		
+		addMemoEmployees(user, memo, memoRequest.copyRecipientIds(), MemoEmployee.Role.COPY_RECIPIENT);
+		
+		addMemoEmployees(user, memo, memoRequest.recipientIds(), MemoEmployee.Role.RECIPIENT);
+		
+		addMemoEmployees(user, memo, memoRequest.approverIds(), MemoEmployee.Role.APPROVER);
+		
+		addMemoEmployees(user, memo, memoRequest.signerIds(), MemoEmployee.Role.SIGNER);
+		
+		addMemoLabels(user, currentUserAssgnment, memoRequest, memo);
+		
+		memo.addMemoLog(new MemoLog(memo, currentUserAssgnment, MemoLog.Status.CREATED));
+		
+		return memoRepository.save(memo).getId();
 	}
 	
-//	private void addMemoEmployees(User user, Memo memo, List<String> ids, MemoEmployee.Role role) throws ResourceNotFoundException {
-//		var parsedTargets = new ArrayList<EmployeePosDto>();
-//		var employeeIds = new HashSet<UUID>();
-//		
-//		for (String id : ids) {
-//			Assert.hasText(id, () -> role + " id is required for user ID: " + user.getId());
-//
-//	        String[] parts = id.split(":");
-//	        Assert.isTrue(parts.length == 2, () -> "Employee ID and position ID are required for user ID: " + user.getId());
-//
-//	        UUID empId = parseUuid(parts[0], "Invalid employee UUID for user ID: " + user.getId());
-//	        UUID posId = parseUuid(parts[1], "Invalid position UUID for user ID: " + user.getId());
-//
-//	        parsedTargets.add(new EmployeePosDto(empId, posId));
-//	        employeeIds.add(empId);
-//		}
+	private void addMemoEmployees(User user, Memo memo, List<UUID> ids, MemoEmployee.Role role) throws ResourceNotFoundException {
+		List<EmployeeAssignment> employeeAssignments = employeeAssignmentService.getEmployeeAssignmentsByIds(ids);
 		
-//		List<Employee> employees = employeeService.getEnabledEmployeesByIds(employeeIds);
-//		
-//		Map<UUID, Employee> employeeMap = employees.stream()
-//	            .collect(Collectors.toMap(Employee::getId, e -> e, (e1, e2) -> e1));
-//		
-//		int order = 0;
-//		
-//	    for (EmployeePosDto target : parsedTargets) {
-//	        Employee employee = employeeMap.get(target.employeeId());
-//	        
-//	        if (employee == null) {
-//	        	throw new ResourceNotFoundException("Employee not found with ID: " + target.employeeId() + " for user ID: " + user.getId());
-//	        }
-//	        
-//	        Position position = employee.getPositions().stream()
-//	                .filter(p -> p.getId().equals(target.positionId()))
-//	                .findFirst()
-//	                .orElseThrow(() -> new ResourceNotFoundException("Position not found with ID: " + target.positionId() + " for user ID: " + user.getId()));
-//
-//	        memo.addMemoEmployee(new MemoEmployee(memo, employee, position, role, order++));
-//	    }
-//	}
-	
-	private UUID parseUuid(String value, String errorMessage) {
-	    try {
-	        return UUID.fromString(value);
-	    } catch (IllegalArgumentException e) {
-	        throw new IllegalArgumentException(errorMessage, e);
+		Map<UUID, EmployeeAssignment> employeeAssignmentsMap = employeeAssignments.stream()
+	            .collect(Collectors.toMap(EmployeeAssignment::getId, e -> e));
+		
+		int order = 0;
+		
+	    for (UUID id : ids) {
+	    	EmployeeAssignment employeeAssignment = employeeAssignmentsMap.get(id);
+	        
+	        if (employeeAssignment == null) {
+	        	throw new ResourceNotFoundException("EmployeeAssignment not found with ID: " + id + " for user ID: " + user.getId());
+	        }
+	        
+	        Assert.state(employeeAssignment.getEndDate().isEmpty(), "EmployeeAssignment with ID: " + id + " must be current for user ID: " + user.getId());
+	        
+	        memo.addMemoEmployee(new MemoEmployee(memo, employeeAssignment, role, order++));
 	    }
 	}
 	
-	private void addMemoLabels(User user, MemoRequest memoRequest, Memo memo) {
-//		for (String label : memoRequest.labels()) {
-//			Assert.hasText(label, () -> "Label for user '" + user.getId() + "' must not be empty");
-//			memo.addMemoLabel(new MemoLabel(memo, user, user.getDepartmentUnit(), label));
-//		}
+	private void addMemoLabels(User user, UserAssignment userAssignment, MemoRequest memoRequest, Memo memo) {
+		for (String label : memoRequest.labels()) {
+			Assert.hasText(label, () -> "Label for user '" + user.getId() + "' must not be empty");
+			
+			memo.addMemoLabel(new MemoLabel(memo, userAssignment, label));
+		}
 	}
 	
 	@Transactional

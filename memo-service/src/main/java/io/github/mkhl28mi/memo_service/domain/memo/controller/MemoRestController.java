@@ -33,17 +33,17 @@ public class MemoRestController {
 	}
 	
 	@GetMapping("/enabled-assignees")
-	public List<UserAssignmentResponse> getEnabledAssigneeOptions(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam("q") String query) {
+	public List<UserAssignmentResponse> getEnabledAssignees(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam("q") String query) {
 		return userAssignmentService.getEnabledUserAssignments(userDetails.getUser(), query);
 	}
 	
 	@GetMapping("/enabled-employees")
-	public List<EmployeeAssignmentResponse> getEnabledEmployeeOptions(@RequestParam("q") String query) {
+	public List<EmployeeAssignmentResponse> getEnabledEmployees(@RequestParam("q") String query) {
 		return employeeAssignmentService.getEnabledEmployeeAssignments(query);
 	}
 	
 	@GetMapping("/distinct-labels")
-	public List<String> getLabelsOptions(@RequestParam("q") String query) {
+	public List<String> getLabels(@RequestParam("q") String query) {
 		return memoLabelService.getDistinctLabelsAsString(query);
 	}
 	

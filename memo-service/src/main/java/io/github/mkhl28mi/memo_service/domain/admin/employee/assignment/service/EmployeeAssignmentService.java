@@ -34,15 +34,19 @@ public class EmployeeAssignmentService {
 		this.positionService = positionService;
 		this.employeeAssignmentRepository = employeeAssignmentRepository;
 	}
+	
+	public List<EmployeeAssignment> getEmployeeAssignmentsByIds(List<UUID> ids) {
+		return employeeAssignmentRepository.findAllById(ids);
+	}
 
 	public List<EmployeeAssignmentResponse> getEmployeeAssignments(UUID employeeId) {
-		return employeeAssignmentRepository.searchByEmployeeId(employeeId).stream()
+		return employeeAssignmentRepository.finadAllByEmployeeId(employeeId).stream()
 				.map(EmployeeAssignmentResponse::new)
 				.toList();
 	}
 	
 	public List<EmployeeAssignmentResponse> getEnabledEmployeeAssignments(String query) {
-		return employeeAssignmentRepository.findAllEnabledByEmployeeFullname(query).stream()
+		return employeeAssignmentRepository.searchAllEnabledByEmployeeFullname(query).stream()
 		.map(EmployeeAssignmentResponse::new)
 		.toList();
 	}

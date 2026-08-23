@@ -19,6 +19,22 @@ public record EmployeeAssignmentResponse(UUID id, PositionResponse positionRespo
 				employeeAssignment.getEndDate());
 	}
 	
+	public String nameLabel() {
+		return new StringBuilder()
+				.append(employeeResponse.fullName())
+				.append(" ")
+				.append(positionResponse.name())
+				.toString();
+	}
+	
+	public String targetNameLabel() {
+		return new StringBuilder()
+				.append(employeeResponse.targetFullName())
+				.append(" ")
+				.append(positionResponse.targetName())
+				.toString();
+	}
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);

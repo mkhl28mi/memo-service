@@ -34,6 +34,16 @@ public class UserAssignmentService {
 		this.userAssignmentRepository = userAssignmentRepository;
 	}
 	
+	public UserAssignment getUserAssignmentById(UUID id) throws ResourceNotFoundException {
+		return userAssignmentRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("UserAssignment not found with ID: " + id));
+	}
+	
+	public UserAssignment getCurrentUserAssignmentByUserId(UUID id) throws ResourceNotFoundException {
+		return userAssignmentRepository.findCurrentByUserId(id)
+				.orElseThrow(() -> new ResourceNotFoundException("UserAssignment not found with user`s ID: " + id));
+	}
+	
 	public List<UserAssignmentResponse> getUserAssignments(UUID userId) {
 		return userAssignmentRepository.searchByUserId(userId).stream()
 				.map(UserAssignmentResponse::new)
@@ -43,10 +53,10 @@ public class UserAssignmentService {
 	public List<UserAssignmentResponse> getEnabledUserAssignments(User user, String search) throws IllegalArgumentException {
 		if (search == null) { throw new IllegalArgumentException("Search cannot be null."); }
 		
-		UserAssignment userAssignment =  userAssignmentRepository.findCurrentByUserId(user.getId())
-				.orElseThrow(() -> new ResourceNotFoundException("UserAssignment not found with user: " + user));
+		UserAssignment currentUserAssignment =  userAssignmentRepository.findCurrentByUserId(user.getId())
+				.orElseThrow(() -> new ResourceNotFoundException("UserAssignment not found with ID: " + user.getId()));
 		
-		return userAssignmentRepository.searchEnabledByFullnameAndDepartment(search, userAssignment.getDepartmentUnit().getDepartment()).stream()
+		return userAssignmentRepository.searchEnabledByFullnameAndDepartment(search, currentUserAssignment.getDepartmentUnit().getDepartment()).stream()
 				.map(UserAssignmentResponse::new)
 				.toList();
  	}
