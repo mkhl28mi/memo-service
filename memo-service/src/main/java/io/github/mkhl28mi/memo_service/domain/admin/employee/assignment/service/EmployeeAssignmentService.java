@@ -65,11 +65,11 @@ public class EmployeeAssignmentService {
 	}
 	
 	@Transactional
-	public void removeEmployeeAssignment(UUID id) {
+	public void updateEmployeeAssignmentEndDate(UUID id) {
 		EmployeeAssignment employeeAssignment = employeeAssignmentRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("EmployeeAssignment not found with ID: " + id));
 		
-		Assert.state(employeeAssignment.getEndDate().isEmpty(), "EmployeeAssignment` endDate must be null");
+		Assert.state(employeeAssignment.getEndDate().isEmpty(), "EmployeeAssignment`s endDate must be null");
 		
 		employeeAssignment.setEndDate(LocalDateTime.now());
 		

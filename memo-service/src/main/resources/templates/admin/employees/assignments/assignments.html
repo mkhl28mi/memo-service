@@ -46,9 +46,9 @@
 			      <td th:text="${iterStat.count}"></td>
 			      <td th:text="${assignment.positionResponse.name}"></td>
 			      <td th:text="${#temporals.format(assignment.startDate, 'dd-MM-yyyy HH:mm')}"></td>
-			      <td th:text="${assignment.endDate.isPresent()} ? #temporals.format(assignment.endDate.get(), 'dd-MM-yyyy HH:mm') : 'Дата відсутня'"></td>
+			      <td th:text="${assignment.endDate.isPresent() ? #temporals.format(assignment.endDate.get(), 'dd-MM-yyyy HH:mm') : 'Дата відсутня'}"></td>
 			      <td class="text-center">
-			      	<form th:action="@{/admin/employees/{employeeId}/assignments (employeeId=${employee.id})}" th:method="delete">
+			      	<form th:action="@{/admin/employees/{employeeId}/assignments/{id} (employeeId=${employee.id}, id=${assignment.id})}" th:method="put">
 						<div class="d-grid">
 							<button type="submit" th:disabled="${assignment.endDate.isPresent()}" class="btn btn-outline-danger btn-sm">Звільнити</button>
 						</div>

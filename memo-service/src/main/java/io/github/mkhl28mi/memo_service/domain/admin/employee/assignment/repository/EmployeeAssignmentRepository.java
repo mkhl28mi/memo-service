@@ -11,7 +11,7 @@ import io.github.mkhl28mi.memo_service.domain.admin.employee.assignment.entity.E
 
 public interface EmployeeAssignmentRepository extends JpaRepository<EmployeeAssignment, UUID> {
 	
-	@Query("SELECT ea FROM EmployeeAssignment ea WHERE ea.employee.id = :employeeId AND up.endDate IS NULL")
+	@Query("SELECT ea FROM EmployeeAssignment ea WHERE ea.employee.id = :employeeId AND ea.endDate IS NULL")
 	public List<EmployeeAssignment> findAllCurrentByEmployeeId(@Param("employeeId") UUID employeeId);
 	
 	@Query("SELECT ea FROM EmployeeAssignment ea WHERE ea.employee.id = :employeeId")

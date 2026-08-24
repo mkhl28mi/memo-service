@@ -13,7 +13,7 @@ import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.entity.UserA
 
 public interface UserAssignmentRepository extends JpaRepository<UserAssignment, UUID> {
 	
-	@Query("SELECT ua FROM UserAssignment ua WHERE ua.user.id = :userId AND up.endDate IS NULL")
+	@Query("SELECT ua FROM UserAssignment ua WHERE ua.user.id = :userId AND ua.endDate IS NULL")
 	public Optional<UserAssignment> findCurrentByUserId(@Param("userId") UUID userId);
 	
 	@Query("SELECT ua FROM UserAssignment ua WHERE ua.user.id = :userId")

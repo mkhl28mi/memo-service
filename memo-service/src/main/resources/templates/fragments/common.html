@@ -28,10 +28,10 @@
 			            Адміністрування 
 			          </a>
 			          <ul class="dropdown-menu">
+			          	<li><a class="dropdown-item" th:classappend="${activePage == 'admin/positions'} ? 'active' : ''" href="/admin/positions">Посади</a></li>
 			          	<li><a class="dropdown-item" th:classappend="${activePage == 'admin/departments'} ? 'active' : ''" href="/admin/departments">Відділи</a></li>
+			          	<li><a class="dropdown-item" th:classappend="${activePage == 'admin/employees'} ? 'active' : ''" href="/admin/employees">Працівники</a></li>
 			            <li><a class="dropdown-item" th:classappend="${activePage == 'admin/users'} ? 'active' : ''" href="/admin/users">Користувачі</a></li>
-			            <li><a class="dropdown-item" th:classappend="${activePage == 'admin/employees'} ? 'active' : ''" href="/admin/employees">Працівники</a></li>
-			            <li><a class="dropdown-item" th:classappend="${activePage == 'admin/positions'} ? 'active' : ''" href="/admin/positions">Посади</a></li>
 			            <li><a class="dropdown-item" th:classappend="${activePage == 'admin/registry'} ? 'active' : ''"  href="#">Книга реєстрації</a></li>
 			            <li><a class="dropdown-item" th:classappend="${activePage == 'admin/application-settings'} ? 'active' : ''" href="/admin/application-settings">Налаштування</a></li>
 			            <li><hr class="dropdown-divider"></li>

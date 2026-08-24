@@ -11,7 +11,7 @@
     <div layout:fragment="content" class="mx-auto w-75 mt-3">
     	<a class="btn btn-outline-dark mb-3" href="/admin/positions"  role="button">🡨</a>
     	<div class="d-flex justify-content-center">
-	    	<div class="card w-75">
+	    	<div class="card w-100">
 	    		<div class="card-body">
 		    		<h5 class="card-title">Редагувати посаду</h5>
 					<form th:action="@{/admin/positions/{id} (id=${positionId})}" th:object="${positionRequest}" th:method="put">

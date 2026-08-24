@@ -4,10 +4,10 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -43,9 +43,9 @@ public class EmployeeAssignmentController {
 		return String.format("redirect:/admin/employees/%s/assignments", employeeId);
 	}
 	
-	@DeleteMapping
-	public String removeEmployeeAssignment(@PathVariable UUID employeeId, @RequestParam UUID id) {
-		employeeAssignmentService.removeEmployeeAssignment(id);
+	@PutMapping("{id}")
+	public String removeEmployeeAssignment(@PathVariable UUID employeeId, @PathVariable UUID id) {
+		employeeAssignmentService.updateEmployeeAssignmentEndDate(id);
 		
 		return String.format("redirect:/admin/employees/%s/assignments", employeeId);
 	}

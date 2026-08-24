@@ -10,7 +10,7 @@
 
     <div layout:fragment="content" class="mx-auto w-75 mt-3">
     	<div class="d-flex justify-content-center">
-	    	<div class="card w-75 mb-5">
+	    	<div class="card w-100 mb-5">
 	    		<div class="card-body">
 	    			<h5 class="card-title">Додати посаду</h5>
 					<form th:action="@{/admin/positions}" th:object="${positionRequest}" method="post">
@@ -39,41 +39,51 @@
 			</div>
 		</div>
 		
-		<table class="table border-top">
-		  <thead>
-		    <tr>
-		      <th scope="col">#</th>
-		      <th scope="col">Назва (Називний відмінок)</th>
-		      <th scope="col">Назва (Давальний відмінок)</th>
-		      <th scope="col">Порядок розміщення</th>
-		      <th scope="col">Доступна</th>
-		      <th scope="col">Дата створення</th>
-		      <th scope="col">Дата оновлення</th>
-		      <th scope="col">Дія</th>
-		    </tr>
-		  </thead>
-		  <tbody>
-		    <tr th:each="position, iterStat : ${positions}">
-		      <td th:text="${iterStat.count}"></td>
-		      <td th:text="${position.name}"></td>
-		      <td th:text="${position.targetName}"></td>
-		      <td th:text="${position.placementOrder}"></td>
-		      <td th:text="${position.enabled} ? '🮱'"></td>
-		      <td th:text="${position.createdAt}"></td>
-		      <td th:text="${position.updatedAt}"></td>
-		      <td>
-		      	<div class="d-grid mb-1">
-		        	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/positions/{id} (id=${position.id})}" role="button">Редагувати</a>
-			    </div>
-		      	<form th:action="@{/admin/positions/{id} (id=${position.id})}" th:method="delete">
-					<div class="d-grid">
-						<button type="submit" class="btn btn-outline-danger btn-sm">Видалити</button>
-					</div>
-				</form>
-		      </td>
-		    </tr>
-		  </tbody>
-		</table>
+		<div class="d-flex justify-content-end">
+		   <form class="d-flex" th:action="@{/admin/positions}" method="get">
+	         <input class="form-control me-2" type="search" name="search" placeholder="Search" aria-label="Search">
+	         <button class="btn btn-outline-dark" type="submit">Search</button>
+	       </form>
+		</div>
+		
+		<div class="table-responsive" style="height: 500px;">
+			<table class="table table-sm caption-top border-top">
+			  <caption>Посади</caption>
+			  <thead>
+			    <tr>
+			      <th scope="col">#</th>
+			      <th style="min-width: 250px;" scope="col">Назва (Називний відмінок)</th>
+			      <th style="min-width: 250px;" scope="col">Назва (Давальний відмінок)</th>
+			      <th class="text-center" style="min-width: 150px;" scope="col">Порядок розміщення</th>
+			      <th class="text-center" style="min-width: 150px;" scope="col">Доступна</th>
+			      <th class="text-center" style="min-width: 150px;" scope="col">Дата створення</th>
+			      <th class="text-center" style="min-width: 150px;" scope="col">Дата оновлення</th>
+			      <th class="text-center" style="min-width: 150px;" scope="col">Дія</th>
+			    </tr>
+			  </thead>
+			  <tbody>
+			    <tr th:each="position, iterStat : ${positions}">
+			      <td th:text="${iterStat.count}"></td>
+			      <td th:text="${position.name}"></td>
+			      <td th:text="${position.targetName}"></td>
+			      <td class="text-center" th:text="${position.placementOrder}"></td>
+			      <td class="text-center" th:text="${position.enabled} ? '🮱'"></td>
+			      <td class="text-center" th:text="${#temporals.format(position.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
+			      <td class="text-center" th:text="${#temporals.format(position.updatedAt, 'dd-MM-yyyy HH:mm')}"></td>
+			      <td class="text-center">
+			      	<div class="d-grid mb-1">
+			        	<a class="btn btn-outline-dark btn-sm" th:href="@{/admin/positions/{id} (id=${position.id})}" role="button">Редагувати</a>
+				    </div>
+			      	<form th:action="@{/admin/positions/{id} (id=${position.id})}" th:method="delete">
+						<div class="d-grid">
+							<button type="submit" class="btn btn-outline-danger btn-sm">Видалити</button>
+						</div>
+					</form>
+			      </td>
+			    </tr>
+			  </tbody>
+			</table>
+		</div>
     </div>
     
 </body>
