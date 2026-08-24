@@ -14,14 +14,14 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 public class LocalizationConfig implements WebMvcConfigurer {
 	
 	@Bean
-    public LocaleResolver localeResolver() {
+    LocaleResolver localeResolver() {
         SessionLocaleResolver slr = new SessionLocaleResolver();
         slr.setDefaultLocale(Locale.UK);
         return slr;
     }
 	
 	@Bean
-    public LocaleChangeInterceptor localeChangeInterceptor() {
+    LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
         lci.setParamName("lang");
         return lci;

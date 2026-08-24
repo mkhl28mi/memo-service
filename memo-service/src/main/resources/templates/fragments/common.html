@@ -40,6 +40,17 @@
 			        </li>
 			      </ul>
 			    </div>
+			    
+			    <div th:if="${currentUser != null}" class="user-profile">
+			        <span>Вітаємо, <strong th:text="${currentUser.fullName}"></strong>!</span>
+			        
+			        <form th:action="@{/logout}" method="post" style="display: inline;">
+			            <button class="btn btn-link link-body-emphasis ms-2" type="submit">Вийти</button>
+			        </form>
+			    </div>
+			    <div th:unless="${currentUser != null}">
+        			<a class="link-body-emphasis" href="/login">Увійти</a>
+    			</div>
 			  </div>
 			</nav>
 		</header>
