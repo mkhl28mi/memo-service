@@ -61,8 +61,20 @@
 			new TomSelect("#recipientIds", {
 				plugins: ['remove_button'],
 			    valueField: 'id',
-			    labelField: 'targetNameLabel',
 			    searchField: [],
+			    
+			    render: {
+			        option: function(data, escape) {
+			          return `<div>
+			            <strong>${escape(data.employeeResponse.targetFullName)}</strong>
+			            <span class="text-muted"> — ${escape(data.positionResponse.targetName)}</span>
+			          </div>`;
+			        },
+
+			        item: function(data, escape) {
+			          return `<div>${escape(data.employeeResponse.targetFullName)}</div>`;
+			        }
+			    },
 			    
 			    load: function(query, callback) {
 			        if (!query.length) return callback();
@@ -87,7 +99,6 @@
 			new TomSelect("#copyRecipientIds", {
 				plugins: ['remove_button'],
 			    valueField: 'id',
-			    labelField: 'targetNameLabel',
 			    searchField: [],
 			    
 			    load: function(query, callback) {
@@ -103,6 +114,19 @@
 			            .catch(() => {
 			                callback();
 			            });
+			    },
+			    
+			    render: {
+			        option: function(data, escape) {
+			          return `<div>
+			            <strong>${escape(data.employeeResponse.targetFullName)}</strong>
+			            <span class="text-muted"> — ${escape(data.positionResponse.targetName)}</span>
+			          </div>`;
+			        },
+
+			        item: function(data, escape) {
+			          return `<div>${escape(data.employeeResponse.targetFullName)}</div>`;
+			        }
 			    },
 			    
 			    shouldLoad: function(query) {
@@ -113,7 +137,6 @@
 			new TomSelect("#signerIds", {
 				plugins: ['remove_button'],
 			    valueField: 'id',
-			    labelField: 'nameLabel',
 			    searchField: [],
 			    
 			    load: function(query, callback) {
@@ -131,6 +154,19 @@
 			            });
 			    },
 			    
+			    render: {
+			        option: function(data, escape) {
+			          return `<div>
+			            <strong>${escape(data.employeeResponse.fullName)}</strong>
+			            <span class="text-muted"> — ${escape(data.positionResponse.name)}</span>
+			          </div>`;
+			        },
+
+			        item: function(data, escape) {
+			          return `<div>${escape(data.employeeResponse.fullName)}</div>`;
+			        }
+			    },
+			    
 			    shouldLoad: function(query) {
 			        return query.length >= 2;
 			    }
@@ -139,7 +175,6 @@
 			new TomSelect("#approverIds", {
 				plugins: ['remove_button'],
 			    valueField: 'id',
-			    labelField: 'nameLabel',
 			    searchField: [],
 			    
 			    load: function(query, callback) {
@@ -155,6 +190,19 @@
 			            .catch(() => {
 			                callback();
 			            });
+			    },
+			    
+			    render: {
+			        option: function(data, escape) {
+			          return `<div>
+			            <strong>${escape(data.employeeResponse.fullName)}</strong>
+			            <span class="text-muted"> — ${escape(data.positionResponse.name)}</span>
+			          </div>`;
+			        },
+
+			        item: function(data, escape) {
+			          return `<div>${escape(data.employeeResponse.fullName)}</div>`;
+			        }
 			    },
 			    
 			    shouldLoad: function(query) {
@@ -181,6 +229,18 @@
 			            .catch(() => {
 			                callback();
 			            });
+			    },
+			    
+			    render: {
+			        option: function(data, escape) {
+			          return `<div>
+			            <strong>${escape(data.userResponse.fullName)}</strong>
+			          </div>`;
+			        },
+
+			        item: function(data, escape) {
+			          return `<div>${escape(data.userResponse.fullName)}</div>`;
+			        }
 			    },
 			    
 			    shouldLoad: function(query) {

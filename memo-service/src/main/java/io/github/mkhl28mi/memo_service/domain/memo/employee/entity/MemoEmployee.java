@@ -24,7 +24,6 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "memo_employees")
@@ -46,7 +45,6 @@ public class MemoEmployee {
 	private EmployeeAssignment employeeAssignment;
 	
 	@NotNull(message = "Role cannot be null")
-    @Size(min = 1, max = 20, message = "Role must be between 1 and 20 characters")
 	@Enumerated(EnumType.STRING)
 	@Column(name = "role", nullable = false, length = 20)
 	private Role role;

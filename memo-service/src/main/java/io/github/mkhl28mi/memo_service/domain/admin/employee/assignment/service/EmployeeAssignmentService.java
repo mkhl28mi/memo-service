@@ -46,7 +46,7 @@ public class EmployeeAssignmentService {
 	}
 	
 	public List<EmployeeAssignmentResponse> getEnabledEmployeeAssignments(String query) {
-		return employeeAssignmentRepository.searchAllEnabledByEmployeeFullname(query).stream()
+		return employeeAssignmentRepository.searchEnabledByEmployeeOrPosition(query).stream()
 		.map(EmployeeAssignmentResponse::new)
 		.toList();
 	}

@@ -19,22 +19,22 @@ public record EmployeeAssignmentResponse(UUID id, PositionResponse positionRespo
 				employeeAssignment.getEndDate());
 	}
 	
-	public String nameLabel() {
+	public String getNameLabel() {
 		return new StringBuilder()
 				.append(employeeResponse.fullName())
-				.append(" ")
+				.append(" - ")
 				.append(positionResponse.name())
 				.toString();
 	}
 	
-	public String targetNameLabel() {
+	public String getTargetNameLabel() {
 		return new StringBuilder()
 				.append(employeeResponse.targetFullName())
-				.append(" ")
+				.append(" - ")
 				.append(positionResponse.targetName())
 				.toString();
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
