@@ -4,9 +4,11 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -30,6 +32,7 @@ import io.github.mkhl28mi.memo_service.domain.memo.employee.dto.response.MemoEmp
 import io.github.mkhl28mi.memo_service.domain.memo.employee.entity.MemoEmployee;
 import io.github.mkhl28mi.memo_service.domain.memo.employee.entity.MemoEmployee.Role;
 import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo;
+import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo.Status;
 import io.github.mkhl28mi.memo_service.domain.memo.label.dto.response.MemoLabelResponse;
 import io.github.mkhl28mi.memo_service.domain.memo.label.entity.MemoLabel;
 import io.github.mkhl28mi.memo_service.domain.memo.log.entity.MemoLog;
@@ -106,12 +109,14 @@ public class MemoService {
 	@Retryable(includes = { DataIntegrityViolationException.class }, maxRetries = 5)
 	@Transactional
 	public UUID createMemo(User user, MemoRequest memoRequest) throws BusinessException {
-		UserAssignment currentUserAssgnment = userAssignmentService.getCurrentUserAssignmentByUserId(user.getId());
+		UserAssignment currentUserAssignment = userAssignmentService.getCurrentUserAssignmentByUserId(user.getId());
 		
 		UserAssignment assignee = userAssignmentService.getUserAssignmentById(memoRequest.assigneeId());
 		
-        if (!Objects.equals(assignee.getDepartmentUnit().getDepartment(), currentUserAssgnment.getDepartmentUnit().getDepartment())) {
-        	throw new BusinessException("Assignee`s departmnet must be the same as user`s departmant");
+		Assert.state(assignee.getEndDate().isEmpty(), () -> "Assignee must be current" + " for user ID: " + user.getId());
+		
+        if (!Objects.equals(assignee.getDepartmentUnit().getDepartment(), currentUserAssignment.getDepartmentUnit().getDepartment())) {
+        	throw new BusinessException("Assignee`s departmnet must be the same as user`s departmant" + " for user ID: " + user.getId());
         }
         
 		int currentYear = LocalDate.now().getYear();
@@ -134,22 +139,26 @@ public class MemoService {
 		
 		addMemoEmployees(user, memo, memoRequest.signerIds(), MemoEmployee.Role.SIGNER);
 		
-		addMemoLabels(user, currentUserAssgnment, memoRequest, memo);
+		addMemoLabels(user, currentUserAssignment, memoRequest, memo);
 		
-		memo.addMemoLog(new MemoLog(memo, currentUserAssgnment, MemoLog.Status.CREATED));
+		memo.addMemoLog(new MemoLog(memo, currentUserAssignment, MemoLog.Status.CREATED));
 		
 		return memoRepository.save(memo).getId();
 	}
 	
-	private void addMemoEmployees(User user, Memo memo, List<UUID> ids, MemoEmployee.Role role) throws ResourceNotFoundException {
+	private void addMemoEmployees(User user, Memo memo, List<UUID> ids, MemoEmployee.Role role) throws ResourceNotFoundException, BusinessException {
+		if (hasDuplicates(ids)) {
+        	throw new BusinessException("No duplicate values allowed" + " for user ID: " + user.getId());
+        }
+        
 		List<EmployeeAssignment> employeeAssignments = employeeAssignmentService.getEmployeeAssignmentsByIds(ids);
 		
 		Map<UUID, EmployeeAssignment> employeeAssignmentsMap = employeeAssignments.stream()
 	            .collect(Collectors.toMap(EmployeeAssignment::getId, e -> e));
 		
-		int order = 0;
-		
-	    for (UUID id : ids) {
+	    for (int i = 0; i < ids.size(); i++) {
+	    	UUID id = ids.get(i);
+	    	
 	    	EmployeeAssignment employeeAssignment = employeeAssignmentsMap.get(id);
 	        
 	        if (employeeAssignment == null) {
@@ -158,7 +167,7 @@ public class MemoService {
 	        
 	        Assert.state(employeeAssignment.getEndDate().isEmpty(), "EmployeeAssignment with ID: " + id + " must be current for user ID: " + user.getId());
 	        
-	        memo.addMemoEmployee(new MemoEmployee(memo, employeeAssignment, role, order++));
+	        memo.addMemoEmployee(new MemoEmployee(memo, employeeAssignment, role, i));
 	    }
 	}
 	
@@ -172,88 +181,103 @@ public class MemoService {
 	
 	@Transactional
 	public void updateMemo(User user, UUID memoId, MemoRequest memoRequest) throws BusinessException {
-//		Memo memo = memoRepository.findById(memoId)
-//				.orElseThrow(() -> new ResourceNotFoundException("Memo not found with ID: " + memoId));
-//		
-//		Assert.state(memo.getStatus() == Status.IN_PROGRESS, () -> "To update memo it must be with Status: " + Status.IN_PROGRESS);
-//		
-//		memo.setContent(memoRequest.content());
-//		
-//		if (!Objects.equals(memo.getAssignee().getId(), memoRequest.assigneeId())) {
-//	        User assignee = userService.getEnabledUserById(memoRequest.assigneeId());
-//	        
-//	        if (!Objects.equals(assignee.getDepartmentUnit().getDepartment(), user.getDepartmentUnit().getDepartment())) {
-//	        	throw new BusinessException("Assignee`s departmnet must be the same as user`s departmant");
-//	        }
-//	        
-//			memo.setAssignee(assignee);
-//			memo.setDepartmentUnit(assignee.getDepartmentUnit());
-//			memo.setDepartment(assignee.getDepartmentUnit().getDepartment());
-//		}
-//		
-//		memo.initializeMemoEmployees();
-//		memo.initializeMemoLabels();
-//		memo.initializeMemoLogs();
-//		
-//		updateMemoEmployees(user, memo, memoRequest.copyRecipientIds(), Role.COPY_RECIPIENT);
-//		
-//		updateMemoEmployees(user, memo, memoRequest.recipientIds(), Role.RECIPIENT);
-//		
-//		updateMemoEmployees(user, memo, memoRequest.approverIds(), Role.APPROVER);
-//		
-//		updateMemoEmployees(user, memo, memoRequest.signerIds(), Role.SIGNER);
-//		
-//		new HashSet<>(memo.getMemoLabels()).forEach(memo::removeMemoLabel);
-//		
-//		addMemoLabels(user, memoRequest, memo);
-//
-//		memo.addMemoLog(new MemoLog(memo, user, user.getDepartmentUnit(), MemoLog.Status.EDITED));
-//		
-//		memoRepository.save(memo);
+		UserAssignment currentUserAssignment = userAssignmentService.getCurrentUserAssignmentByUserId(user.getId());
+		
+		Memo memo = memoRepository.findById(memoId)
+				.orElseThrow(() -> new ResourceNotFoundException("Memo not found with ID: " + memoId + " for user ID: " + user.getId()));
+		
+		Assert.state(memo.getStatus() == Status.IN_PROGRESS, () -> "Memo cannot be updated" + " for user ID: " + user.getId());
+		
+		memo.setContent(memoRequest.content());
+		
+		if (!Objects.equals(memo.getAssignee().getId(), memoRequest.assigneeId())) {
+			UserAssignment assignee = userAssignmentService.getUserAssignmentById(memoRequest.assigneeId());
+			
+			Assert.state(assignee.getEndDate().isEmpty(), () -> "Assignee must be current" + " for user ID: " + user.getId());
+	        
+	        if (!Objects.equals(assignee.getDepartmentUnit().getDepartment(), currentUserAssignment.getDepartmentUnit().getDepartment())) {
+	        	throw new BusinessException("Assignee`s departmnet must be the same as user`s departmant" + " for user ID: " + user.getId());
+	        }
+	        
+			memo.setAssignee(assignee);
+			memo.setDepartment(assignee.getDepartmentUnit().getDepartment());
+		}
+		
+		memo.initializeMemoEmployees();
+		
+		memo.initializeMemoLabels();
+		
+		memo.initializeMemoLogs();
+		
+		updateMemoEmployees(user, memo, memoRequest.copyRecipientIds(), Role.COPY_RECIPIENT);
+		
+		updateMemoEmployees(user, memo, memoRequest.recipientIds(), Role.RECIPIENT);
+		
+		updateMemoEmployees(user, memo, memoRequest.approverIds(), Role.APPROVER);
+		
+		updateMemoEmployees(user, memo, memoRequest.signerIds(), Role.SIGNER);
+		
+		new HashSet<>(memo.getMemoLabels()).forEach(memo::removeMemoLabel);
+		
+		addMemoLabels(user, currentUserAssignment, memoRequest, memo);
+		
+		memo.addMemoLog(new MemoLog(memo, currentUserAssignment, MemoLog.Status.EDITED));
+		
+		memoRepository.save(memo);
 	}
 	
-	private void updateMemoEmployees(User user, Memo memo, List<String> newIds, Role role) throws ResourceNotFoundException {
-//		var newIdsSet = new HashSet<>(newIds);
-//		
-//		var existingEmployees = memo.getMemoEmployees().stream()
-//	            .filter(me -> me.getRole() == role)
-//	            .collect(Collectors.toMap(
-//	                me -> me.getEmployee().getId() + ":" + me.getPosition().getId(), 
-//	                me -> me
-//	            ));
-//		
-//		existingEmployees.forEach((id, memoEmployee) -> {
-//	        if (!newIdsSet.contains(id)) {
-//	            memo.removeMemoEmployee(memoEmployee);
-//	        }
-//	    });
-//		
-//		var toAdd = newIds.stream()
-//	            .filter(id -> !existingEmployees.containsKey(id))
-//	            .toList();
-//		
-//		if (!toAdd.isEmpty()) {
-//	        addMemoEmployees(user, memo, toAdd, role);
-//	    }
-//		
-//		var currentEmployeesMap = memo.getMemoEmployees().stream()
-//	            .filter(me -> me.getRole() == role)
-//	            .collect(Collectors.toMap(
-//	                me -> me.getEmployee().getId() + ":" + me.getPosition().getId(), 
-//	                me -> me
-//	            )); // TODO fix with several the same employees
-//		
-//		for (int i = 0; i < newIds.size(); i++) {
-//	        String id = newIds.get(i);
-//	        
-//	        MemoEmployee memoEmployee = currentEmployeesMap.get(id);
-//
-//	        if (memoEmployee == null) {
-//	            throw new ResourceNotFoundException("MemoEmployee not found with ID: " + id + " for user ID: " + user.getId());
-//	        }
-//
-//	        memoEmployee.setPlacementOrder(i);
-//	    }
+	private void updateMemoEmployees(User user, Memo memo, List<UUID> newIds, Role role) throws ResourceNotFoundException, BusinessException {
+        if (hasDuplicates(newIds)) {
+        	throw new BusinessException("No duplicate values allowed" + " for user ID: " + user.getId());
+        }
+        
+		var newIdsSet = new HashSet<>(newIds);
+		
+		var existingEmployeeAssignments = memo.getMemoEmployees().stream()
+	            .filter(me -> me.getRole() == role)
+	            .collect(Collectors.toMap(me -> me.getEmployeeAssignment().getId(), me -> me));
+		
+		existingEmployeeAssignments.forEach((id, memoEmployee) -> {
+	        if (!newIdsSet.contains(id)) {
+	            memo.removeMemoEmployee(memoEmployee);
+	        }
+	    });
+		
+		var toAdd = newIds.stream()
+	            .filter(id -> !existingEmployeeAssignments.containsKey(id))
+	            .toList();
+		
+		if (!toAdd.isEmpty()) {
+	        addMemoEmployees(user, memo, toAdd, role);
+	    }
+		
+		var currentEmployeesMap = memo.getMemoEmployees().stream()
+	            .filter(me -> me.getRole() == role)
+	            .collect(Collectors.toMap(me -> me.getEmployeeAssignment().getId(), me -> me));
+		
+		for (int i = 0; i < newIds.size(); i++) {
+	        UUID id = newIds.get(i);
+	        
+	        MemoEmployee memoEmployee = currentEmployeesMap.get(id);
+
+	        if (memoEmployee == null) {
+	            throw new ResourceNotFoundException("MemoEmployee not found with ID: " + id + " for user ID: " + user.getId());
+	        }
+
+	        memoEmployee.setPlacementOrder(i);
+	    }
 	}
+	
+	private static boolean hasDuplicates(List<UUID> list) {
+        Set<UUID> set = new HashSet<>();
+        
+        for (UUID element : list) {
+            if (!set.add(element)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
 	
 }
