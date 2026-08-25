@@ -139,9 +139,13 @@ public class MemoService {
 		
 		addMemoEmployees(user, memo, memoRequest.signerIds(), MemoEmployee.Role.SIGNER);
 		
-		addMemoLabels(user, currentUserAssignment, memoRequest, memo);
-		
 		memo.addMemoLog(new MemoLog(memo, currentUserAssignment, MemoLog.Status.CREATED));
+		
+		for (String label : memoRequest.labels()) {
+			Assert.hasText(label, () -> "Label for user '" + user.getId() + "' must not be empty");
+			
+			memo.addMemoLabel(new MemoLabel(memo, currentUserAssignment, label));
+		}
 		
 		return memoRepository.save(memo).getId();
 	}
@@ -171,14 +175,6 @@ public class MemoService {
 	    }
 	}
 	
-	private void addMemoLabels(User user, UserAssignment userAssignment, MemoRequest memoRequest, Memo memo) {
-		for (String label : memoRequest.labels()) {
-			Assert.hasText(label, () -> "Label for user '" + user.getId() + "' must not be empty");
-			
-			memo.addMemoLabel(new MemoLabel(memo, userAssignment, label));
-		}
-	}
-	
 	@Transactional
 	public void updateMemo(User user, UUID memoId, MemoRequest memoRequest) throws BusinessException {
 		UserAssignment currentUserAssignment = userAssignmentService.getCurrentUserAssignmentByUserId(user.getId());
@@ -205,10 +201,6 @@ public class MemoService {
 		
 		memo.initializeMemoEmployees();
 		
-		memo.initializeMemoLabels();
-		
-		memo.initializeMemoLogs();
-		
 		updateMemoEmployees(user, memo, memoRequest.copyRecipientIds(), Role.COPY_RECIPIENT);
 		
 		updateMemoEmployees(user, memo, memoRequest.recipientIds(), Role.RECIPIENT);
@@ -217,11 +209,19 @@ public class MemoService {
 		
 		updateMemoEmployees(user, memo, memoRequest.signerIds(), Role.SIGNER);
 		
-		new HashSet<>(memo.getMemoLabels()).forEach(memo::removeMemoLabel);
-		
-		addMemoLabels(user, currentUserAssignment, memoRequest, memo);
+		memo.initializeMemoLogs();
 		
 		memo.addMemoLog(new MemoLog(memo, currentUserAssignment, MemoLog.Status.EDITED));
+		
+		memo.initializeMemoLabels();
+
+		new HashSet<>(memo.getMemoLabels()).forEach(memo::removeMemoLabel);
+		
+		for (String label : memoRequest.labels()) {
+			Assert.hasText(label, () -> "Label for user '" + user.getId() + "' must not be empty");
+			
+			memo.addMemoLabel(new MemoLabel(memo, currentUserAssignment, label));
+		}
 		
 		memoRepository.save(memo);
 	}
@@ -249,22 +249,22 @@ public class MemoService {
 		
 		if (!toAdd.isEmpty()) {
 	        addMemoEmployees(user, memo, toAdd, role);
-	    }
-		
-		var currentEmployeesMap = memo.getMemoEmployees().stream()
-	            .filter(me -> me.getRole() == role)
-	            .collect(Collectors.toMap(me -> me.getEmployeeAssignment().getId(), me -> me));
-		
-		for (int i = 0; i < newIds.size(); i++) {
-	        UUID id = newIds.get(i);
 	        
-	        MemoEmployee memoEmployee = currentEmployeesMap.get(id);
+			var currentEmployeesMap = memo.getMemoEmployees().stream()
+		            .filter(me -> me.getRole() == role)
+		            .collect(Collectors.toMap(me -> me.getEmployeeAssignment().getId(), me -> me));
+			
+			for (int i = 0; i < newIds.size(); i++) {
+		        UUID id = newIds.get(i);
+		        
+		        MemoEmployee memoEmployee = currentEmployeesMap.get(id);
 
-	        if (memoEmployee == null) {
-	            throw new ResourceNotFoundException("MemoEmployee not found with ID: " + id + " for user ID: " + user.getId());
-	        }
+		        if (memoEmployee == null) {
+		            throw new ResourceNotFoundException("MemoEmployee not found with ID: " + id + " for user ID: " + user.getId());
+		        }
 
-	        memoEmployee.setPlacementOrder(i);
+		        memoEmployee.setPlacementOrder(i);
+		    }
 	    }
 	}
 	

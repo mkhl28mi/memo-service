@@ -25,9 +25,9 @@
 						</svg>
 					</button>
 					<button type="submit" class="btn btn-link" data-toggle="tooltip" data-placement="right" title="Друк">
-						<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">
-						  <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1"/>
-						  <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
+						<svg xmlns="http://www.w3.org/2000/svg" width="55" height="55" fill="#2d3036" class="bi bi-printer" viewBox="0 0 16 16">
+						  <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
+						  <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"/>
 						</svg>
 					</button>
 				</div>
@@ -38,51 +38,77 @@
 				</div>
 				<div class="mt-3">
 					<label for="recipientIds" class="form-label"><b>Кому:</b></label>
-					<select th:field="*{recipientIds}" multiple placeholder="Почніть вводити ПІБ або посаду..." autocomplete="off" style="width: 100%;">
-						<option th:each="recipient : ${recipients}" th:value="${recipient.getOptionId()}" th:text="${recipient.getOptionTargetNameLabel()}"></option>
-					</select>
+					<select th:field="*{recipientIds}" multiple placeholder="Почніть вводити ПІБ або посаду..." autocomplete="off" style="width: 100%;"></select>
 				</div>
 				<div class="mt-3">
 					<label for="copyRecipientIds" class="form-label"><b>Копія:</b></label>
-					<select th:field="*{copyRecipientIds}" multiple placeholder="Почніть вводити ПІБ або посаду..." autocomplete="off" style="width: 100%;">
-						<option th:each="copyRecipient : ${copyRecipients}" th:value="${copyRecipient.getOptionId()}" th:text="${copyRecipient.getOptionTargetNameLabel()}"></option>
-					</select>
+					<select th:field="*{copyRecipientIds}" multiple placeholder="Почніть вводити ПІБ або посаду..." autocomplete="off" style="width: 100%;"></select>
 				</div>
 				<div class="mt-3">
 					<label for="signerIds" class="form-label"><b>Підписав:</b></label>
-					<select th:field="*{signerIds}" multiple placeholder="Почніть вводити ПІБ або посаду..." autocomplete="off" style="width: 100%;">
-						<option th:each="signer : ${signers}" th:value="${signer.getOptionId()}" th:text="${signer.getOptionNameLabel()}"></option>
-					</select>
+					<select th:field="*{signerIds}" multiple placeholder="Почніть вводити ПІБ або посаду..." autocomplete="off" style="width: 100%;"></select>
 				</div>
 				<div class="mt-3">
 					<label for="approverIds" class="form-label"><b>Погоджую:</b></label>
-					<select th:field="*{approverIds}" multiple placeholder="Почніть вводити ПІБ або посаду..." autocomplete="off" style="width: 100%;">
-						<option th:each="approver : ${approvers}" th:value="${approver.getOptionId()}" th:text="${approver.getOptionNameLabel()}"></option>
-					</select>
+					<select th:field="*{approverIds}" multiple placeholder="Почніть вводити ПІБ або посаду..." autocomplete="off" style="width: 100%;"></select>
 				</div>
 				<div class="mt-3">
 					<label for="assigneeId" class="form-label"><b>Виконавець:</b></label>
-					<select th:field="*{assigneeId}" placeholder="Почніть вводити ПІБ..." autocomplete="off" style="width: 100%;">
-						<option th:each="assignee : ${assignees}" th:value="${assignee.id}" th:text="${assignee.fullName}"></option>
-					</select>
+					<select th:field="*{assigneeId}" placeholder="Почніть вводити ПІБ..." autocomplete="off" style="width: 100%;"></select>
 				</div>
 			</div>
 		</form>
     </div>
     
     <th:block layout:fragment="scripts">
-	    <script>
+	    <script th:inline="javascript">
 	      	tinymce.init({
 	        	selector: '#content',
 	        	promotion:false,
 	        	license_key: 'gpl'
 	      	});
-	      
+	      	
+	      	const recipients = /*[[${recipients}]]*/ [];
+	        const recipientOptions = recipients.map(r => r.employeeAssignmentResponse);
+	        
+	        const recipientItems= /*[[${memoRequest.recipientIds}]]*/ [];
+	        
 			new TomSelect("#recipientIds", {
 				plugins: ['remove_button'],
+				options: recipientOptions,
+				items: recipientItems,
 			    valueField: 'id',
-			    labelField: 'targetNameLabel',
 			    searchField: [],
+			    
+			    score: function(query) {
+			        const search = query.toLowerCase().trim();
+			        return function(item) {
+			            if (!search) return 1;
+
+			            const name = (item.employeeResponse?.targetFullName || '').toLowerCase();
+			            const pos = (item.positionResponse?.targetName || '').toLowerCase();
+			            
+			            if (name.includes(search)) return 2;
+			            if (pos.includes(search)) return 1;
+
+			            return 0;
+			        };
+			    },
+			    
+			    render: {
+			        option: function(data, escape) {
+			        	const fullName = data?.employeeResponse?.targetFullName || '';
+		                const position = data?.positionResponse?.targetName || '';
+		                
+			          	return `<div><strong>${escape(fullName)}</strong><span class="text-muted"> — ${escape(position)}</span></div>`;
+			        },
+
+			        item: function(data, escape) {
+			        	const fullName = data?.employeeResponse?.targetFullName || data?.text || '';
+			        	
+			          	return `<div>${escape(fullName)}</div>`;
+			        }
+			    },
 			    
 			    load: function(query, callback) {
 			        if (!query.length) return callback();
@@ -104,11 +130,47 @@
 			    }
 			});
 			
+	      	const copyRecipients = /*[[${copyRecipients}]]*/ [];
+	        const copyRecipientOptions = copyRecipients.map(r => r.employeeAssignmentResponse);
+	        
+	        const copyRecipientItems = /*[[${memoRequest.copyRecipientIds}]]*/ [];
+			
 			new TomSelect("#copyRecipientIds", {
 				plugins: ['remove_button'],
+				options: copyRecipientOptions,
+				items: copyRecipientItems,
 			    valueField: 'id',
-			    labelField: 'targetNameLabel',
 			    searchField: [],
+			    
+			    score: function(query) {
+			        const search = query.toLowerCase().trim();
+			        return function(item) {
+			            if (!search) return 1;
+
+			            const name = (item.employeeResponse?.targetFullName || '').toLowerCase();
+			            const pos = (item.positionResponse?.targetName || '').toLowerCase();
+			            
+			            if (name.includes(search)) return 2;
+			            if (pos.includes(search)) return 1;
+
+			            return 0;
+			        };
+			    },
+			    
+			    render: {
+			        option: function(data, escape) {
+			        	const fullName = data?.employeeResponse?.targetFullName || '';
+		                const position = data?.positionResponse?.targetName || '';
+		                
+			          	return `<div><strong>${escape(fullName)}</strong><span class="text-muted"> — ${escape(position)}</span></div>`;
+			        },
+
+			        item: function(data, escape) {
+			        	const fullName = data?.employeeResponse?.targetFullName || data?.text || '';
+			        	
+			          	return `<div>${escape(fullName)}</div>`;
+			        }
+			    },
 			    
 			    load: function(query, callback) {
 			        if (!query.length) return callback();
@@ -129,12 +191,48 @@
 			        return query.length >= 2;
 			    }
 			});
+			
+	      	const signers = /*[[${signers}]]*/ [];
+	        const signerOptions = signers.map(r => r.employeeAssignmentResponse);
+	        
+	        const signerItems = /*[[${memoRequest.signerIds}]]*/ [];
 			
 			new TomSelect("#signerIds", {
 				plugins: ['remove_button'],
+				options: signerOptions,
+				items: signerItems,
 			    valueField: 'id',
-			    labelField: 'nameLabel',
 			    searchField: [],
+			    
+			    score: function(query) {
+			        const search = query.toLowerCase().trim();
+			        return function(item) {
+			            if (!search) return 1;
+
+			            const name = (item.employeeResponse?.fullName || '').toLowerCase();
+			            const pos = (item.positionResponse?.name || '').toLowerCase();
+			            
+			            if (name.includes(search)) return 2;
+			            if (pos.includes(search)) return 1;
+
+			            return 0;
+			        };
+			    },
+			    
+			    render: {
+			        option: function(data, escape) {
+			        	const fullName = data?.employeeResponse?.fullName || '';
+		                const position = data?.positionResponse?.name || '';
+		                
+			          	return `<div><strong>${escape(fullName)}</strong><span class="text-muted"> — ${escape(position)}</span></div>`;
+			        },
+
+			        item: function(data, escape) {
+			        	const fullName = data?.employeeResponse?.fullName || data?.text || '';
+			        	
+			          	return `<div>${escape(fullName)}</div>`;
+			        }
+			    },
 			    
 			    load: function(query, callback) {
 			        if (!query.length) return callback();
@@ -155,12 +253,48 @@
 			        return query.length >= 2;
 			    }
 			});
+			
+	      	const approvers = /*[[${approvers}]]*/ [];
+	        const approverOptions = approvers.map(r => r.employeeAssignmentResponse);
+	        
+	        const approverItems = /*[[${memoRequest.approverIds}]]*/ [];
 			
 			new TomSelect("#approverIds", {
 				plugins: ['remove_button'],
+				options: approverOptions,
+				items: approverItems,
 			    valueField: 'id',
-			    labelField: 'nameLabel',
 			    searchField: [],
+			    
+			    score: function(query) {
+			        const search = query.toLowerCase().trim();
+			        return function(item) {
+			            if (!search) return 1;
+
+			            const name = (item.employeeResponse?.fullName || '').toLowerCase();
+			            const pos = (item.positionResponse?.name || '').toLowerCase();
+			            
+			            if (name.includes(search)) return 2;
+			            if (pos.includes(search)) return 1;
+
+			            return 0;
+			        };
+			    },
+			    
+			    render: {
+			        option: function(data, escape) {
+			        	const fullName = data?.employeeResponse?.fullName || '';
+		                const position = data?.positionResponse?.name || '';
+		                
+			          	return `<div><strong>${escape(fullName)}</strong><span class="text-muted"> — ${escape(position)}</span></div>`;
+			        },
+
+			        item: function(data, escape) {
+			        	const fullName = data?.employeeResponse?.fullName || data?.text || '';
+			        	
+			          	return `<div>${escape(fullName)}</div>`;
+			        }
+			    },
 			    
 			    load: function(query, callback) {
 			        if (!query.length) return callback();
@@ -182,11 +316,43 @@
 			    }
 			});
 			
+	      	const assigneesOptions = /*[[${assignees}]]*/ [];
+	        
+	        const assigneeItems = /*[[${memoRequest.assigneeId}]]*/ [];
+	        
 			new TomSelect("#assigneeId", {
 				plugins: ['remove_button'],
+				options: assigneesOptions,
+				items: assigneeItems,
 			    valueField: 'id',
-			    labelField: 'userResponse.fullName',
 			    searchField: [],
+			    
+			    score: function(query) {
+			        const search = query.toLowerCase().trim();
+			        return function(item) {
+			            if (!search) return 1;
+
+			            const name = (item.userResponse?.fullName || '').toLowerCase();
+			            
+			            if (name.includes(search)) return 2;
+
+			            return 0;
+			        };
+			    },
+			    
+			    render: {
+			        option: function(data, escape) {
+			        	const fullName = data?.userResponse?.fullName || '';
+		                
+			          	return `<div><strong>${escape(fullName)}</strong></div>`;
+			        },
+
+			        item: function(data, escape) {
+			        	const fullName = data?.userResponse?.fullName || data?.text || '';
+			        	
+			          	return `<div>${escape(fullName)}</div>`;
+			        }
+			    },
 			    
 			    load: function(query, callback) {
 			        if (!query.length) return callback();

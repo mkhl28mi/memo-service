@@ -77,7 +77,7 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime updatedAt;
     
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List <UserAssignment> userAssignments = new ArrayList<>();
     
     @ManyToMany(fetch = FetchType.EAGER)
@@ -166,11 +166,6 @@ public class User {
 	public void addUserAssignment(UserAssignment userAssignment) {
 	    this.userAssignments.add(userAssignment);
 	    userAssignment.setUser(this);
-	}
-	
-	public void removeUserAssignment(UserAssignment userAssignment) {
-	    this.userAssignments.remove(userAssignment);
-	    userAssignment.setUser(null);
 	}
 	
 	public List<UserAssignment> getUserAssignments() {

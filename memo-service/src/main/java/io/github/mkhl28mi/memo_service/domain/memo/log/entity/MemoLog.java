@@ -33,12 +33,10 @@ public class MemoLog {
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
 	private UUID id;
 	
-	@NotNull(message = "Memo cannot be null")
     @ManyToOne
     @JoinColumn(name = "memo_id", nullable = false)
 	private Memo memo;
 	
-	@NotNull(message = "UserAssignment cannot be null")
     @ManyToOne
     @JoinColumn(name = "created_by", nullable = false)
 	private UserAssignment createdBy;

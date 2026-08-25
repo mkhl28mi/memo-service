@@ -51,28 +51,45 @@
     </div>
     
     <th:block layout:fragment="scripts">
-	    <script>
+	    <script th:inline="javascript">
 	      	tinymce.init({
 	        	selector: '#content',
 	        	promotion:false,
 	        	license_key: 'gpl'
 	      	});
-	      
+	      	
 			new TomSelect("#recipientIds", {
 				plugins: ['remove_button'],
 			    valueField: 'id',
 			    searchField: [],
 			    
+			    score: function(query) {
+			        const search = query.toLowerCase().trim();
+			        return function(item) {
+			            if (!search) return 1;
+
+			            const name = (item.employeeResponse?.targetFullName || '').toLowerCase();
+			            const pos = (item.positionResponse?.targetName || '').toLowerCase();
+			            
+			            if (name.includes(search)) return 2;
+			            if (pos.includes(search)) return 1;
+
+			            return 0;
+			        };
+			    },
+			    
 			    render: {
 			        option: function(data, escape) {
-			          return `<div>
-			            <strong>${escape(data.employeeResponse.targetFullName)}</strong>
-			            <span class="text-muted"> — ${escape(data.positionResponse.targetName)}</span>
-			          </div>`;
+			        	const fullName = data?.employeeResponse?.targetFullName || '';
+		                const position = data?.positionResponse?.targetName || '';
+		                
+			          	return `<div><strong>${escape(fullName)}</strong><span class="text-muted"> — ${escape(position)}</span></div>`;
 			        },
 
 			        item: function(data, escape) {
-			          return `<div>${escape(data.employeeResponse.targetFullName)}</div>`;
+			        	const fullName = data?.employeeResponse?.targetFullName || data?.text || '';
+			        	
+			          	return `<div>${escape(fullName)}</div>`;
 			        }
 			    },
 			    
@@ -101,6 +118,36 @@
 			    valueField: 'id',
 			    searchField: [],
 			    
+			    score: function(query) {
+			        const search = query.toLowerCase().trim();
+			        return function(item) {
+			            if (!search) return 1;
+
+			            const name = (item.employeeResponse?.targetFullName || '').toLowerCase();
+			            const pos = (item.positionResponse?.targetName || '').toLowerCase();
+			            
+			            if (name.includes(search)) return 2;
+			            if (pos.includes(search)) return 1;
+
+			            return 0;
+			        };
+			    },
+			    
+			    render: {
+			        option: function(data, escape) {
+			        	const fullName = data?.employeeResponse?.targetFullName || '';
+		                const position = data?.positionResponse?.targetName || '';
+		                
+			          	return `<div><strong>${escape(fullName)}</strong><span class="text-muted"> — ${escape(position)}</span></div>`;
+			        },
+
+			        item: function(data, escape) {
+			        	const fullName = data?.employeeResponse?.targetFullName || data?.text || '';
+			        	
+			          	return `<div>${escape(fullName)}</div>`;
+			        }
+			    },
+			    
 			    load: function(query, callback) {
 			        if (!query.length) return callback();
 			
@@ -114,19 +161,6 @@
 			            .catch(() => {
 			                callback();
 			            });
-			    },
-			    
-			    render: {
-			        option: function(data, escape) {
-			          return `<div>
-			            <strong>${escape(data.employeeResponse.targetFullName)}</strong>
-			            <span class="text-muted"> — ${escape(data.positionResponse.targetName)}</span>
-			          </div>`;
-			        },
-
-			        item: function(data, escape) {
-			          return `<div>${escape(data.employeeResponse.targetFullName)}</div>`;
-			        }
 			    },
 			    
 			    shouldLoad: function(query) {
@@ -139,6 +173,36 @@
 			    valueField: 'id',
 			    searchField: [],
 			    
+			    score: function(query) {
+			        const search = query.toLowerCase().trim();
+			        return function(item) {
+			            if (!search) return 1;
+
+			            const name = (item.employeeResponse?.fullName || '').toLowerCase();
+			            const pos = (item.positionResponse?.name || '').toLowerCase();
+			            
+			            if (name.includes(search)) return 2;
+			            if (pos.includes(search)) return 1;
+
+			            return 0;
+			        };
+			    },
+			    
+			    render: {
+			        option: function(data, escape) {
+			        	const fullName = data?.employeeResponse?.fullName || '';
+		                const position = data?.positionResponse?.name || '';
+		                
+			          	return `<div><strong>${escape(fullName)}</strong><span class="text-muted"> — ${escape(position)}</span></div>`;
+			        },
+
+			        item: function(data, escape) {
+			        	const fullName = data?.employeeResponse?.fullName || data?.text || '';
+			        	
+			          	return `<div>${escape(fullName)}</div>`;
+			        }
+			    },
+			    
 			    load: function(query, callback) {
 			        if (!query.length) return callback();
 			
@@ -152,19 +216,6 @@
 			            .catch(() => {
 			                callback();
 			            });
-			    },
-			    
-			    render: {
-			        option: function(data, escape) {
-			          return `<div>
-			            <strong>${escape(data.employeeResponse.fullName)}</strong>
-			            <span class="text-muted"> — ${escape(data.positionResponse.name)}</span>
-			          </div>`;
-			        },
-
-			        item: function(data, escape) {
-			          return `<div>${escape(data.employeeResponse.fullName)}</div>`;
-			        }
 			    },
 			    
 			    shouldLoad: function(query) {
@@ -177,6 +228,36 @@
 			    valueField: 'id',
 			    searchField: [],
 			    
+			    score: function(query) {
+			        const search = query.toLowerCase().trim();
+			        return function(item) {
+			            if (!search) return 1;
+
+			            const name = (item.employeeResponse?.fullName || '').toLowerCase();
+			            const pos = (item.positionResponse?.name || '').toLowerCase();
+			            
+			            if (name.includes(search)) return 2;
+			            if (pos.includes(search)) return 1;
+
+			            return 0;
+			        };
+			    },
+			    
+			    render: {
+			        option: function(data, escape) {
+			        	const fullName = data?.employeeResponse?.fullName || '';
+		                const position = data?.positionResponse?.name || '';
+		                
+			          	return `<div><strong>${escape(fullName)}</strong><span class="text-muted"> — ${escape(position)}</span></div>`;
+			        },
+
+			        item: function(data, escape) {
+			        	const fullName = data?.employeeResponse?.fullName || data?.text || '';
+			        	
+			          	return `<div>${escape(fullName)}</div>`;
+			        }
+			    },
+			    
 			    load: function(query, callback) {
 			        if (!query.length) return callback();
 			
@@ -192,19 +273,6 @@
 			            });
 			    },
 			    
-			    render: {
-			        option: function(data, escape) {
-			          return `<div>
-			            <strong>${escape(data.employeeResponse.fullName)}</strong>
-			            <span class="text-muted"> — ${escape(data.positionResponse.name)}</span>
-			          </div>`;
-			        },
-
-			        item: function(data, escape) {
-			          return `<div>${escape(data.employeeResponse.fullName)}</div>`;
-			        }
-			    },
-			    
 			    shouldLoad: function(query) {
 			        return query.length >= 2;
 			    }
@@ -213,8 +281,34 @@
 			new TomSelect("#assigneeId", {
 				plugins: ['remove_button'],
 			    valueField: 'id',
-			    labelField: 'userResponse.fullName',
 			    searchField: [],
+			    
+			    score: function(query) {
+			        const search = query.toLowerCase().trim();
+			        return function(item) {
+			            if (!search) return 1;
+
+			            const name = (item.userResponse?.fullName || '').toLowerCase();
+			            
+			            if (name.includes(search)) return 2;
+
+			            return 0;
+			        };
+			    },
+			    
+			    render: {
+			        option: function(data, escape) {
+			        	const fullName = data?.userResponse?.fullName || '';
+		                
+			          	return `<div><strong>${escape(fullName)}</strong></div>`;
+			        },
+
+			        item: function(data, escape) {
+			        	const fullName = data?.userResponse?.fullName || data?.text || '';
+			        	
+			          	return `<div>${escape(fullName)}</div>`;
+			        }
+			    },
 			    
 			    load: function(query, callback) {
 			        if (!query.length) return callback();
@@ -229,18 +323,6 @@
 			            .catch(() => {
 			                callback();
 			            });
-			    },
-			    
-			    render: {
-			        option: function(data, escape) {
-			          return `<div>
-			            <strong>${escape(data.userResponse.fullName)}</strong>
-			          </div>`;
-			        },
-
-			        item: function(data, escape) {
-			          return `<div>${escape(data.userResponse.fullName)}</div>`;
-			        }
 			    },
 			    
 			    shouldLoad: function(query) {

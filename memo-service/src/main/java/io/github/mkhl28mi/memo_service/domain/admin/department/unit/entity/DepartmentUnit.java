@@ -44,7 +44,6 @@ public class DepartmentUnit {
 	@Column(name = "code", unique = true, nullable = false, length = 8)
 	private String code;
 	
-	@NotNull(message = "Department cannot be null")
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)
 	private Department department;
@@ -64,7 +63,7 @@ public class DepartmentUnit {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime updatedAt;
    
-    @OneToMany(mappedBy = "departmentUnit", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "departmentUnit", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List <UserAssignment> userAssignments = new ArrayList<>();
     
 	protected DepartmentUnit() {

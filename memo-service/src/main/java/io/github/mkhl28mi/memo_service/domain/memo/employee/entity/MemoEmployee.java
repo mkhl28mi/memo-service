@@ -21,9 +21,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.Positive;
 
 @Entity
 @Table(name = "memo_employees")
@@ -34,12 +34,10 @@ public class MemoEmployee {
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
 	private UUID id;
 	
-	@NotNull(message = "Memo cannot be null")
     @ManyToOne
     @JoinColumn(name = "memo_id", nullable = false)
 	private Memo memo;
 	
-	@NotNull(message = "EmployeeAssignment cannot be null")
     @ManyToOne
     @JoinColumn(name = "employee_assignment_id", nullable = false)
 	private EmployeeAssignment employeeAssignment;
@@ -49,7 +47,7 @@ public class MemoEmployee {
 	@Column(name = "role", nullable = false, length = 20)
 	private Role role;
 	
-	@Positive
+	@Min(value = 0, message = "PlacementOrder cannot be less than 0")
 	@Column(name = "placement_order", nullable = false)
 	private int placementOrder;
 	

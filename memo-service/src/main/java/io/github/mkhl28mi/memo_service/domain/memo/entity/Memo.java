@@ -64,12 +64,10 @@ public class Memo {
 	@Column(name = "status", nullable = false, length = 20)
 	private Status status;
 	
-	@NotNull(message = "UserAssignment cannot be null")
     @ManyToOne
     @JoinColumn(name = "assignee_id", nullable = false)
 	private UserAssignment assignee;
 	
-	@NotNull(message = "Department cannot be null")
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)
 	private Department department;
@@ -94,13 +92,13 @@ public class Memo {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime updatedAt;
     
-    @OneToMany(mappedBy = "memo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "memo", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List <MemoEmployee> memoEmployees = new ArrayList<>();
     
-    @OneToMany(mappedBy = "memo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "memo", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List <MemoLog> memoLogs = new ArrayList<>();
     
-    @OneToMany(mappedBy = "memo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "memo", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List <MemoLabel> memoLabels = new ArrayList<>();
     
     public Memo() {
@@ -216,12 +214,12 @@ public class Memo {
 		return Collections.unmodifiableList(this.memoEmployees);
 	}
 	
-	public List<MemoLabel> getMemoLabels() {
-		return Collections.unmodifiableList(this.memoLabels);
-	}
-	
 	public List<MemoLog> getMemoLogs() {
 		return Collections.unmodifiableList(this.memoLogs);
+	}
+	
+	public List<MemoLabel> getMemoLabels() {
+		return Collections.unmodifiableList(this.memoLabels);
 	}
 	
 	public void initializeMemoEmployees() {

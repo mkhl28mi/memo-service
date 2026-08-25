@@ -32,12 +32,10 @@ public class UserAssignment {
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
 	private UUID id;
 	
-	@NotNull(message = "DepartmentUnit cannot be null")
     @ManyToOne
     @JoinColumn(name = "department_unit_id", nullable = false)
 	private DepartmentUnit departmentUnit;
 	
-	@NotNull(message = "User cannot be null")
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
 	private User user;
@@ -49,7 +47,7 @@ public class UserAssignment {
     @Column(name = "end_date")
     private LocalDateTime endDate;
     
-    @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List <Memo> memos = new ArrayList<>();
 
 	public UserAssignment() {
