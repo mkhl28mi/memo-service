@@ -18,10 +18,6 @@ public record DepartmentUnitResponse(UUID id, String code, DepartmentResponse de
 				departmentUnit.getUpdatedAt());
 	}
 	
-	public String getDepartmentUnitLabel() {
-		return departmentResponse == null ? "(" + code + ")" : departmentResponse.name() + " (" + code + ")";
-    }
-		
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);

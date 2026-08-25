@@ -59,8 +59,38 @@
 			new TomSelect("#departmentUnitId", {
 				plugins: ['remove_button'],
 			    valueField: 'id',
-			    labelField: 'departmentUnitLabel',
 			    searchField: [],
+			    
+			    score: function(query) {
+			        const search = query.toLowerCase().trim();
+			        return function(item) {
+			            if (!search) return 1;
+
+			            const departmentName = (item.departmentResponse?.name || '').toLowerCase();
+			            const code = (item.code || '').toLowerCase();
+			            
+			            if (departmentName.includes(search)) return 2;
+			            if (code.includes(search)) return 1;
+
+			            return 0;
+			        };
+			    },
+			    
+			    render: {
+			        option: function(data, escape) {
+			        	const departmentName = data?.departmentResponse?.name || '';
+		                const code = data?.code || '';
+		                
+			          	return `<div><strong>${escape(departmentName)}</strong><span class="text-muted"> (${escape(code)})</span></div>`;
+			        },
+
+			        item: function(data, escape) {
+			        	const departmentName = data?.departmentResponse?.name || '';
+		                const code = data?.code || '';
+			        	
+			          	return `<div><strong>${escape(departmentName)}</strong><span class="text-muted"> (${escape(code)})</span></div>`;
+			        }
+			    },
 			    
 			    load: function(query, callback) {
 			        if (!query.length) return callback();
