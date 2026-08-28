@@ -13,11 +13,18 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.resilience.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import io.github.mkhl28mi.memo_service.domain.admin.application.setting.dto.request.AboutCompanyRequest;
+import io.github.mkhl28mi.memo_service.domain.admin.application.setting.dto.request.PageSetupRequest;
+import io.github.mkhl28mi.memo_service.domain.admin.application.setting.service.ApplicationSettingService;
 import io.github.mkhl28mi.memo_service.domain.admin.department.dto.response.DepartmentResponse;
 import io.github.mkhl28mi.memo_service.domain.admin.employee.assignment.dto.response.EmployeeAssignmentResponse;
 import io.github.mkhl28mi.memo_service.domain.admin.employee.assignment.entity.EmployeeAssignment;
@@ -27,6 +34,7 @@ import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.entity.UserA
 import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.service.UserAssignmentService;
 import io.github.mkhl28mi.memo_service.domain.admin.user.entity.User;
 import io.github.mkhl28mi.memo_service.domain.memo.dto.request.MemoRequest;
+import io.github.mkhl28mi.memo_service.domain.memo.dto.response.PrintTemplateDataResponse;
 import io.github.mkhl28mi.memo_service.domain.memo.dto.response.MemoResponse;
 import io.github.mkhl28mi.memo_service.domain.memo.employee.dto.response.MemoEmployeeResponse;
 import io.github.mkhl28mi.memo_service.domain.memo.employee.entity.MemoEmployee;
@@ -51,13 +59,16 @@ public class MemoService {
 	
 	private final UserAssignmentService userAssignmentService;
 	
-	public MemoService(MemoRepository memoRepository, EmployeeAssignmentService employeeAssignmentService, UserAssignmentService userAssignmentService) {
+	private final ApplicationSettingService applicationSettingService;
+	
+	public MemoService(MemoRepository memoRepository, EmployeeAssignmentService employeeAssignmentService, UserAssignmentService userAssignmentService, ApplicationSettingService applicationSettingService) {
 		super();
 		this.memoRepository = memoRepository;
 		this.employeeAssignmentService = employeeAssignmentService;
 		this.userAssignmentService = userAssignmentService;
+		this.applicationSettingService = applicationSettingService;
 	}
-	
+
 	public MemoResponse getMemoById(@NotNull UUID memoId) {
 		var memo = memoRepository.findById(memoId)
 				.orElseThrow(() -> new ResourceNotFoundException("Memo not found with id: " + memoId));
@@ -66,6 +77,10 @@ public class MemoService {
 		
 		memo.initializeMemoLabels();
 		
+		return getMemoResponse(memo);
+	}
+	
+	private MemoResponse getMemoResponse(Memo memo) {
 		var employees = memo.getMemoEmployees().stream()
 				.map(me -> new MemoEmployeeResponse(me.getId(), 
 						new EmployeeAssignmentResponse(me.getEmployeeAssignment()), 
@@ -278,6 +293,46 @@ public class MemoService {
         }
         
         return false;
+    }
+	
+	public PrintTemplateDataResponse getPrintTemplateData(UUID id) {
+		MemoResponse memoResponse = getMemoById(id);
+		
+		PageSetupRequest pageSetupRequest =  applicationSettingService.getPageSetup();
+		
+		AboutCompanyRequest aboutCompanyRequest = applicationSettingService.getAboutCompany();
+		
+		return new PrintTemplateDataResponse(pageSetupRequest.marginTop(), 
+				pageSetupRequest.marginLeft(), 
+				pageSetupRequest.marginRight(), 
+				pageSetupRequest.marginBottom(), 
+				pageSetupRequest.orientation(), 
+				pageSetupRequest.paperSize(), 
+				aboutCompanyRequest.name(), 
+				memoResponse);
+	}
+	
+	public Page<MemoResponse> getMemos(User user, int page, int size, String sortBy, Sort.Direction direction) {
+		UserAssignment currentUserAssignment = userAssignmentService.getCurrentUserAssignmentByUserId(user.getId());
+		
+		Sort.Direction sortDirection = (direction != null) ? direction : Sort.Direction.ASC;
+		
+		String safeSortBy = switch (sortBy != null ? sortBy : "") {
+		case "status", "sequenceNumber", "assignee.user.fullName", "createdAt", "updatedAt" -> sortBy;
+		default -> "id";
+		};
+		
+		Sort.Order order = new Sort.Order(sortDirection, safeSortBy)
+		        .nullsLast();
+		
+        Pageable pageable = PageRequest.of(
+        		Math.max(page, 0), 
+        		size, 
+        		Sort.by(order));
+        
+        Page<Memo> memo = memoRepository.findByDepartment(currentUserAssignment.getDepartmentUnit().getDepartment(), pageable);
+        
+        return memo.map(this::getMemoResponse);
     }
 	
 }

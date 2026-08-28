@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}"
+      xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<title></title>
+		<style th:inline="css">
+			@page {
+				margin-top: /*[[${printTemplateData.marginTop + 'mm'}]]*/ 15mm;
+				margin-left: /*[[${printTemplateData.marginLeft + 'mm'}]]*/ 30mm;
+				margin-right: /*[[${printTemplateData.marginRight + 'mm'}]]*/ 10mm;
+				margin-bottom: /*[[${printTemplateData.marginBottom + 'mm'}]]*/ 15mm;
+				
+				size: /*[[${printTemplateData.paperSize + ' ' + printTemplateData.orientation}]]*/ A4 portrait;
+			}
+			
+			table {
+				border: 0; 
+				border-spacing: 0;
+				padding: 1px;
+			}
+			
+			ol, ul {
+				margin-top: 5px;
+				margin-bottom: 5px;
+			}
+			
+			p {
+				margin-top: 0px;
+				margin-bottom: 0px;
+			}
+			
+			td {
+				font-size: 14pt;
+			}
+		</style>
+	</head>
+	<body style="background-color: #FFFFFF; font-family: 'Times New Roman', sans-serif;">
+		<div style="display: flex; justify-content: center; align-items: center;">
+			<table style="width: 700pt;">
+				<tr>
+					<td>
+		 				<div style="text-align: center;">
+							<b th:text="${printTemplateData.companyName}"></b> <br />
+							[[${printTemplateData.memoResponse.departmentResponse.description}]] ([[${printTemplateData.memoResponse.departmentResponse.name}]])<br />
+							_____________________________________________________________________<br /> <br />
+							<div th:utext="#{print.memo.title}"></div ><br /> <br />
+						</div>
+					</td>
+				</tr>
+				
+				<tr>
+					<td>
+						<table style="width: 100%;">
+							<tr>
+								<td style="font-size: 14pt; text-align: left; vertical-align: top; width: 30%;">
+										[[#{print.memo.date.start}]]&nbsp;[[${#temporals.format(printTemplateData.memoResponse.createdAt, 'dd.MM.yyyy')}]]&nbsp;[[#{print.memo.date.end}]]<br />
+										№&nbsp;[[${printTemplateData.memoResponse.getMemoNumberPattern()}]]<br /> <br />
+								</td>
+								<td style="width: 15%">&nbsp;</td>
+								<td style="font-size: 14pt; text-align: right; vertical-align: top; width: 55%;">
+									<div th:each="recipient, iterStat : ${printTemplateData.memoResponse.recipients}"> <b th:text="${recipient.employeeAssignmentResponse.positionResponse.targetName}"></b> <br /> <b th:text="${recipient.employeeAssignmentResponse.employeeResponse.targetFullName}"></b> <br /> <br /> </div>
+									<div th:unless="${printTemplateData.memoResponse.recipients.isEmpty()}"> <b>[[#{print.memo.copy.title}]]</b><br /> <br /> </div>
+									<div th:each="copyRecipient, iterStat : ${printTemplateData.memoResponse.copyRecipients}"> <b th:text="${copyRecipient.employeeAssignmentResponse.positionResponse.targetName}"></b> <br /> <b th:text="${copyRecipient.employeeAssignmentResponse.employeeResponse.targetFullName}"></b> <br /> <br /> </div>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				
+				<tr>
+					<td>
+						<table style="width: 100%;">
+							<tr>
+								<td style="text-align: justify; font-size: 14pt;">[(${printTemplateData.memoResponse.content})]</td>
+							</tr>
+						</table>
+						<br />
+					</td>
+				</tr>
+			
+				<tr>
+					<td>
+						<table style="width: 100%;">
+							<tr th:each="signer, iterStat : ${printTemplateData.memoResponse.signers}">
+								<td style="font-size: 14pt; width: 50%; text-align: left; vertical-align: top;"> 
+									<br /> <b th:text="${signer.employeeAssignmentResponse.positionResponse.name}"></b> <br />
+								</td>
+								<td style="width: 20%;">&nbsp;</td>
+								<td style="font-size: 14pt; width: 30%; text-align: right; vertical-align: top;">
+									<br /> <b th:text="${signer.employeeAssignmentResponse.employeeResponse.fullName}"></b> 
+								</td>
+							</tr>
+							<tr th:unless="${printTemplateData.memoResponse.approvers.isEmpty()}">
+								<td style="font-size: 14pt; text-align: left; vertical-align: top;" colspan="3">
+									<br /><b>[[#{print.memo.approve.title}]]</b><br />
+								</td>
+							</tr>
+							<tr th:each="approver, iterStat : ${printTemplateData.memoResponse.approvers}">
+								<td style="font-size: 14pt; width: 50%; text-align: left; vertical-align: top;"> 
+									<br /> <b th:text="${approver.employeeAssignmentResponse.positionResponse.name}"></b> <br />
+								</td>
+								<td style="width: 20%">&nbsp;</td>
+								<td style="font-size: 14pt; width: 30%; text-align: right; vertical-align: top;">
+									<br /> <b th:text="${approver.employeeAssignmentResponse.employeeResponse.fullName}"></b> 
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				
+				<tr>
+					<td>
+						<br /><br />
+						<table style="width: 100%;">
+							<tr>
+								<td style="font-size: 10pt; width: 30%; text-align: left;">
+									[[${printTemplateData.memoResponse.assignee.userResponse.fullName}]]&nbsp;&nbsp;&nbsp;[[${printTemplateData.memoResponse.assignee.userResponse.cell}]]
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<script>
+			print();
+		</script>	
+	</body>
+</html>
+
+		

@@ -21,7 +21,7 @@
 			          <a class="nav-link" aria-current="page" th:classappend="${activePage == 'memos/create'} ? 'active' : ''" href="/memos/create">Створити</a>
 			        </li>
 			        <li class="nav-item">
-			          <a class="nav-link" href="#">Книга реєстрації</a>
+			          <a class="nav-link" th:classappend="${activePage == 'memos/registration-book'} ? 'active' : ''" href="/memos/registration-book">Книга реєстрації</a>
 			        </li>
 			        <li class="nav-item dropdown">
 			          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -32,10 +32,10 @@
 			          	<li><a class="dropdown-item" th:classappend="${activePage == 'admin/departments'} ? 'active' : ''" href="/admin/departments">Відділи</a></li>
 			          	<li><a class="dropdown-item" th:classappend="${activePage == 'admin/employees'} ? 'active' : ''" href="/admin/employees">Працівники</a></li>
 			            <li><a class="dropdown-item" th:classappend="${activePage == 'admin/users'} ? 'active' : ''" href="/admin/users">Користувачі</a></li>
-			            <li><a class="dropdown-item" th:classappend="${activePage == 'admin/registry'} ? 'active' : ''"  href="#">Книга реєстрації</a></li>
+			            <li><a class="dropdown-item" th:classappend="${activePage == 'admin/registration-book'} ? 'active' : ''"  href="/admin/registration-book,">Книга реєстрації</a></li>
 			            <li><a class="dropdown-item" th:classappend="${activePage == 'admin/application-settings'} ? 'active' : ''" href="/admin/application-settings">Налаштування</a></li>
 			            <li><hr class="dropdown-divider"></li>
-			            <li><a class="dropdown-item" th:classappend="${activePage == 'admin/statistics'} ? 'active' : ''" href="#">Статистика</a></li>
+			            <li><a class="dropdown-item" th:classappend="${activePage == 'admin/statistics'} ? 'active' : ''" href="/admin/statistics">Статистика</a></li>
 			          </ul>
 			        </li>
 			      </ul>

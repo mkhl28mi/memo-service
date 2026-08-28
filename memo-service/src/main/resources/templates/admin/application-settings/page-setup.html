@@ -13,24 +13,23 @@
 			<div class="card w-100 mb-5">
 				<div class="card-body">
 					<h5 class="card-title">Параметри друку аркушу паперу</h5>
-					<form th:action="@{/admin/application-settings/page-setup}"
-						th:object="${pageSetupRequest}" th:method="put">
-						<label for="name" class="form-label">Верхнє поле*</label> 
+					<form th:action="@{/admin/application-settings/page-setup}" th:object="${pageSetupRequest}" th:method="put">
+						<label for="marginTop" class="form-label">Верхнє поле*</label> 
 						<div class="input-group mb-2">
 							<input type="number" class="form-control" th:field="*{marginTop}" min="0" step="0.5" required>
 							<span class="input-group-text">мм</span>
 						</div>
-						<label for="code" class="form-label">Нижнє поле*</label> 
+						<label for="marginBottom" class="form-label">Нижнє поле*</label> 
 						<div class="input-group mb-2">
 							<input type="number" class="form-control" th:field="*{marginBottom}" min="0" step="0.5" required>
 							<span class="input-group-text unit-label">мм</span>
 						</div>
-						<label for="description" class="form-label">Ліве поле*</label> 
+						<label for="marginLeft" class="form-label">Ліве поле*</label> 
 						<div class="input-group mb-3">
 							<input type="number" class="form-control" th:field="*{marginLeft}" min="0" step="0.5" required>
 							<span class="input-group-text unit-label">мм</span>
 						</div>
-						<label for="description" class="form-label">Праве поле*</label>
+						<label for="marginRight" class="form-label">Праве поле*</label>
 						<div class="input-group mb-3">
 							<input type="number" class="form-control" th:field="*{marginRight}" min="0" step="0.5" required>
 							<span class="input-group-text unit-label">мм</span>

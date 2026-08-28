@@ -116,7 +116,9 @@ public class ApplicationSetting {
 
 		PAGE_ORIENTATION,
 
-		PAPER_SIZE;
+		PAPER_SIZE,
+		
+		ABOUT_COMPANY_NAME;
 		
 	}
 }

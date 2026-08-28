@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import io.github.mkhl28mi.memo_service.domain.admin.application.setting.dto.request.AboutCompanyRequest;
 import io.github.mkhl28mi.memo_service.domain.admin.application.setting.dto.request.PageSetupRequest;
 import io.github.mkhl28mi.memo_service.domain.admin.application.setting.service.ApplicationSettingService;
 
@@ -42,4 +43,18 @@ public class ApplicationSettingController {
 		return "redirect:/admin/application-settings/page-setup";
 	}
 	
+	@GetMapping("/about-company")
+	public String getAboutCompany(Model model) {
+		model.addAttribute("activePage", "admin/application-settings");
+		model.addAttribute("aboutCompanyRequest", applicationSettingService.getAboutCompany());
+		
+		return "admin/application-settings/about-company";
+	}
+	
+	@PutMapping("/about-company")
+	public String updatePageSetup(@ModelAttribute AboutCompanyRequest aboutCompanyRequest) {
+		applicationSettingService.updateAboutCompany(aboutCompanyRequest);
+		
+		return "redirect:/admin/application-settings/about-company";
+	}
 }

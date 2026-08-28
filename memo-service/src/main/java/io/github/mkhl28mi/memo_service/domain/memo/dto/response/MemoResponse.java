@@ -25,4 +25,16 @@ public record MemoResponse(UUID id,
 		List<MemoEmployeeResponse> approvers,
 		List<MemoLabelResponse> labels) {
 	
+	public String getMemoNumberPattern() {
+	    int yearFormatted = (creationYear >= 2100) ? (creationYear % 1000) : (creationYear % 100);
+
+	    String yearPattern = (creationYear >= 2100) ? "%03d" : "%02d";
+
+	    return "%s/%s-%s".formatted(
+	        departmentResponse.code(),
+	        sequenceNumber,
+	        yearPattern.formatted(yearFormatted)
+	    );
+	}
+	
 }

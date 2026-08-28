@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.github.mkhl28mi.memo_service.domain.admin.application.setting.dto.request.AboutCompanyRequest;
 import io.github.mkhl28mi.memo_service.domain.admin.application.setting.dto.request.PageSetupRequest;
 import io.github.mkhl28mi.memo_service.domain.admin.application.setting.entity.ApplicationSetting;
 import io.github.mkhl28mi.memo_service.domain.admin.application.setting.entity.ApplicationSetting.Key;
@@ -60,6 +61,18 @@ public class ApplicationSettingService {
 		applicationSettingRepository.save(new ApplicationSetting(Key.PAGE_ORIENTATION, pageSetupRequest.orientation()));
 		
 		applicationSettingRepository.save(new ApplicationSetting(Key.PAPER_SIZE, pageSetupRequest.paperSize()));
+	}
+	
+	public AboutCompanyRequest getAboutCompany() { 
+		Optional<String> name = applicationSettingRepository.findById(Key.ABOUT_COMPANY_NAME)
+				.map(ApplicationSetting::getValue);
+		
+		return new AboutCompanyRequest(name.orElse(""));
+	}
+	
+	@Transactional
+	public void updateAboutCompany(AboutCompanyRequest aboutCompanyRequest) {
+		applicationSettingRepository.save(new ApplicationSetting(Key.ABOUT_COMPANY_NAME, aboutCompanyRequest.name()));
 	}
 	
 }
