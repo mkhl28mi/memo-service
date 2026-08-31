@@ -318,7 +318,7 @@ public class MemoService {
 		Sort.Direction sortDirection = (direction != null) ? direction : Sort.Direction.ASC;
 		
 		String safeSortBy = switch (sortBy != null ? sortBy : "") {
-		case "status", "sequenceNumber", "assignee.user.fullName", "createdAt", "updatedAt" -> sortBy;
+		case "status", "sequenceNumber", "assignee.user.fullName", "createdAt" -> sortBy;
 		default -> "id";
 		};
 		

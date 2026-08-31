@@ -13,13 +13,69 @@
     	<p class="fw-bold me-3">Сортувати за:</p>
 	    <div class="d-flex justify-content-start">
 	    	<p class="d-inline-flex gap-1">
-	    		<a href="#" class="btn btn-sm" role="button" data-bs-toggle="button">Toggle link</a>
-	    		<a href="#" class="btn btn-sm" role="button" data-bs-toggle="button">Toggle link</a>
-	    		<a href="#" class="btn btn-sm" role="button" data-bs-toggle="button">Toggle link</a>
-	    		<a href="#" class="btn btn-sm" role="button" data-bs-toggle="button">Toggle link</a>
-	    		<a href="#" class="btn btn-sm" role="button" data-bs-toggle="button">Toggle link</a>
+	    		<a th:href="@{/memos/registration-book(page=1, sortBy='sequenceNumber', sortDir=${sortBy == 'sequenceNumber' ? reverseSortDir : 'ASC'})}" th:classappend="${sortBy == 'sequenceNumber'} ? 'active'" class="btn btn-sm" role="button" >За номером службової записки</a>
+	    		<a th:href="@{/memos/registration-book(page=1, sortBy='assignee.user.fullName', sortDir=${sortBy == 'assignee.user.fullName' ? reverseSortDir : 'ASC'})}" th:classappend="${sortBy == 'assignee.user.fullName'} ? 'active'" class="btn btn-sm" role="button">За виконавцем</a>
+	    		<a th:href="@{/memos/registration-book(page=1, sortBy='createdAt', sortDir=${sortBy == 'createdAt' ? reverseSortDir : 'ASC'})}" th:classappend="${sortBy == 'createdAt'} ? 'active'"  class="btn btn-sm" role="button">За датою створення</a>
+	    		<a th:href="@{/memos/registration-book(page=1, sortBy='status', sortDir=${sortBy == 'status' ? reverseSortDir : 'ASC'})}" th:classappend="${sortBy == 'status'} ? 'active'"  class="btn btn-sm" role="button">За статусом</a>
 			</p>
 	    </div>
+	    
+		<div th:each="memo : ${memoPage.getContent()}" class="card mt-3 mb-3 border-dark">
+			<div class="card-header">
+				<div class="d-flex justify-content-between">
+					<div>
+						<div th:text="${memo.getMemoNumberPattern()}" class="fw-bold fs-6"></div>
+						<div class="text-dark"><small th:text="${#temporals.format(memo.createdAt, 'dd-MM-yyyy HH:mm')}"></small></div>
+					</div>
+					<div class="ps-5 pe-5 flex-fill">
+						<div class="fw-bold fs-6">Кому:</div>
+						<div class="overflow-auto w-100" style="height: 60px;">
+							<div th:each="recipient, iterStat : ${memo.recipients}" class="d-flex w-100 justify-content-start">
+								<small th:utext="${iterStat.count + '. ' + recipient.employeeAssignmentResponse.positionResponse.targetName + ' - ' + recipient.employeeAssignmentResponse.employeeResponse.targetFullName}"></small>
+							</div>
+						</div>
+					</div>
+					<div>
+						<div class="fw-bold fs-6">Виконавець: </div>
+						[[${memo.assignee.userResponse.fullName}]]
+						<div class="d-flex justify-content-end mt-2">
+							<div>
+								<a th:href="@{/memos/create-based-on/{id} (id=${memo.id})}" class="btn btn-link" data-toggle="tooltip" data-placement="right" title="Створити нову на базі цієї">
+									<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="#2d3036" class="bi bi-copy" viewBox="0 0 16 16">
+									  <path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"/>
+									</svg>
+								</a>
+							</div>
+							<div th:if="${memo.status.name() == 'IN_PROGRESS'}" class="ms-3">
+								<a th:href="@{/memos/{id} (id=${memo.id})}" onclick="return confirm('Ви дійсно хочете редагувати?');" class="btn btn-link" data-toggle="tooltip" data-placement="right" title="Редагувати">
+									<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="#2d3036" class="bi bi-pencil-square" viewBox="0 0 16 16">
+									  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+									  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+									</svg>
+								</a>
+							</div>
+							<div class="ms-3">
+								<a th:href="@{/memos/print/{id} (id=${memo.id})}" target="_blank" class="btn btn-link" data-toggle="tooltip" data-placement="right" title="Друк">
+									<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="#2d3036" class="bi bi-printer" viewBox="0 0 16 16">
+									  <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
+									  <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"/>
+									</svg>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="card-body border m-1">
+				<div th:utext="${#strings.replace(memo.content, '<table', '<table class=&quot;table table-bordered&quot;')}" class="overflow-auto" style="height: 50px; resize: vertical;"></div>			
+			</div>
+			<div class="card-footer text-body-secondary">
+				<div class="d-flex w-100 justify-content-start">
+					<p class="fw-bold">Теги:&nbsp;</p>
+					<p th:each="label : ${memo.labels}" th:text="${label.name + '&nbsp;'}"></p>
+				</div>
+  			</div>
+		</div>
 
 	    <div class="d-flex justify-content-between align-items-center" th:if="${totalPages > 0}">
 	        <div class="text-muted">

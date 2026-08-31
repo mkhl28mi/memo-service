@@ -104,7 +104,7 @@ public class MemoController {
 	        @RequestParam(defaultValue = "id") String sortBy,
 	        @RequestParam(defaultValue = "ASC") Sort.Direction sortDir) {
 		Page<MemoResponse> memoPage = memoService.getMemos(userDetails.getUser(), (page - 1), PAGE_SIZE, sortBy, sortDir);
-		
+				
 		model.addAttribute("activePage", "memos/registration-book");
 		model.addAttribute("memoPage", memoPage);
         model.addAttribute("currentPage", page);
@@ -112,6 +112,7 @@ public class MemoController {
         model.addAttribute("size", PAGE_SIZE);
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("sortDir", sortDir.name());
+        model.addAttribute("reverseSortDir", sortDir.equals(Sort.Direction.ASC) ? Sort.Direction.DESC : Sort.Direction.ASC);
         
         int totalPages = memoPage.getTotalPages();
         if (totalPages > 0) {
