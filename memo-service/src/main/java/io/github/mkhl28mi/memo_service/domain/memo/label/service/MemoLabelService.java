@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.github.mkhl28mi.memo_service.domain.memo.label.entity.MemoLabel;
 import io.github.mkhl28mi.memo_service.domain.memo.label.repository.MemoLabelRepository;
 
 @Service
@@ -18,12 +17,10 @@ public class MemoLabelService {
 		this.memoLabelRepository = memoLabelRepository;
 	}
 	
-	public List<String> getDistinctLabelsAsString(String search) throws IllegalArgumentException {
+	public List<String> getDistinctLabels(String search) throws IllegalArgumentException {
 		if (search == null) { throw new IllegalArgumentException("search cannot be null."); }
 		
-		return memoLabelRepository.searchDistinctByName(search).stream()
-				.map(MemoLabel::getName)
-				.toList();
+		return memoLabelRepository.searchDistinctByName(search);
 	}
 	
 }

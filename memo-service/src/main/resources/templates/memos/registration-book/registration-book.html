@@ -9,14 +9,87 @@
 <body>
 
     <div layout:fragment="content" class="mx-auto w-75 mt-3">
+		<div class="card mt-3 p-2 border-dark">
+			<div class="card-header d-flex w-100 justify-content-center">
+				<h5>Критерії пошуку</h5>
+			</div>
+			<div class="card-body border m-1">
+				<form th:action="@{/memos/registration-book}" method="get" accept-charset="UTF-8">
+   	 				<input type="hidden" name="sortBy" th:value="${sortBy}">
+    				<input type="hidden" name="sortDir" th:value="${sortDir}">
+    				
+					<div class="d-flex w-100 justify-content-between">
+						<div style="min-width: 300px;">
+							<div class="form-group">
+								<label for="recipientId" class="form-label">Кому:</label>
+								<select id="recipientId" name="recipientId" placeholder="Почніть вводити ПІБ або посаду..." autocomplete="off" style="width: 100%;"></select>
+							</div>
+							<div class="form-group mt-2">
+								<label for="assigneeId" class="form-label">Виконавець:</label>
+								<select id="assigneeId" name="assigneeId" placeholder="Почніть вводити ПІБ..." autocomplete="off" style="width: 100%;"></select>
+							</div>
+							<div class="form-group mt-2">
+								<label for="label" class="form-label">Мітка:</label>
+								<select id="label" name="label" placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;">
+									<option th:each="l : ${labels}" th:value="${l}" th:text="${l}" th:selected="${l == label}"></option>
+								</select>
+							</div>
+						</div>
+						<div>
+							<div class="form-group">
+								<label for="year">Рік</label>
+								<input type="number" id="year" name="year" min="1900" max="2099" step="1" th:value="${year}" class="form-control mt-2" placeholder="Рік">
+							</div>
+							<div class="form-group mt-2">
+								<label for="month">Місяць</label>
+								<select class="form-select mt-2" id="month" name="month" aria-label="Місяць">
+									<option selected value="">Довільно</option>
+									<option value="1" th:selected="${month == 1}">Січень</option>
+									<option value="2" th:selected="${month == 2}">Лютий</option>
+									<option value="3" th:selected="${month == 3}">Березень</option>
+									<option value="4" th:selected="${month == 4}">Квітень</option>
+									<option value="5" th:selected="${month == 5}">Травень</option>
+									<option value="6" th:selected="${month == 6}">Червень</option>
+									<option value="7" th:selected="${month == 7}">Липень</option>
+									<option value="8" th:selected="${month == 8}">Серпень</option>
+									<option value="9" th:selected="${month == 9}">Вересень</option>
+									<option value="10" th:selected="${month == 10}">Жовтень</option>
+									<option value="11" th:selected="${month == 11}">Листопад</option>
+									<option value="12" th:selected="${month == 12}">Грудень</option>
+								</select>
+							</div>
+						</div>
+						<div>
+							<div class="form-group">
+								<label for="searchKeyWord">Ключове слово</label>
+								<input type="text" class="form-control mt-2" id="keyword" name="keyword" th:value="${keyword}" placeholder="Ключове слово">
+							</div>				
+							<div class="form-group mt-2">
+								<label for="searchMemoNumber">Номер С/З</label>
+								<div class="d-flex justify-content-start mt-2">
+									<input type="text" style="max-width: 70px" disabled th:value="${departmentCode + '/'}" class="form-control me-1">
+									<input type="text" style="max-width: 100px" th:value="${memoNumber}" class="form-control me-1" id="memoNumber" name="memoNumber">
+									<input type="text" style="max-width: 70px" disabled th:value="${year}" class="form-control">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="d-flex w-100 justify-content-end mt-3">
+						<div>
+							<button type="submit" class="btn btn-primary">Шукати</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
     
-    	<p class="fw-bold me-3">Сортувати за:</p>
+    	<p class="fw-bold mt-4">Сортувати за:</p>
 	    <div class="d-flex justify-content-start">
 	    	<p class="d-inline-flex gap-1">
-	    		<a th:href="@{/memos/registration-book(page=1, sortBy='sequenceNumber', sortDir=${sortBy == 'sequenceNumber' ? reverseSortDir : 'ASC'})}" th:classappend="${sortBy == 'sequenceNumber'} ? 'active'" class="btn btn-sm" role="button" >За номером службової записки</a>
-	    		<a th:href="@{/memos/registration-book(page=1, sortBy='assignee.user.fullName', sortDir=${sortBy == 'assignee.user.fullName' ? reverseSortDir : 'ASC'})}" th:classappend="${sortBy == 'assignee.user.fullName'} ? 'active'" class="btn btn-sm" role="button">За виконавцем</a>
-	    		<a th:href="@{/memos/registration-book(page=1, sortBy='createdAt', sortDir=${sortBy == 'createdAt' ? reverseSortDir : 'ASC'})}" th:classappend="${sortBy == 'createdAt'} ? 'active'"  class="btn btn-sm" role="button">За датою створення</a>
-	    		<a th:href="@{/memos/registration-book(page=1, sortBy='status', sortDir=${sortBy == 'status' ? reverseSortDir : 'ASC'})}" th:classappend="${sortBy == 'status'} ? 'active'"  class="btn btn-sm" role="button">За статусом</a>
+	    		<a th:href="@{/memos/registration-book(page=1, sortBy='sequenceNumber', sortDir=${sortBy == 'sequenceNumber' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'sequenceNumber'} ? 'active'" class="btn btn-sm" role="button" >За номером службової записки</a>
+	    		<a th:href="@{/memos/registration-book(page=1, sortBy='assignee.user.fullName', sortDir=${sortBy == 'assignee.user.fullName' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'assignee.user.fullName'} ? 'active'" class="btn btn-sm" role="button">За виконавцем</a>
+	    		<a th:href="@{/memos/registration-book(page=1, sortBy='createdAt', sortDir=${sortBy == 'createdAt' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'createdAt'} ? 'active'"  class="btn btn-sm" role="button">За датою створення</a>
+	    		<a th:href="@{/memos/registration-book(page=1, sortBy='status', sortDir=${sortBy == 'status' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'status'} ? 'active'"  class="btn btn-sm" role="button">За статусом</a>
 			</p>
 	    </div>
 	    
@@ -71,7 +144,7 @@
 			</div>
 			<div class="card-footer text-body-secondary">
 				<div class="d-flex w-100 justify-content-start">
-					<p class="fw-bold">Теги:&nbsp;</p>
+					<p class="fw-bold">Мітки:&nbsp;</p>
 					<p th:each="label : ${memo.labels}" th:text="${label.name + '&nbsp;'}"></p>
 				</div>
   			</div>
@@ -89,14 +162,14 @@
 	                
 	                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
 	                    <a class="page-link" 
-	                       th:href="@{/memos/registration-book(page=1, sortBy=${sortBy}, sortDir=${sortDir})}">
+	                       th:href="@{/memos/registration-book(page=1, sortBy=${sortBy}, sortDir=${sortDir}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}">
 	                       &laquo;&laquo;
 	                    </a>
 	                </li>
 	                
 	                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
 	                    <a class="page-link" 
-	                       th:href="@{/memos/registration-book(page=${currentPage - 1}, sortBy=${sortBy}, sortDir=${sortDir})}">
+	                       th:href="@{/memos/registration-book(page=${currentPage - 1}, sortBy=${sortBy}, sortDir=${sortDir}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}">
 	                       Попередня
 	                    </a>
 	                </li>
@@ -105,21 +178,21 @@
 	                    th:each="pageNumber : ${pageNumbers}" 
 	                    th:classappend="${pageNumber == currentPage} ? 'active'">
 	                    <a class="page-link" 
-	                       th:href="@{/memos/registration-book(page=${pageNumber}, sortBy=${sortBy}, sortDir=${sortDir})}"
+	                       th:href="@{/memos/registration-book(page=${pageNumber}, sortBy=${sortBy}, sortDir=${sortDir}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}"
 	                       th:text="${pageNumber}">
 	                    </a>
 	                </li>
 	
 	                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
 	                    <a class="page-link" 
-	                       th:href="@{/memos/registration-book(page=${currentPage + 1}, sortBy=${sortBy}, sortDir=${sortDir})}">
+	                       th:href="@{/memos/registration-book(page=${currentPage + 1}, sortBy=${sortBy}, sortDir=${sortDir}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}">
 	                       Наступна
 	                    </a>
 	                </li>
 	
 	                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
 	                    <a class="page-link" 
-	                       th:href="@{/memos/registration-book(page=${totalPages}, sortBy=${sortBy}, sortDir=${sortDir})}">
+	                       th:href="@{/memos/registration-book(page=${totalPages}, sortBy=${sortBy}, sortDir=${sortDir}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}">
 	                       &raquo;&raquo;
 	                    </a>
 	                </li>
@@ -131,7 +204,147 @@
     
     <th:block layout:fragment="scripts">
 	    <script th:inline="javascript">
+ 			const recipientOptions = /*[[${recipients}]]*/ [];
+ 			
+	        const recipientItems = /*[[${recipientId}]]*/ [];
+	        
+			new TomSelect("#recipientId", {
+				plugins: ['remove_button'],
+				options: recipientOptions,
+				items: recipientItems,
+			    valueField: 'id',
+			    searchField: [],
+			    
+			    score: function(query) {
+			        const search = query.toLowerCase().trim();
+			        return function(item) {
+			            if (!search) return 1;
+	
+			            const name = (item?.targetFullName || '').toLowerCase();
+			            
+			            if (name.includes(search)) return 2;
+	
+			            return 0;
+			        };
+			    },
+			    
+			    render: {
+			        option: function(data, escape) {
+			        	const fullName = data?.targetFullName || '';
+		                
+			          	return `<div><strong>${escape(fullName)}</strong></div>`;
+			        },
+	
+			        item: function(data, escape) {
+			        	const fullName = data?.targetFullName || data?.text || '';
+			        	
+			          	return `<div>${escape(fullName)}</div>`;
+			        }
+			    },
+			    
+			    load: function(query, callback) {
+			        if (!query.length) return callback();
+			        
+			        const url = '/api/v1/memos/all-employees?q=' + encodeURIComponent(query);
+			
+			        fetch(url)
+			            .then(response => response.json())
+			            .then(json => {
+			                callback(json);
+			            })
+			            .catch(() => {
+			                callback();
+			            });
+			    },
+			    
+			    shouldLoad: function(query) {
+			        return query.length >= 2;
+			    }
+			});
 	   
+ 			const assigneeOptions = /*[[${assignees}]]*/ [];
+	        
+	        const assigneeItems = /*[[${assigneeId}]]*/ [];
+	        
+			new TomSelect("#assigneeId", {
+				plugins: ['remove_button'],
+				options: assigneeOptions,
+				items: assigneeItems,
+			    valueField: 'id',
+			    searchField: [],
+			    
+			    score: function(query) {
+			        const search = query.toLowerCase().trim();
+			        return function(item) {
+			            if (!search) return 1;
+
+			            const name = (item?.fullName || '').toLowerCase();
+			            
+			            if (name.includes(search)) return 2;
+
+			            return 0;
+			        };
+			    },
+			    
+			    render: {
+			        option: function(data, escape) {
+			        	const fullName = data?.fullName || '';
+		                
+			          	return `<div><strong>${escape(fullName)}</strong></div>`;
+			        },
+
+			        item: function(data, escape) {
+			        	const fullName = data?.fullName || data?.text || '';
+			        	
+			          	return `<div>${escape(fullName)}</div>`;
+			        }
+			    },
+			    
+			    load: function(query, callback) {
+			        if (!query.length) return callback();
+			
+			        const url = '/api/v1/memos/all-assignees?q=' + encodeURIComponent(query);
+			
+			        fetch(url)
+			            .then(response => response.json())
+			            .then(json => {
+			                callback(json);
+			            })
+			            .catch(() => {
+			                callback();
+			            });
+			    },
+			    
+			    shouldLoad: function(query) {
+			        return query.length >= 2;
+			    }
+			});
+			
+			new TomSelect("#label", {
+				plugins: ['remove_button'],
+			    valueField: 'value',
+			    labelField: 'text',
+			    searchField: 'text',
+			    			    
+				load: function(query, callback) {
+			        const url = '/api/v1/memos/distinct-labels?q=' + encodeURIComponent(query);
+			        
+			        fetch(url)
+			            .then(response => response.json())
+			            .then(stringList => {
+			                const data = stringList.map(item => ({
+			                    value: item,
+			                    text: item
+			                }));
+			                callback(data);
+			            })
+			            .catch(() => callback());
+			    },
+			    
+			    shouldLoad: function(query) {
+			        return query.length >= 2;
+			    }
+			});
 	    </script>
 	</th:block>
 	

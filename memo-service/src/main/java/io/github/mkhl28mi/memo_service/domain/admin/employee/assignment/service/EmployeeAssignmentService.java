@@ -35,6 +35,11 @@ public class EmployeeAssignmentService {
 		this.employeeAssignmentRepository = employeeAssignmentRepository;
 	}
 	
+	public EmployeeAssignmentResponse getEmployeeAssignmentResponseById(UUID id) {
+		return new EmployeeAssignmentResponse(employeeAssignmentRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("EmployeeAssignment not found with ID: " + id)));
+	}
+	
 	public List<EmployeeAssignment> getEmployeeAssignmentsByIds(List<UUID> ids) {
 		return employeeAssignmentRepository.findAllById(ids);
 	}

@@ -27,6 +27,7 @@ public class UserService {
 	private final PasswordEncoder passwordEncoder;
 	
 	public UserService(UserRepository userRepository, RoleService roleService, PasswordEncoder passwordEncoder) {
+		super();
 		this.userRepository = userRepository;
 		this.roleService = roleService;
 		this.passwordEncoder = passwordEncoder;
@@ -55,6 +56,14 @@ public class UserService {
 		return new UserResponse(userRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id)));
 	}
+	
+	public List<UserResponse> getAllUsersByDepartmentId(UUID departmentId, String search) throws IllegalArgumentException {
+		if (search == null) { throw new IllegalArgumentException("Search cannot be null."); }
+		
+		return userRepository.searchAllByFullnameAndDepartmentId(search, departmentId).stream()
+				.map(UserResponse::new)
+				.toList();
+ 	}
 	
 	@Transactional
 	public UserResponse addUser(UserRequest userRequest) {

@@ -18,4 +18,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 			+ "OR LOWER(u.username) LIKE LOWER(CONCAT('%', :keyword, '%')) ")
 	public List<User> searchByFullnameOrUsername(@Param("keyword") String keyword);
 	
+	@Query("SELECT DISTINCT u FROM User u JOIN u.userAssignments ua WHERE LOWER(u.fullName) LIKE LOWER(CONCAT('%', :keyword, '%')) "
+			+ "AND ua.departmentUnit.department.id = :departmentId ")
+	public List<User> searchAllByFullnameAndDepartmentId(@Param("keyword") String keyword, @Param("departmentId") UUID departmentId);
+	
 }

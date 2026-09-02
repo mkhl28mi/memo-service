@@ -39,9 +39,19 @@ public class UserAssignmentService {
 				.orElseThrow(() -> new ResourceNotFoundException("UserAssignment not found with ID: " + id));
 	}
 	
+	public UserAssignmentResponse getUserAssignmentResponseById(UUID id) throws ResourceNotFoundException {
+		return new UserAssignmentResponse(userAssignmentRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("UserAssignment not found with ID: " + id)));
+	}
+	
 	public UserAssignment getCurrentUserAssignmentByUserId(UUID id) throws ResourceNotFoundException {
 		return userAssignmentRepository.findCurrentByUserId(id)
 				.orElseThrow(() -> new ResourceNotFoundException("UserAssignment not found with user`s ID: " + id));
+	}
+	
+	public UserAssignmentResponse getCurrentUserAssignmentResponseByUserId(UUID userId) throws ResourceNotFoundException {
+		return new UserAssignmentResponse(userAssignmentRepository.findCurrentByUserId(userId)
+				.orElseThrow(() -> new ResourceNotFoundException("UserAssignment not found with user`s ID: " + userId)));
 	}
 	
 	public List<UserAssignmentResponse> getUserAssignments(UUID userId) {

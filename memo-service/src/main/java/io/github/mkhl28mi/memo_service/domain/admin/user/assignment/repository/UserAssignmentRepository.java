@@ -26,5 +26,5 @@ public interface UserAssignmentRepository extends JpaRepository<UserAssignment, 
 			+ "AND ua.departmentUnit.department = :department "
 			+ "AND ua.endDate IS NULL ")
 	public List<UserAssignment> searchEnabledByFullnameAndDepartment(@Param("keyword") String keyword, @Param("department") Department department);
-
+	
 }

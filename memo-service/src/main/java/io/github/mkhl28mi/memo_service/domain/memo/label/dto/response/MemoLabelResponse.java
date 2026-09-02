@@ -4,9 +4,12 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.dto.response.UserAssignmentResponse;
+import io.github.mkhl28mi.memo_service.domain.memo.label.entity.MemoLabel;
 
-public record MemoLabelResponse(UUID id,
-		UserAssignmentResponse createdBy,
-		String name,
-		LocalDateTime createdAt) {
+public record MemoLabelResponse(UUID id, UserAssignmentResponse createdBy, String name, LocalDateTime createdAt) {
+	
+	public MemoLabelResponse(MemoLabel memoLabel) {
+		this(memoLabel.getId(), new UserAssignmentResponse(memoLabel.getCreatedBy()), memoLabel.getName(), memoLabel.getCreatedAt());
+	}
+	
 }

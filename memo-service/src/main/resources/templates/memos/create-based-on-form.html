@@ -12,7 +12,7 @@
   		<form th:action="@{/memos}" th:object="${memoRequest}" th:method="post">
 	  		<div class="d-flex justify-content-between mt-3">
 	  			<div class="w-50">
-					<label for="approverIds" class="form-label"><b>Мітки:</b></label>
+					<label for="labels" class="form-label"><b>Мітки:</b></label>
 					<select th:field="*{labels}" multiple placeholder="Почніть вводити текст..." autocomplete="off" style="width: 100%;">
 						<option th:each="label : ${labels}" th:value="${label.name}" th:text="${label.name}"></option>
 					</select>
@@ -310,13 +310,13 @@
 			    }
 			});
 			
-	      	const assigneesOptions = /*[[${assignees}]]*/ [];
+	      	const assigneeOptions = /*[[${assignees}]]*/ [];
 	        
 	        const assigneeItems = /*[[${memoRequest.assigneeId}]]*/ [];
 	        
 			new TomSelect("#assigneeId", {
 				plugins: ['remove_button'],
-				options: assigneesOptions,
+				options: assigneeOptions,
 				items: assigneeItems,
 			    valueField: 'id',
 			    searchField: [],
@@ -372,23 +372,21 @@
 				plugins: ['remove_button'],
 			    valueField: 'value',
 			    labelField: 'text',
-			    create: true, 
-			    createOnBlur: true,
-			    searchField: [],
-			    
-			    load: function(query, callback) {
-			        if (!query.length) return callback();
-			
+			    searchField: 'text',
+			    			    
+				load: function(query, callback) {
 			        const url = '/api/v1/memos/distinct-labels?q=' + encodeURIComponent(query);
-			
+			        
 			        fetch(url)
 			            .then(response => response.json())
-			            .then(json => {
-			                callback(json);
+			            .then(stringList => {
+			                const data = stringList.map(item => ({
+			                    value: item,
+			                    text: item
+			                }));
+			                callback(data);
 			            })
-			            .catch(() => {
-			                callback();
-			            });
+			            .catch(() => callback());
 			    },
 			    
 			    shouldLoad: function(query) {

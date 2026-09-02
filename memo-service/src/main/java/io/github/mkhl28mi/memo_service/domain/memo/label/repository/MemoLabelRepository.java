@@ -11,7 +11,7 @@ import io.github.mkhl28mi.memo_service.domain.memo.label.entity.MemoLabel;
 
 public interface MemoLabelRepository extends JpaRepository<MemoLabel, UUID> {
 	
-	@Query("SELECT DISTINCT ml FROM MemoLabel ml WHERE LOWER(ml.name) LIKE LOWER(CONCAT('%', :keyword, '%')) ")
-	List<MemoLabel> searchDistinctByName(@Param("keyword") String keyword);
+	@Query("SELECT DISTINCT ml.name FROM MemoLabel ml WHERE LOWER(ml.name) LIKE LOWER(CONCAT('%', :keyword, '%')) ")
+	List<String> searchDistinctByName(@Param("keyword") String keyword);
 
 }

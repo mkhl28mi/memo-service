@@ -3,21 +3,17 @@ package io.github.mkhl28mi.memo_service.domain.memo.repository;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import io.github.mkhl28mi.memo_service.domain.admin.department.entity.Department;
 import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo;
 
-public interface MemoRepository extends JpaRepository<Memo, UUID> {
+public interface MemoRepository extends JpaRepository<Memo, UUID>, JpaSpecificationExecutor<Memo> {
 	
 	@Query("SELECT MAX(m.sequenceNumber) FROM Memo m WHERE m.creationYear = :year AND m.department = :department")
     Optional<Integer> searchMaxSequenceNumber(@Param("year") int year, @Param("department") Department department);
-	
-	@Query("SELECT m FROM Memo m WHERE m.department = :department")
-	Page<Memo> findByDepartment(@Param("department") Department department, Pageable pageable);
-	
+		
 }

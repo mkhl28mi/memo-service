@@ -33,9 +33,10 @@ import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.dto.response
 import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.entity.UserAssignment;
 import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.service.UserAssignmentService;
 import io.github.mkhl28mi.memo_service.domain.admin.user.entity.User;
+import io.github.mkhl28mi.memo_service.domain.memo.dto.request.MemoFilter;
 import io.github.mkhl28mi.memo_service.domain.memo.dto.request.MemoRequest;
-import io.github.mkhl28mi.memo_service.domain.memo.dto.response.PrintTemplateDataResponse;
 import io.github.mkhl28mi.memo_service.domain.memo.dto.response.MemoResponse;
+import io.github.mkhl28mi.memo_service.domain.memo.dto.response.PrintTemplateDataResponse;
 import io.github.mkhl28mi.memo_service.domain.memo.employee.dto.response.MemoEmployeeResponse;
 import io.github.mkhl28mi.memo_service.domain.memo.employee.entity.MemoEmployee;
 import io.github.mkhl28mi.memo_service.domain.memo.employee.entity.MemoEmployee.Role;
@@ -45,6 +46,7 @@ import io.github.mkhl28mi.memo_service.domain.memo.label.dto.response.MemoLabelR
 import io.github.mkhl28mi.memo_service.domain.memo.label.entity.MemoLabel;
 import io.github.mkhl28mi.memo_service.domain.memo.log.entity.MemoLog;
 import io.github.mkhl28mi.memo_service.domain.memo.repository.MemoRepository;
+import io.github.mkhl28mi.memo_service.domain.memo.repository.specifications.MemoSpecifications;
 import io.github.mkhl28mi.memo_service.exception.BusinessException;
 import io.github.mkhl28mi.memo_service.exception.ResourceNotFoundException;
 import jakarta.validation.constraints.NotNull;
@@ -60,7 +62,7 @@ public class MemoService {
 	private final UserAssignmentService userAssignmentService;
 	
 	private final ApplicationSettingService applicationSettingService;
-	
+
 	public MemoService(MemoRepository memoRepository, EmployeeAssignmentService employeeAssignmentService, UserAssignmentService userAssignmentService, ApplicationSettingService applicationSettingService) {
 		super();
 		this.memoRepository = memoRepository;
@@ -312,7 +314,7 @@ public class MemoService {
 				memoResponse);
 	}
 	
-	public Page<MemoResponse> getMemos(User user, int page, int size, String sortBy, Sort.Direction direction) {
+	public Page<MemoResponse> getMemos(User user, int page, int size, String sortBy, Sort.Direction direction, MemoFilter memoFilter) {
 		UserAssignment currentUserAssignment = userAssignmentService.getCurrentUserAssignmentByUserId(user.getId());
 		
 		Sort.Direction sortDirection = (direction != null) ? direction : Sort.Direction.ASC;
@@ -329,10 +331,18 @@ public class MemoService {
         		Math.max(page, 0), 
         		size, 
         		Sort.by(order));
-        
-        Page<Memo> memo = memoRepository.findByDepartment(currentUserAssignment.getDepartmentUnit().getDepartment(), pageable);
-        
-        return memo.map(this::getMemoResponse);
+              
+       var specification = MemoSpecifications.filterMemos(currentUserAssignment.getDepartmentUnit().getDepartment().getId(), 
+    		   memoFilter.memoNumber(), 
+    		   memoFilter.assigneeId(), 
+    		   memoFilter.keyword(), 
+    		   memoFilter.year(), 
+    		   memoFilter.month(), 
+    		   memoFilter.label(), 
+    		   memoFilter.recipientId());
+       
+        return memoRepository.findAll(specification, pageable).map(this::getMemoResponse);
     }
 	
 }
+
