@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.resilience.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -343,6 +344,10 @@ public class MemoService {
        
         return memoRepository.findAll(specification, pageable).map(this::getMemoResponse);
     }
+	
+	public Page<MemoResponse> getMemos(Specification<Memo> specification, Pageable pageable) {
+		return memoRepository.findAll(specification, pageable).map(this::getMemoResponse);
+	}
 	
 }
 
