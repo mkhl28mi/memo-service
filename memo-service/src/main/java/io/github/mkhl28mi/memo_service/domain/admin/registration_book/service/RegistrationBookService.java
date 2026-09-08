@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.github.mkhl28mi.memo_service.domain.memo.dto.request.MemoFilter;
 import io.github.mkhl28mi.memo_service.domain.memo.dto.response.MemoResponse;
@@ -14,6 +15,7 @@ import io.github.mkhl28mi.memo_service.domain.memo.repository.specifications.Mem
 import io.github.mkhl28mi.memo_service.domain.memo.service.MemoService;
 
 @Service
+@Transactional(readOnly = true)
 public class RegistrationBookService {
 	
 	private final MemoService memoService;

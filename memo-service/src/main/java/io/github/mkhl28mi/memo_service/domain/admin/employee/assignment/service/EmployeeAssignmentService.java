@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import io.github.mkhl28mi.memo_service.domain.admin.department.dto.response.DepartmentResponse;
+import io.github.mkhl28mi.memo_service.domain.admin.department.service.DepartmentService;
 import io.github.mkhl28mi.memo_service.domain.admin.employee.assignment.dto.response.EmployeeAssignmentResponse;
 import io.github.mkhl28mi.memo_service.domain.admin.employee.assignment.entity.EmployeeAssignment;
 import io.github.mkhl28mi.memo_service.domain.admin.employee.assignment.repository.EmployeeAssignmentRepository;
@@ -26,18 +28,28 @@ public class EmployeeAssignmentService {
 	
 	private final PositionService positionService;
 	
+	private final DepartmentService departmentService;
+	
 	private final EmployeeAssignmentRepository employeeAssignmentRepository;
 	
-	public EmployeeAssignmentService(EmployeeService employeeService, PositionService positionService, EmployeeAssignmentRepository employeeAssignmentRepository) {
+	public EmployeeAssignmentService(EmployeeService employeeService, PositionService positionService, DepartmentService departmentService, EmployeeAssignmentRepository employeeAssignmentRepository) {
 		super();
 		this.employeeService = employeeService;
 		this.positionService = positionService;
+		this.departmentService = departmentService;
 		this.employeeAssignmentRepository = employeeAssignmentRepository;
 	}
-	
+
 	public EmployeeAssignmentResponse getEmployeeAssignmentResponseById(UUID id) {
 		return new EmployeeAssignmentResponse(employeeAssignmentRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("EmployeeAssignment not found with ID: " + id)));
+	}
+	
+	public EmployeeAssignmentResponse getSigner(UUID departmentId) {
+	 	DepartmentResponse departmentResponse =  departmentService.getDepartmentResponseById(departmentId);
+	 	
+	 	return new EmployeeAssignmentResponse(employeeAssignmentRepository.findCurrentByPositionId(departmentResponse.positionResponse().id())
+	 			.orElseThrow(() -> new ResourceNotFoundException("Current EmployeeAssignment not found with position ID: " + departmentResponse.positionResponse().id())));
 	}
 	
 	public List<EmployeeAssignment> getEmployeeAssignmentsByIds(List<UUID> ids) {

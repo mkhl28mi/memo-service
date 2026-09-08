@@ -86,10 +86,10 @@
     	<p class="fw-bold mt-4">Сортувати за:</p>
 	    <div class="d-flex justify-content-start">
 	    	<p class="d-inline-flex gap-1">
-	    		<a th:href="@{/memos/registration-book(page=1, sortBy='sequenceNumber', sortDir=${sortBy == 'sequenceNumber' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'sequenceNumber'} ? 'active'" class="btn btn-sm" role="button" >За номером службової записки</a>
-	    		<a th:href="@{/memos/registration-book(page=1, sortBy='assignee.user.fullName', sortDir=${sortBy == 'assignee.user.fullName' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'assignee.user.fullName'} ? 'active'" class="btn btn-sm" role="button">За виконавцем</a>
-	    		<a th:href="@{/memos/registration-book(page=1, sortBy='createdAt', sortDir=${sortBy == 'createdAt' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'createdAt'} ? 'active'"  class="btn btn-sm" role="button">За датою створення</a>
-	    		<a th:href="@{/memos/registration-book(page=1, sortBy='status', sortDir=${sortBy == 'status' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'status'} ? 'active'"  class="btn btn-sm" role="button">За статусом</a>
+	    		<a th:href="@{/memos/registration-book(page=1, sortBy='sequenceNumber', sortDir=${sortBy == 'sequenceNumber' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'sequenceNumber'} ? 'active'" class="btn btn-sm" role="button" >За номером службової записки <span th:if="${sortBy == 'sequenceNumber'}" th:text="${sortDir == 'ASC' ? '▲' : '▼'}"></span></a>
+	    		<a th:href="@{/memos/registration-book(page=1, sortBy='assignee.user.fullName', sortDir=${sortBy == 'assignee.user.fullName' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'assignee.user.fullName'} ? 'active'" class="btn btn-sm" role="button">За виконавцем <span th:if="${sortBy == 'assignee.user.fullName'}" th:text="${sortDir == 'ASC' ? '▲' : '▼'}"></span></a>
+	    		<a th:href="@{/memos/registration-book(page=1, sortBy='createdAt', sortDir=${sortBy == 'createdAt' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'createdAt'} ? 'active'"  class="btn btn-sm" role="button">За датою створення <span th:if="${sortBy == 'createdAt'}" th:text="${sortDir == 'ASC' ? '▲' : '▼'}"></span></a>
+	    		<a th:href="@{/memos/registration-book(page=1, sortBy='status', sortDir=${sortBy == 'status' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'status'} ? 'active'"  class="btn btn-sm" role="button">За статусом <span th:if="${sortBy == 'status'}" th:text="${sortDir == 'ASC' ? '▲' : '▼'}"></span></a>
 			</p>
 	    </div>
 	    
@@ -127,7 +127,7 @@
 									</svg>
 								</a>
 							</div>
-							<div class="ms-3">
+							<div th:if="${memo.status.name() == 'APPROVED'}" class="ms-3">
 								<a th:href="@{/memos/print/{id} (id=${memo.id})}" target="_blank" class="btn btn-link" data-toggle="tooltip" data-placement="right" title="Друк">
 									<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="#2d3036" class="bi bi-printer" viewBox="0 0 16 16">
 									  <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>

@@ -16,7 +16,7 @@
 				<h5>Критерії пошуку</h5>
 			</div>
 			<div class="card-body border m-1">
-				<form th:action="@{/memos/registration-book}" method="get" accept-charset="UTF-8">
+				<form th:action="@{/admin/registration-book/{departmentId} (departmentId=${departmentResponse.id})}" method="get" accept-charset="UTF-8">
    	 				<input type="hidden" name="sortBy" th:value="${sortBy}">
     				<input type="hidden" name="sortDir" th:value="${sortDir}">
     				
@@ -88,10 +88,10 @@
     	<p class="fw-bold mt-4">Сортувати за:</p>
 	    <div class="d-flex justify-content-start">
 	    	<p class="d-inline-flex gap-1">
-	    		<a th:href="@{/admin/registration-book/{departmentId} (departmentId=${departmentResponse.id}, page=1, sortBy='sequenceNumber', sortDir=${sortBy == 'sequenceNumber' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'sequenceNumber'} ? 'active'" class="btn btn-sm" role="button" >За номером службової записки</a>
-	    		<a th:href="@{/admin/registration-book/{departmentId} (departmentId=${departmentResponse.id}, page=1, sortBy='assignee.user.fullName', sortDir=${sortBy == 'assignee.user.fullName' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'assignee.user.fullName'} ? 'active'" class="btn btn-sm" role="button">За виконавцем</a>
-	    		<a th:href="@{/admin/registration-book/{departmentId} (departmentId=${departmentResponse.id}, page=1, sortBy='createdAt', sortDir=${sortBy == 'createdAt' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'createdAt'} ? 'active'"  class="btn btn-sm" role="button">За датою створення</a>
-	    		<a th:href="@{/admin/registration-book/{departmentId} (departmentId=${departmentResponse.id}, page=1, sortBy='status', sortDir=${sortBy == 'status' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'status'} ? 'active'"  class="btn btn-sm" role="button">За статусом</a>
+	    		<a th:href="@{/admin/registration-book/{departmentId} (departmentId=${departmentResponse.id}, page=1, sortBy='sequenceNumber', sortDir=${sortBy == 'sequenceNumber' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'sequenceNumber'} ? 'active'" class="btn btn-sm" role="button" >За номером службової записки <span th:if="${sortBy == 'sequenceNumber'}" th:text="${sortDir == 'ASC' ? '▲' : '▼'}"></span></a>
+	    		<a th:href="@{/admin/registration-book/{departmentId} (departmentId=${departmentResponse.id}, page=1, sortBy='assignee.user.fullName', sortDir=${sortBy == 'assignee.user.fullName' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'assignee.user.fullName'} ? 'active'" class="btn btn-sm" role="button">За виконавцем <span th:if="${sortBy == 'assignee.user.fullName'}" th:text="${sortDir == 'ASC' ? '▲' : '▼'}"></span></a>
+	    		<a th:href="@{/admin/registration-book/{departmentId} (departmentId=${departmentResponse.id}, page=1, sortBy='createdAt', sortDir=${sortBy == 'createdAt' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'createdAt'} ? 'active'"  class="btn btn-sm" role="button">За датою створення <span th:if="${sortBy == 'createdAt'}" th:text="${sortDir == 'ASC' ? '▲' : '▼'}"></span></a>
+	    		<a th:href="@{/admin/registration-book/{departmentId} (departmentId=${departmentResponse.id}, page=1, sortBy='status', sortDir=${sortBy == 'status' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'status'} ? 'active'"  class="btn btn-sm" role="button">За статусом <span th:if="${sortBy == 'status'}" th:text="${sortDir == 'ASC' ? '▲' : '▼'}"></span></a>
 			</p>
 	    </div>
 	    

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import io.github.mkhl28mi.memo_service.config.security.CustomUserDetails;
+import io.github.mkhl28mi.memo_service.domain.admin.employee.assignment.service.EmployeeAssignmentService;
 import io.github.mkhl28mi.memo_service.domain.admin.employee.service.EmployeeService;
 import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.service.UserAssignmentService;
 import io.github.mkhl28mi.memo_service.domain.admin.user.service.UserService;
@@ -43,18 +44,27 @@ public class MemoController {
 	
 	private final UserAssignmentService userAssignmentService;
 	
-	public MemoController(MemoService memoService, UserService userService, EmployeeService employeeService, UserAssignmentService userAssignmentService) {
+	private final EmployeeAssignmentService employeeAssignmentService;
+	
+	public MemoController(MemoService memoService, UserService userService, EmployeeService employeeService, UserAssignmentService userAssignmentService, EmployeeAssignmentService employeeAssignmentService) {
 		super();
 		this.memoService = memoService;
 		this.userService = userService;
 		this.employeeService = employeeService;
 		this.userAssignmentService = userAssignmentService;
+		this.employeeAssignmentService = employeeAssignmentService;
 	}
 
 	@GetMapping("/create")
-	public String showCreateForm(Model model) {
+	public String showCreateForm(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+		var currentUserAssignmentResponse = userAssignmentService.getCurrentUserAssignmentResponseByUserId(userDetails.getId());
+
+		var signer = employeeAssignmentService.getSigner(currentUserAssignmentResponse.departmentUnitResponse().departmentResponse().id());
+		
 		model.addAttribute("activePage", "memos/create");
 		model.addAttribute("memoRequest", new MemoRequest());
+		model.addAttribute("signers", List.of(signer));
+		model.addAttribute("signerIds", List.of(signer.id()));
 		
 		return "memos/create-form";
 	}
@@ -107,8 +117,8 @@ public class MemoController {
 	}
 	
 	@GetMapping("/print/{id}")
-	public String print(@PathVariable UUID id, Model model) {
-		model.addAttribute("printTemplateData", memoService.getPrintTemplateData(id));
+	public String print(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable UUID id, Model model) throws BusinessException {
+		model.addAttribute("printTemplateData", memoService.getPrintTemplateData(userDetails.getUser(), id));
 		
 		return "memos/print/print";
 	}
@@ -116,8 +126,8 @@ public class MemoController {
 	@GetMapping("/registration-book")
 	public String showRegistrationBook(@AuthenticationPrincipal CustomUserDetails userDetails, Model model,
 			@RequestParam(defaultValue = "1") int page,
-	        @RequestParam(defaultValue = "id") String sortBy,
-	        @RequestParam(defaultValue = "ASC") Sort.Direction sortDir,
+	        @RequestParam(defaultValue = "createdAt") String sortBy,
+	        @RequestParam(defaultValue = "DESC") Sort.Direction sortDir,
 	        @RequestParam(required = false) UUID recipientId,
 	        @RequestParam(required = false) UUID assigneeId,
 	        @RequestParam(required = false) Integer year,

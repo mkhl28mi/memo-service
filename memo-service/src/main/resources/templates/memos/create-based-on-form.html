@@ -8,7 +8,7 @@
 </head>
 <body>
 
-    <div layout:fragment="content" class="mx-auto w-75 mt-3">
+    <div layout:fragment="content" class="mx-auto w-75 mt-3 mb-5">
   		<form th:action="@{/memos}" th:object="${memoRequest}" th:method="post">
 	  		<div class="d-flex justify-content-between mt-3">
 	  			<div class="w-50">
@@ -58,8 +58,27 @@
 	    <script th:inline="javascript">
 	      	tinymce.init({
 	        	selector: '#content',
-	        	promotion:false,
-	        	license_key: 'gpl'
+	        	promotion: false,
+	    		mode: 'textareas',
+	    		plugins: 'advlist lists autolink link table wordcount visualchars visualblocks insertdatetime image help fullscreen charmap nonbreaking',
+	    		height: 600,
+	    		toolbar: ['selectall copy  paste cut | fullscreen language',
+	    			'undo redo | blocks |line fontsize fontfamily | bold italic underline | alignleft aligncenter alignright alignjustify | outdent indent nonbreaking | numlist bullist | table | charmap | removeformat'
+	    			],
+	    		block_formats: 'Paragraph=p;',
+	    		menubar: 'edit view insert format tools help',
+	    		content_style: 'body {font-family: Times New Roman; font-size: 14pt; line-height: 1;}',
+	    		contextmenu: 'copy paste',
+	    		setup: function(editor) {
+	    			editor.on('keydown', function(e) { 
+	    				if(e.keyCode == 9) {
+	    					editor.execCommand("mceInsertContent", false, '<span style="margin-left:19px;">&nbsp;</span>');
+	    					e.preventDefault();
+	    					return false;
+	    				}
+	    			});
+	    		},
+	    		license_key: 'gpl'
 	      	});
 	      	
 	      	const recipients = /*[[${recipients}]]*/ [];
@@ -370,6 +389,7 @@
 			
 			new TomSelect("#labels", {
 				plugins: ['remove_button'],
+				create: true,
 			    valueField: 'value',
 			    labelField: 'text',
 			    searchField: 'text',

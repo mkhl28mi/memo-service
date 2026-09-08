@@ -1,6 +1,9 @@
 package io.github.mkhl28mi.memo_service.domain.memo.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
@@ -63,7 +66,7 @@ public class MemoService {
 	private final UserAssignmentService userAssignmentService;
 	
 	private final ApplicationSettingService applicationSettingService;
-
+	
 	public MemoService(MemoRepository memoRepository, EmployeeAssignmentService employeeAssignmentService, UserAssignmentService userAssignmentService, ApplicationSettingService applicationSettingService) {
 		super();
 		this.memoRepository = memoRepository;
@@ -298,9 +301,17 @@ public class MemoService {
         return false;
     }
 	
-	public PrintTemplateDataResponse getPrintTemplateData(UUID id) {
-		MemoResponse memoResponse = getMemoById(id);
+	public PrintTemplateDataResponse getPrintTemplateData(User user, UUID memodId) throws BusinessException {
+		MemoResponse memoResponse = getMemoById(memodId);
 		
+		Assert.state(memoResponse.status() == Status.APPROVED, () -> "Memo cannot be printed" + " for user ID: " + user.getId());
+
+		UserAssignment currentUserAssignment = userAssignmentService.getCurrentUserAssignmentByUserId(user.getId());
+		
+        if (!Objects.equals(currentUserAssignment.getDepartmentUnit().getDepartment().getId(), memoResponse.departmentResponse().id())) {
+        	throw new BusinessException("Memo`s departmnet must be the same as user`s departmant" + " for user ID: " + user.getId());
+        }
+        
 		PageSetupRequest pageSetupRequest =  applicationSettingService.getPageSetup();
 		
 		AboutCompanyRequest aboutCompanyRequest = applicationSettingService.getAboutCompany();
@@ -347,6 +358,30 @@ public class MemoService {
 	
 	public Page<MemoResponse> getMemos(Specification<Memo> specification, Pageable pageable) {
 		return memoRepository.findAll(specification, pageable).map(this::getMemoResponse);
+	}
+	
+	public long getCountByDepartment(UUID departmentId) {
+		return memoRepository.counByDepartmentId(departmentId);
+	}
+	
+	public long getCountByDepartmentAndCurrentYear(UUID departmentId) {
+		int currentYear = LocalDate.now().getYear();
+		
+		LocalDateTime startOfYear = LocalDateTime.of(currentYear, 1, 1, 0, 0);
+		
+		LocalDateTime endOfYear = LocalDateTime.of(LocalDate.of(currentYear, 12, 31), LocalTime.MAX);
+		
+		return memoRepository.countByDepartmentIdAndDateRange(departmentId, startOfYear, endOfYear);
+	}
+	
+	public long getCountByDepartmentAndCurrentMonth(UUID departmentId) {
+        LocalDate today = LocalDate.now();
+        
+        LocalDateTime startOfMonth = today.with(TemporalAdjusters.firstDayOfMonth()).atStartOfDay();
+        
+        LocalDateTime endOfMonth = today.with(TemporalAdjusters.lastDayOfMonth()).atTime(LocalTime.MAX);
+        
+		return memoRepository.countByDepartmentIdAndDateRange(departmentId, startOfMonth, endOfMonth);
 	}
 	
 }

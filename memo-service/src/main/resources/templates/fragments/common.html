@@ -11,11 +11,11 @@
         <header class="border-bottom">
 			<nav class="navbar navbar-expand-lg bg-body-tertiary">
 			 <div class="container-fluid">
-			    <a class="navbar-brand" href="#" th:text="#{app.title}"></a>
+			    <a class="navbar-brand" href="/" th:text="#{app.title}"></a>
 			    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			      <span class="navbar-toggler-icon"></span>
 			    </button>
-			    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+			    <div th:if="${currentUser != null}" class="collapse navbar-collapse" id="navbarSupportedContent">
 			      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 			        <li class="nav-item">
 			          <a class="nav-link" aria-current="page" th:classappend="${activePage == 'memos/create'} ? 'active' : ''" href="/memos/create">Створити</a>
@@ -56,10 +56,12 @@
 		</header>
     </div>
     
-    <div th:fragment="footerFragment" class="mt-5">
-  		<footer>
-        	<p>&copy; 2026 Всі права захищені.</p>
-    	</footer>
+    <div th:unless="${activePage == 'memos/create'}" th:fragment="footerFragment" class="sticky-bottom mt-5">
+  		<footer class="bg-light bg-opacity-75 text-dark text-center py-2" style="backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+			<div class="container">
+      			<small>© 2026  Всі права захищені.</small>
+   			</div>
+		</footer>
     </div>
     
 </body>

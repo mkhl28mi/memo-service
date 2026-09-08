@@ -60,7 +60,7 @@
 								<td style="width: 15%">&nbsp;</td>
 								<td style="font-size: 14pt; text-align: right; vertical-align: top; width: 55%;">
 									<div th:each="recipient, iterStat : ${printTemplateData.memoResponse.recipients}"> <b th:text="${recipient.employeeAssignmentResponse.positionResponse.targetName}"></b> <br /> <b th:text="${recipient.employeeAssignmentResponse.employeeResponse.targetFullName}"></b> <br /> <br /> </div>
-									<div th:unless="${printTemplateData.memoResponse.recipients.isEmpty()}"> <b>[[#{print.memo.copy.title}]]</b><br /> <br /> </div>
+									<div th:unless="${printTemplateData.memoResponse.copyRecipients.isEmpty()}"> <b>[[#{print.memo.copy.title}]]</b><br /> <br /> </div>
 									<div th:each="copyRecipient, iterStat : ${printTemplateData.memoResponse.copyRecipients}"> <b th:text="${copyRecipient.employeeAssignmentResponse.positionResponse.targetName}"></b> <br /> <b th:text="${copyRecipient.employeeAssignmentResponse.employeeResponse.targetFullName}"></b> <br /> <br /> </div>
 								</td>
 							</tr>

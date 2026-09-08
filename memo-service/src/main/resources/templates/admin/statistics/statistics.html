@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title></title>
+</head>
+<body>
+
+    <div layout:fragment="content" class="mx-auto w-75 mt-3">		
+		<div class="table-responsive" style="height: 500px;">
+			<table class="table table-sm caption-top border-top">
+			<caption>Кількість створених службових записок по відділам</caption>
+			  <thead>
+			    <tr>
+			      <th scope="col">#</th>
+			      <th class="text-center" style="min-width: 150px;" scope="col">Відділ</th>
+			      <th class="text-center" style="min-width: 150px;" scope="col">За поточний місяць</th>
+			      <th class="text-center" style="min-width: 150px;" scope="col">За поточний рік</th>
+			      <th class="text-center" style="min-width: 150px;" scope="col">Загалом</th>
+			    </tr>
+			  </thead>
+			  <tbody>
+			    <tr th:each="basicStatistic, iterStat : ${basicStatistics}">
+			      <td class="text-center" th:text="${iterStat.count}"></td>
+			      <td class="text-center" th:text="${basicStatistic.departmentName}"></td>
+			      <td class="text-center" th:text="${basicStatistic.countOfMonth}"></td>
+			      <td class="text-center" th:text="${basicStatistic.countOfYear}"></td>
+			      <td class="text-center" th:text="${basicStatistic.count}"></td>
+			    </tr>
+			  </tbody>
+			</table>
+		</div>
+    </div>
+    
+</body>
+</html>
