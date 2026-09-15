@@ -8,7 +8,7 @@
 </head>
 <body>
 	
-    <div layout:fragment="content" class="mx-auto w-75 mt-3">
+    <div layout:fragment="content" class="mx-auto w-75 mt-3 vh-100">
    		<p class="fs-5 fw-bold">Відділи:</p>
 	    <a th:each="departmentResponse : ${departmentResponses}" th:text="${departmentResponse.name}" class="btn btn-outline-dark w-100" th:href="@{/admin/registration-book/{departmentId} (departmentId=${departmentResponse.id})}" role="button"></a>  	
     </div>

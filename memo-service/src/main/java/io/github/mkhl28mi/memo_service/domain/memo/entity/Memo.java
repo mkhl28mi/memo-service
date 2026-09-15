@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.github.mkhl28mi.memo_service.domain.admin.department.entity.Department;
 import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.entity.UserAssignment;
+import io.github.mkhl28mi.memo_service.domain.memo.comment.entity.MemoComment;
 import io.github.mkhl28mi.memo_service.domain.memo.employee.entity.MemoEmployee;
 import io.github.mkhl28mi.memo_service.domain.memo.label.entity.MemoLabel;
 import io.github.mkhl28mi.memo_service.domain.memo.log.entity.MemoLog;
@@ -100,6 +101,9 @@ public class Memo {
     
     @OneToMany(mappedBy = "memo", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List <MemoLabel> memoLabels = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "memo", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List <MemoComment> memoComments = new ArrayList<>();
     
     public Memo() {
 		super();
@@ -210,6 +214,16 @@ public class Memo {
 	    memoLable.setMemo(null);
 	}
 	
+	public void addMemoComment(MemoComment memoComment) {
+	    this.memoComments.add(memoComment);
+	    memoComment.setMemo(this);
+	}
+	
+	public void removeMemoComment(MemoComment memoComment) {
+	    this.memoComments.remove(memoComment);
+	    memoComment.setMemo(null);
+	}
+	
 	public List<MemoEmployee> getMemoEmployees() {
 		return Collections.unmodifiableList(this.memoEmployees);
 	}
@@ -222,12 +236,20 @@ public class Memo {
 		return Collections.unmodifiableList(this.memoLabels);
 	}
 	
+	public List<MemoComment> getMemoComments() {
+		return Collections.unmodifiableList(this.memoComments);
+	}
+	
 	public void initializeMemoEmployees() {
 		Hibernate.initialize(this.memoEmployees);
 	}
 	
 	public void initializeMemoLabels() {
 		Hibernate.initialize(this.memoLabels);
+	}
+	
+	public void initializeMemoComments() {
+		Hibernate.initialize(this.memoComments);
 	}
 	
 	public void initializeMemoLogs() {
@@ -259,14 +281,10 @@ public class Memo {
 	}
 	
 	public enum Status {
-    	
-    	IN_PROGRESS,
-    	
-    	DONE,
-    	
-    	DRAFT,
-    	
+		
     	ON_APPROVAL,
+    	
+    	HAS_COMMENTS,
     	
     	APPROVED,
     	

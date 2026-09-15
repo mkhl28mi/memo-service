@@ -74,8 +74,19 @@ public class MemoService {
 		this.userAssignmentService = userAssignmentService;
 		this.applicationSettingService = applicationSettingService;
 	}
+	
+	public Memo getMemoById(@NotNull UUID memoId) throws ResourceNotFoundException {
+		var memo = memoRepository.findById(memoId)
+				.orElseThrow(() -> new ResourceNotFoundException("Memo not found with id: " + memoId));
+		
+		memo.initializeMemoEmployees();
+		
+		memo.initializeMemoLabels();
+		
+		return memo;
+	}
 
-	public MemoResponse getMemoById(@NotNull UUID memoId) {
+	public MemoResponse getMemoResponseById(@NotNull UUID memoId) throws ResourceNotFoundException {
 		var memo = memoRepository.findById(memoId)
 				.orElseThrow(() -> new ResourceNotFoundException("Memo not found with id: " + memoId));
 		
@@ -84,47 +95,6 @@ public class MemoService {
 		memo.initializeMemoLabels();
 		
 		return getMemoResponse(memo);
-	}
-	
-	private MemoResponse getMemoResponse(Memo memo) {
-		var employees = memo.getMemoEmployees().stream()
-				.map(me -> new MemoEmployeeResponse(me.getId(), 
-						new EmployeeAssignmentResponse(me.getEmployeeAssignment()), 
-						me.getRole(), 
-						me.getPlacementOrder(), 
-						me.getCreatedAt()))
-				.collect(Collectors.groupingBy(
-						MemoEmployeeResponse::role, 
-						() -> new EnumMap<>(Role.class),
-						Collectors.collectingAndThen(
-			                    Collectors.toList(),
-			                    list -> {
-			                        list.sort(Comparator.comparing(MemoEmployeeResponse::placementOrder));
-			                        return list;
-			                    }
-			               )));
-		
-		var labels = memo.getMemoLabels().stream()
-				.map(l -> new MemoLabelResponse(l.getId(),
-						new UserAssignmentResponse(l.getCreatedBy()), 
-						l.getName(), 
-						l.getCreatedAt()))
-				.toList();
-		
-		return new MemoResponse(memo.getId(),
-				memo.getContent(), 
-				memo.getStatus(), 
-				new UserAssignmentResponse(memo.getAssignee()), 
-				new DepartmentResponse(memo.getDepartment()), 
-				memo.getSequenceNumber(), 
-				memo.getCreationYear(), 
-				memo.getCreatedAt(), 
-				memo.getUpdatedAt(), 
-				employees.getOrDefault(Role.RECIPIENT, Collections.emptyList()), 
-				employees.getOrDefault(Role.COPY_RECIPIENT, Collections.emptyList()), 
-				employees.getOrDefault(Role.SIGNER, Collections.emptyList()), 
-				employees.getOrDefault(Role.APPROVER, Collections.emptyList()), 
-				labels);
 	}
 	
 	@Retryable(includes = { DataIntegrityViolationException.class }, maxRetries = 5)
@@ -146,7 +116,7 @@ public class MemoService {
         int nextNumber = maxNumber + 1;
         
 		Memo memo = new Memo(memoRequest.content(), 
-				Memo.Status.IN_PROGRESS, 
+				Memo.Status.ON_APPROVAL, 
 				assignee, 
 				assignee.getDepartmentUnit().getDepartment(), 
 				nextNumber, 
@@ -197,15 +167,21 @@ public class MemoService {
 	}
 	
 	@Transactional
+	public void updateMemo(Memo memo) {
+		memoRepository.save(memo);
+	}
+	
+	@Transactional
 	public void updateMemo(User user, UUID memoId, MemoRequest memoRequest) throws BusinessException {
 		UserAssignment currentUserAssignment = userAssignmentService.getCurrentUserAssignmentByUserId(user.getId());
 		
 		Memo memo = memoRepository.findById(memoId)
 				.orElseThrow(() -> new ResourceNotFoundException("Memo not found with ID: " + memoId + " for user ID: " + user.getId()));
 		
-		Assert.state(memo.getStatus() == Status.IN_PROGRESS, () -> "Memo cannot be updated" + " for user ID: " + user.getId());
+		Assert.state((memo.getStatus() == Status.ON_APPROVAL || memo.getStatus() == Status.HAS_COMMENTS), () -> "Memo cannot be updated" + " for user ID: " + user.getId());
 		
 		memo.setContent(memoRequest.content());
+		memo.setStatus(Status.ON_APPROVAL);
 		
 		if (!Objects.equals(memo.getAssignee().getId(), memoRequest.assigneeId())) {
 			UserAssignment assignee = userAssignmentService.getUserAssignmentById(memoRequest.assigneeId());
@@ -289,20 +265,8 @@ public class MemoService {
 	    }
 	}
 	
-	private static boolean hasDuplicates(List<UUID> list) {
-        Set<UUID> set = new HashSet<>();
-        
-        for (UUID element : list) {
-            if (!set.add(element)) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
-	
 	public PrintTemplateDataResponse getPrintTemplateData(User user, UUID memodId) throws BusinessException {
-		MemoResponse memoResponse = getMemoById(memodId);
+		MemoResponse memoResponse = getMemoResponseById(memodId);
 		
 		Assert.state(memoResponse.status() == Status.APPROVED, () -> "Memo cannot be printed" + " for user ID: " + user.getId());
 
@@ -353,11 +317,11 @@ public class MemoService {
     		   memoFilter.label(), 
     		   memoFilter.recipientId());
        
-        return memoRepository.findAll(specification, pageable).map(this::getMemoResponse);
+        return memoRepository.findAll(specification, pageable).map(MemoService::getMemoResponse);
     }
 	
 	public Page<MemoResponse> getMemos(Specification<Memo> specification, Pageable pageable) {
-		return memoRepository.findAll(specification, pageable).map(this::getMemoResponse);
+		return memoRepository.findAll(specification, pageable).map(MemoService::getMemoResponse);
 	}
 	
 	public long getCountByDepartment(UUID departmentId) {
@@ -382,6 +346,78 @@ public class MemoService {
         LocalDateTime endOfMonth = today.with(TemporalAdjusters.lastDayOfMonth()).atTime(LocalTime.MAX);
         
 		return memoRepository.countByDepartmentIdAndDateRange(departmentId, startOfMonth, endOfMonth);
+	}
+	
+	public List<MemoResponse> getMemosWithStatusOnApproval(UUID userId) {
+		UserAssignment currentUserAssignment = userAssignmentService.getCurrentUserAssignmentByUserId(userId);
+		
+		return memoRepository.searchByStatus(currentUserAssignment.getDepartmentUnit().getDepartment().getId(), Status.ON_APPROVAL).stream()
+				.map(MemoService::getMemoResponse).toList();
+	}
+	
+	@Transactional
+	public void processStatus(UUID memoId, Status status) {
+		Memo memo = memoRepository.findById(memoId)
+				.orElseThrow(() -> new ResourceNotFoundException("Memo not found with ID: " + memoId ));
+		
+		Assert.state(memo.getStatus() == Status.ON_APPROVAL, () -> "Status of memo cannot be changed with ID: " + memoId);
+		
+		memo.setStatus(status);
+		
+		memoRepository.save(memo);
+	}
+	
+	private static boolean hasDuplicates(List<UUID> list) {
+        Set<UUID> set = new HashSet<>();
+        
+        for (UUID element : list) {
+            if (!set.add(element)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+	
+	private static MemoResponse getMemoResponse(Memo memo) {
+		var employees = memo.getMemoEmployees().stream()
+				.map(me -> new MemoEmployeeResponse(me.getId(), 
+						new EmployeeAssignmentResponse(me.getEmployeeAssignment()), 
+						me.getRole(), 
+						me.getPlacementOrder(), 
+						me.getCreatedAt()))
+				.collect(Collectors.groupingBy(
+						MemoEmployeeResponse::role, 
+						() -> new EnumMap<>(Role.class),
+						Collectors.collectingAndThen(
+			                    Collectors.toList(),
+			                    list -> {
+			                        list.sort(Comparator.comparing(MemoEmployeeResponse::placementOrder));
+			                        return list;
+			                    }
+			               )));
+		
+		var labels = memo.getMemoLabels().stream()
+				.map(l -> new MemoLabelResponse(l.getId(),
+						new UserAssignmentResponse(l.getCreatedBy()), 
+						l.getName(), 
+						l.getCreatedAt()))
+				.toList();
+		
+		return new MemoResponse(memo.getId(),
+				memo.getContent(), 
+				memo.getStatus(), 
+				new UserAssignmentResponse(memo.getAssignee()), 
+				new DepartmentResponse(memo.getDepartment()), 
+				memo.getSequenceNumber(), 
+				memo.getCreationYear(), 
+				memo.getCreatedAt(), 
+				memo.getUpdatedAt(), 
+				employees.getOrDefault(Role.RECIPIENT, Collections.emptyList()), 
+				employees.getOrDefault(Role.COPY_RECIPIENT, Collections.emptyList()), 
+				employees.getOrDefault(Role.SIGNER, Collections.emptyList()), 
+				employees.getOrDefault(Role.APPROVER, Collections.emptyList()), 
+				labels);
 	}
 	
 }

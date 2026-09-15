@@ -1,6 +1,7 @@
 package io.github.mkhl28mi.memo_service.domain.memo.repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 
 import io.github.mkhl28mi.memo_service.domain.admin.department.entity.Department;
 import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo;
+import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo.Status;
 
 public interface MemoRepository extends JpaRepository<Memo, UUID>, JpaSpecificationExecutor<Memo> {
 	
@@ -22,5 +24,8 @@ public interface MemoRepository extends JpaRepository<Memo, UUID>, JpaSpecificat
 	
     @Query("SELECT COUNT(m) FROM Memo m WHERE m.department.id = :departmentId AND (m.createdAt >= :start AND m.createdAt <= :end)")
     long countByDepartmentIdAndDateRange(@Param("departmentId") UUID departemntId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
-		
+    
+    @Query("SELECT m FROM Memo m WHERE m.department.id = :departmentId AND m.status = :status ORDER BY m.createdAt DESC")
+    List<Memo> searchByStatus(@Param("departmentId") UUID departemntId, @Param("status") Status status);
+    
 }

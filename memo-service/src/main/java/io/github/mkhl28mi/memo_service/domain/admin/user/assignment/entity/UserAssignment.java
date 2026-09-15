@@ -12,7 +12,9 @@ import org.hibernate.annotations.UuidGenerator;
 
 import io.github.mkhl28mi.memo_service.domain.admin.department.unit.entity.DepartmentUnit;
 import io.github.mkhl28mi.memo_service.domain.admin.user.entity.User;
+import io.github.mkhl28mi.memo_service.domain.memo.comment.entity.MemoComment;
 import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo;
+import io.github.mkhl28mi.memo_service.domain.memo.label.entity.MemoLabel;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -49,6 +51,12 @@ public class UserAssignment {
     
     @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List <Memo> memos = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List <MemoLabel> memoLabels = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List <MemoComment> memoComments = new ArrayList<>();
 
 	public UserAssignment() {
 		super();
@@ -110,6 +118,34 @@ public class UserAssignment {
 	
 	public List<Memo> getMemos() {
 		return Collections.unmodifiableList(this.memos);
+	}
+	
+	public void addMemoLabel(MemoLabel memoLabel) {
+	    this.memoLabels.add(memoLabel);
+	    memoLabel.setCreatedBy(this);
+	}
+	
+	public void removeMemoLabel(MemoLabel memoLabel) {
+	    this.memoLabels.remove(memoLabel);
+	    memoLabel.setCreatedBy(null);
+	}
+	
+	public List<MemoLabel> getMemoLabels() {
+		return Collections.unmodifiableList(this.memoLabels);
+	}
+	
+	public void addMemoComment(MemoComment memoComment) {
+	    this.memoComments.add(memoComment);
+	    memoComment.setCreatedBy(this);
+	}
+	
+	public void removeMemoComment(MemoComment memoComment) {
+	    this.memoComments.remove(memoComment);
+	    memoComment.setCreatedBy(null);
+	}
+	
+	public List<MemoComment> getMemoComments() {
+		return Collections.unmodifiableList(this.memoComments);
 	}
 
 	@Override

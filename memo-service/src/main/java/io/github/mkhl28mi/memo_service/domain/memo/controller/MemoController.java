@@ -23,9 +23,10 @@ import io.github.mkhl28mi.memo_service.domain.admin.employee.assignment.service.
 import io.github.mkhl28mi.memo_service.domain.admin.employee.service.EmployeeService;
 import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.service.UserAssignmentService;
 import io.github.mkhl28mi.memo_service.domain.admin.user.service.UserService;
-import io.github.mkhl28mi.memo_service.domain.memo.dto.request.MemoRequest;
 import io.github.mkhl28mi.memo_service.domain.memo.dto.request.MemoFilter;
+import io.github.mkhl28mi.memo_service.domain.memo.dto.request.MemoRequest;
 import io.github.mkhl28mi.memo_service.domain.memo.dto.response.MemoResponse;
+import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo.Status;
 import io.github.mkhl28mi.memo_service.domain.memo.service.MemoService;
 import io.github.mkhl28mi.memo_service.exception.BusinessException;
 
@@ -46,7 +47,8 @@ public class MemoController {
 	
 	private final EmployeeAssignmentService employeeAssignmentService;
 	
-	public MemoController(MemoService memoService, UserService userService, EmployeeService employeeService, UserAssignmentService userAssignmentService, EmployeeAssignmentService employeeAssignmentService) {
+	public MemoController(MemoService memoService, UserService userService, EmployeeService employeeService,
+			UserAssignmentService userAssignmentService, EmployeeAssignmentService employeeAssignmentService) {
 		super();
 		this.memoService = memoService;
 		this.userService = userService;
@@ -78,7 +80,7 @@ public class MemoController {
 	
 	@GetMapping("/{id}")
 	public String getMemoById(@PathVariable UUID id, Model model) {
-		var memoResponse = memoService.getMemoById(id);
+		var memoResponse = memoService.getMemoResponseById(id);
 		
 		model.addAttribute("activePage", "memos/create");
 		model.addAttribute("memoId", id);
@@ -100,9 +102,9 @@ public class MemoController {
 		return String.format("redirect:/memos/%s", id);
 	}
 	
-	@GetMapping("/create-based-on/{id}")
+	@GetMapping("/{id}/create-based-on")
 	public String showCreateBasedOnForm(@PathVariable UUID id, Model model) {
-		var memoResponse = memoService.getMemoById(id);
+		var memoResponse = memoService.getMemoResponseById(id);
 		
 		model.addAttribute("activePage", "memos/create");
 		model.addAttribute("memoRequest", new MemoRequest(memoResponse));
@@ -116,11 +118,26 @@ public class MemoController {
 		return "memos/create-based-on-form";
 	}
 	
-	@GetMapping("/print/{id}")
+	@GetMapping("/{id}/print")
 	public String print(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable UUID id, Model model) throws BusinessException {
 		model.addAttribute("printTemplateData", memoService.getPrintTemplateData(userDetails.getUser(), id));
 		
 		return "memos/print/print";
+	}
+	
+	@PostMapping("/{id}/process-status")
+	public String processStatus(@PathVariable UUID id, @RequestParam Status status) {
+		memoService.processStatus(id, status);
+		
+		return "redirect:/memos/approval";
+	}
+	
+	@GetMapping("/approval")
+	public String showApprovalPage(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+		model.addAttribute("activePage", "memos/approval");
+		model.addAttribute("memos", memoService.getMemosWithStatusOnApproval(userDetails.getId()));
+		
+		return "memos/approval/approval";
 	}
 	
 	@GetMapping("/registration-book")

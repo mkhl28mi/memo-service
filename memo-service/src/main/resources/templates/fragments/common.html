@@ -23,6 +23,9 @@
 			        <li class="nav-item">
 			          <a class="nav-link" th:classappend="${activePage == 'memos/registration-book'} ? 'active' : ''" href="/memos/registration-book">Книга реєстрації</a>
 			        </li>
+			        <li class="nav-item">
+			          <a class="nav-link" th:classappend="${activePage == 'memos/approval'} ? 'active' : ''" href="/memos/approval">Погодження</a>
+			        </li>
 			        <li class="nav-item dropdown">
 			          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 			            Адміністрування 
@@ -56,7 +59,7 @@
 		</header>
     </div>
     
-    <div th:unless="${activePage == 'memos/create'}" th:fragment="footerFragment" class="sticky-bottom mt-5">
+    <div th:fragment="footerFragment" class="sticky-bottom mt-5">
   		<footer class="bg-light bg-opacity-75 text-dark text-center py-2" style="backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
 			<div class="container">
       			<small>© 2026  Всі права захищені.</small>
