@@ -71,6 +71,7 @@ public class UserService {
 				passwordEncoder.encode(userRequest.password()), 
 				userRequest.fullName(), 
 				userRequest.cell(), 
+				userRequest.email(),
 				userRequest.enabled());
 		
 		userRequest.roleIds().forEach(roleId -> user.addRole(roleService.getRoleById(roleId)));

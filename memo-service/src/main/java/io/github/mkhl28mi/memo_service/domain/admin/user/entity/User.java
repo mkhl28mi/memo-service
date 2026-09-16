@@ -29,6 +29,8 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
@@ -62,6 +64,10 @@ public class User {
 	@Column(name = "cell", nullable = false, length = 20)
 	private String cell;
 	
+	@NotBlank(message = "Email cannot be blank")
+	@Email(message = "Email is not correct")
+	private String email;
+	
 	@Column(name = "is_enabled", nullable = false)
 	private boolean enabled;
 	
@@ -92,12 +98,13 @@ public class User {
 		super();
 	}
 	
-	public User(String username, String password, String fullName, String cell, boolean isEnabled) {
+	public User(String username, String password, String fullName, String cell, String email, boolean isEnabled) {
 		super();
 		this.username = username;
 		this.password = password;
 		this.fullName = fullName;
 		this.cell = cell;
+		this.email = email;
 		this.enabled = isEnabled;
 	}
 
@@ -133,6 +140,14 @@ public class User {
 		this.cell = cell;
 	}
 	
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public boolean isEnabled() {
 		return enabled;
 	}
@@ -195,8 +210,8 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", username=" + username + ", fullName=" + fullName + ", cell=" + cell + ", enabled="
-				+ enabled + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
+		return "User [id=" + id + ", username=" + username + ", fullName=" + fullName + ", cell=" + cell + ", email="
+				+ email + ", enabled=" + enabled + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
-	
+
 }

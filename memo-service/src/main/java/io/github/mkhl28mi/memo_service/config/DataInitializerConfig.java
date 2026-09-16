@@ -34,7 +34,7 @@ public class DataInitializerConfig {
         	Optional<Role> role = roleService.getRoleByName(RoleType.ROLE_ADMIN);
         	
             if (role.isPresent() && userService.getUserByUsername("admin").isEmpty()) {
-            	userService.addUser(new UserRequest("admin", "1111", "Admin ADMIN", "00-00", true, List.of(role.get().getId())));
+            	userService.addUser(new UserRequest("admin", "1111", "Admin ADMIN", "00 00", "admin@company.com", true, List.of(role.get().getId())));
             }
         };
     }

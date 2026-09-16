@@ -31,6 +31,10 @@
 					    <label for="cell" class="form-label">Телефон*</label>
 					    <input type="text" class="form-control" th:field="*{cell}" required>
 					  </div>
+					  <div class="mb-2">
+					    <label for="email" class="form-label">Електронна пошта*</label>
+					    <input type="email" class="form-control" th:field="*{email}" required>
+					  </div>
 					  <div class="mb-3">
 					  	<label for="roleIds" class="form-label">Ролі:</label>
 			            <select th:field="*{roleIds}" multiple placeholder="Оберіть ролі..." autocomplete="off" required>
