@@ -178,7 +178,7 @@ public class MemoService {
 		Memo memo = memoRepository.findById(memoId)
 				.orElseThrow(() -> new ResourceNotFoundException("Memo not found with ID: " + memoId + " for user ID: " + user.getId()));
 		
-		Assert.state((memo.getStatus() == Status.ON_APPROVAL || memo.getStatus() == Status.HAS_COMMENTS), () -> "Memo cannot be updated" + " for user ID: " + user.getId());
+		Assert.state((memo.getStatus() == Status.ON_APPROVAL || memo.getStatus() == Status.REVISE_MEMO), () -> "Memo cannot be updated" + " for user ID: " + user.getId());
 		
 		memo.setContent(memoRequest.content());
 		memo.setStatus(Status.ON_APPROVAL);
@@ -417,7 +417,8 @@ public class MemoService {
 				employees.getOrDefault(Role.COPY_RECIPIENT, Collections.emptyList()), 
 				employees.getOrDefault(Role.SIGNER, Collections.emptyList()), 
 				employees.getOrDefault(Role.APPROVER, Collections.emptyList()), 
-				labels);
+				labels,
+				!memo.getMemoComments().isEmpty());
 	}
 	
 }

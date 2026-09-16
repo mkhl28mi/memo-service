@@ -23,7 +23,8 @@ public record MemoResponse(UUID id,
 		List<MemoEmployeeResponse> copyRecipients,
 		List<MemoEmployeeResponse> signers,
 		List<MemoEmployeeResponse> approvers,
-		List<MemoLabelResponse> labels) {
+		List<MemoLabelResponse> labels,
+		boolean hasComments) {
 	
 	public String getMemoNumberPattern() {
 	    int yearFormatted = (creationYear >= 2100) ? (creationYear % 1000) : (creationYear % 100);

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title></title>
+</head>
+<body>
+
+    <div layout:fragment="content" class="mx-auto w-75 mt-3 h-100">
+		<div th:each="log : ${logs}" class="card mt-3 mb-3 border-dark">
+			<div class="card-header">
+				<div class="d-flex justify-content-start">
+					<div class="text-dark"><small th:text="${#temporals.format(log.createdAt, 'dd-MM-yyyy HH:mm')}"></small></div>
+				</div>
+			</div>
+			<div class="card-body border m-1">
+				<p th:text="${log.status.name + ': '+ log.createdBy.userResponse.fullName}"></p>			
+			</div>
+		</div>
+    </div>
+    
+    <th:block layout:fragment="scripts">
+	    <script th:inline="javascript">
+	    
+	    </script>
+	</th:block>
+	
+</body>
+</html>

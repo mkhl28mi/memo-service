@@ -46,7 +46,7 @@ public class MemoCommentService {
 		
 		Assert.state((memo.getStatus() == Status.ON_APPROVAL), () -> "Memo cannot be updated" + " for user ID: " + userId);
 
-		memo.setStatus(Status.HAS_COMMENTS);
+		memo.setStatus(Status.REVISE_MEMO);
 		
 		UserAssignment currentUserAssignment = userAssignmentService.getCurrentUserAssignmentByUserId(userId);
 				

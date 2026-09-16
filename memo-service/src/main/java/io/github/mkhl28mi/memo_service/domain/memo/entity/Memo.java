@@ -284,7 +284,7 @@ public class Memo {
 		
     	ON_APPROVAL,
     	
-    	HAS_COMMENTS,
+    	REVISE_MEMO,
     	
     	APPROVED,
     	
