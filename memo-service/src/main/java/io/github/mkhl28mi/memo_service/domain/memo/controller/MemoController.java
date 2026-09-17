@@ -7,6 +7,7 @@ import java.util.stream.IntStream;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +34,7 @@ import io.github.mkhl28mi.memo_service.exception.BusinessException;
 
 @Controller
 @RequestMapping("/memos")
+@PreAuthorize("isAuthenticated()")
 public class MemoController {
 	
 	private static final int PAGE_SIZE = 20;
@@ -126,6 +128,7 @@ public class MemoController {
 	}
 	
 	@PostMapping("/{id}/process-status")
+	@PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
 	public String processStatus(@PathVariable UUID id, @RequestParam Status status) {
 		memoService.processStatus(id, status);
 		
@@ -133,6 +136,7 @@ public class MemoController {
 	}
 	
 	@GetMapping("/approval")
+	@PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
 	public String showApprovalPage(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
 		model.addAttribute("activePage", "memos/approval");
 		model.addAttribute("memos", memoService.getMemosWithStatusOnApproval(userDetails.getId()));

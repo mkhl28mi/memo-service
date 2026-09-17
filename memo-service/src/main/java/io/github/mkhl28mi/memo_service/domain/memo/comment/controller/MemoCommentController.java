@@ -2,6 +2,7 @@ package io.github.mkhl28mi.memo_service.domain.memo.comment.controller;
 
 import java.util.UUID;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +17,7 @@ import io.github.mkhl28mi.memo_service.domain.memo.comment.service.MemoCommentSe
 
 @Controller
 @RequestMapping("/memos/{id}/comments")
+@PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
 public class MemoCommentController {
 	
 	private final MemoCommentService memoCommentService;
@@ -26,6 +28,7 @@ public class MemoCommentController {
 	}
 	
 	@GetMapping
+	@PreAuthorize("isAuthenticated()")
 	public String getComments(@PathVariable UUID id, Model model) {
 		model.addAttribute("comments", memoCommentService.getMemoCommentsByMemoId(id));
 		

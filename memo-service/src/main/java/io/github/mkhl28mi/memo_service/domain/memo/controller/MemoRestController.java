@@ -2,6 +2,7 @@ package io.github.mkhl28mi.memo_service.domain.memo.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ import io.github.mkhl28mi.memo_service.domain.memo.label.service.MemoLabelServic
 
 @RestController
 @RequestMapping("/api/v1/memos")
+@PreAuthorize("isAuthenticated()")
 public class MemoRestController {
 	
 	private final UserAssignmentService userAssignmentService;

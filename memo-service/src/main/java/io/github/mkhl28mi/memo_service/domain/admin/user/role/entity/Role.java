@@ -115,7 +115,7 @@ public class Role {
 		
 	    ROLE_ADMIN,
 	    
-	    ROLE_MANAGER
-	    
+	    ROLE_MANAGER,
+
 	}
 }

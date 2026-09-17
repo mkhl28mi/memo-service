@@ -2,6 +2,7 @@ package io.github.mkhl28mi.memo_service.domain.admin.registration_book.controlle
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import io.github.mkhl28mi.memo_service.domain.memo.label.service.MemoLabelServic
 
 @RestController
 @RequestMapping("/api/v1/admin/registration-book")
+@PreAuthorize("hasAnyRole('ADMIN')")
 public class RegistrationBookRestController {
 	
 	private final UserAssignmentService userAssignmentService;

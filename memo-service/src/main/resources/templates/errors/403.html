@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Доступ обмежено | 403 Forbidden</title>
+</head>
+<body>
+
+    <div layout:fragment="content" class="vh-100 mt-3">
+	    <div class="card shadow-sm border-0 px-4 py-5 bg-white rounded-4">
+	        <div class="card-body">
+	            <div class="mb-4 d-inline-flex align-items-center justify-content-center bg-danger-subtle text-danger rounded-circle" style="width: 90px; height: 90px;">
+	                <i class="bi bi-lock-fill" style="font-size: 3rem;"></i>
+	            </div>
+	            
+	            <h1 class="display-1 fw-bold text-secondary mb-2">403</h1>
+	            
+	            <h2 class="h4 fw-semibold text-dark mb-3">Сюди вхід заборонено</h2>
+	            
+	            <p class="text-muted mb-4 mx-auto" style="max-width: 400px;">
+	                У вашого акаунта недостатньо прав для перегляду цієї сторінки. Можливо, термін дії сесії закінчився або потрібен профіль адміністратора.
+	            </p>
+	            
+	            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+	                <button onclick="history.back()" class="btn btn-outline-secondary btn-lg px-4 gap-3">
+	                    <i class="bi bi-arrow-left me-2"></i>Назад
+	                </button>
+	                <a href="/" class="btn btn-primary btn-lg px-4">
+	                    <i class="bi bi-house-door me-2"></i>На головну
+	                </a>
+	            </div>
+	        </div>
+	    </div>
+    </div>
+
+</body>
+</html>

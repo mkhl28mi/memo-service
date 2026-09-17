@@ -2,6 +2,7 @@ package io.github.mkhl28mi.memo_service.domain.admin.department.unit.controller;
 
 import java.util.UUID;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +18,7 @@ import io.github.mkhl28mi.memo_service.domain.admin.department.unit.service.Depa
 
 @Controller
 @RequestMapping("/admin/departments/{departmentId}/units")
+@PreAuthorize("hasAnyRole('ADMIN')")
 public class DepartmentUnitController {
 	
 	private static final String REDIRECT_UNITS = "redirect:/admin/departments/%s/units";

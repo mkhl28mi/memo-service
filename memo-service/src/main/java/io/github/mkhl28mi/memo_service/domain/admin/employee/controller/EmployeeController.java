@@ -2,6 +2,7 @@ package io.github.mkhl28mi.memo_service.domain.admin.employee.controller;
 
 import java.util.UUID;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +19,7 @@ import io.github.mkhl28mi.memo_service.domain.admin.employee.service.EmployeeSer
 
 @Controller
 @RequestMapping("/admin/employees")
+@PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
 public class EmployeeController {
 	
 	private static final String REDIRECT_EMPLOYEES = "redirect:/admin/employees";
@@ -39,7 +41,7 @@ public class EmployeeController {
 	}
 	
 	@PostMapping
-	public String saveEmployee(@ModelAttribute EmployeeRequest employeeRequest) {
+	public String addEmployee(@ModelAttribute EmployeeRequest employeeRequest) {
 		employeeService.addEmployee(employeeRequest);
 		
 		return REDIRECT_EMPLOYEES;

@@ -2,6 +2,7 @@ package io.github.mkhl28mi.memo_service.domain.admin.position.controller;
 
 import java.util.UUID;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +19,7 @@ import io.github.mkhl28mi.memo_service.domain.admin.position.service.PositionSer
 
 @Controller
 @RequestMapping("/admin/positions")
+@PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
 public class PositionController {
 	
 	private static final String REDIRECT_POSITIONS = "redirect:/admin/positions";
@@ -46,7 +48,7 @@ public class PositionController {
 	}
 	
 	@GetMapping("/{id}")
-	public String getEmployeePosition(@PathVariable UUID id, Model model) {
+	public String getPosition(@PathVariable UUID id, Model model) {
 		model.addAttribute("activePage", "admin/positions");
 		model.addAttribute("positionId", id);
 		model.addAttribute("positionRequest", new PositionRequest(positionService.getPositionResponseById(id)));

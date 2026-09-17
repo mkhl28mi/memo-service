@@ -2,6 +2,7 @@ package io.github.mkhl28mi.memo_service.domain.admin.user.assignment.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,6 +13,7 @@ import io.github.mkhl28mi.memo_service.domain.admin.department.unit.service.Depa
 
 @RestController
 @RequestMapping("/api/v1/admin/users/assignments")
+@PreAuthorize("hasAnyRole('ADMIN')")
 public class UserAssignmentRestController {
 	
 	private final DepartmentUnitService departmentUnitService;

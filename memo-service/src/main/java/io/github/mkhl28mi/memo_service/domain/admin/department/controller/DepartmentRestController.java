@@ -2,6 +2,7 @@ package io.github.mkhl28mi.memo_service.domain.admin.department.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,6 +13,7 @@ import io.github.mkhl28mi.memo_service.domain.admin.position.service.PositionSer
 
 @RestController
 @RequestMapping("/api/v1/admin/departments")
+@PreAuthorize("hasAnyRole('ADMIN')")
 public class DepartmentRestController {
 	
 	private final PositionService positionService;

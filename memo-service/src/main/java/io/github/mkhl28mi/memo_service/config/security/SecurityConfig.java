@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -16,6 +17,7 @@ import io.github.mkhl28mi.memo_service.domain.admin.user.service.CustomUserDetai
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 	
 	private final CustomUserDetailsService userDetailsService;
@@ -29,8 +31,7 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) {
         http
             .authorizeHttpRequests(auth -> auth
-            		.requestMatchers("/", "/login", "/about", "/public/**", "/webjars/**").permitAll()
-                	.requestMatchers("/admin/**", "/api/v1/admin/**").hasRole("ADMIN")
+                	.requestMatchers("/", "/login", "/about", "/public/**", "/support", "/webjars/**", "/error", "/error/**").permitAll()
                 	.anyRequest().authenticated()
             )
             .authenticationProvider(authenticationProvider())
@@ -42,6 +43,9 @@ public class SecurityConfig {
                     .clearAuthentication(true)
                     .deleteCookies("JSESSIONID")
                     .permitAll()
+                )
+            .exceptionHandling(exception -> exception
+                    .accessDeniedPage("/access-denied") 
                 )
             .httpBasic(AbstractHttpConfigurer::disable);
              

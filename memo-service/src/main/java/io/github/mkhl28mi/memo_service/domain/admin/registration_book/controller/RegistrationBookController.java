@@ -7,6 +7,7 @@ import java.util.stream.IntStream;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ import io.github.mkhl28mi.memo_service.domain.memo.dto.response.MemoResponse;
 
 @Controller
 @RequestMapping("/admin/registration-book")
+@PreAuthorize("hasAnyRole('ADMIN')")
 public class RegistrationBookController {
 	
 	private static final int PAGE_SIZE = 20;

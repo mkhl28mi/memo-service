@@ -2,6 +2,7 @@ package io.github.mkhl28mi.memo_service.domain.admin.employee.assignment.control
 
 import java.util.UUID;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,7 @@ import io.github.mkhl28mi.memo_service.domain.admin.employee.service.EmployeeSer
 
 @Controller
 @RequestMapping("/admin/employees/{employeeId}/assignments")
+@PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
 public class EmployeeAssignmentController {
 	
 	private final EmployeeAssignmentService employeeAssignmentService;

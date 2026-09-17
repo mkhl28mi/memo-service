@@ -23,22 +23,22 @@
 			        <li class="nav-item">
 			          <a class="nav-link" th:classappend="${activePage == 'memos/registration-book'} ? 'active' : ''" href="/memos/registration-book">Книга реєстрації</a>
 			        </li>
-			        <li class="nav-item">
+			        <li sec:authorize="hasAnyRole('MANAGER', 'ADMIN')" class="nav-item">
 			          <a class="nav-link" th:classappend="${activePage == 'memos/approval'} ? 'active' : ''" href="/memos/approval">Погодження</a>
 			        </li>
-			        <li class="nav-item dropdown">
+			        <li sec:authorize="hasAnyRole('MANAGER', 'ADMIN')" class="nav-item dropdown">
 			          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 			            Адміністрування 
 			          </a>
 			          <ul class="dropdown-menu">
-			          	<li><a class="dropdown-item" th:classappend="${activePage == 'admin/positions'} ? 'active' : ''" href="/admin/positions">Посади</a></li>
-			          	<li><a class="dropdown-item" th:classappend="${activePage == 'admin/departments'} ? 'active' : ''" href="/admin/departments">Відділи</a></li>
-			          	<li><a class="dropdown-item" th:classappend="${activePage == 'admin/employees'} ? 'active' : ''" href="/admin/employees">Працівники</a></li>
-			            <li><a class="dropdown-item" th:classappend="${activePage == 'admin/users'} ? 'active' : ''" href="/admin/users">Користувачі</a></li>
-			            <li><a class="dropdown-item" th:classappend="${activePage == 'admin/registration-book'} ? 'active' : ''"  href="/admin/registration-book">Книга реєстрації</a></li>
-			            <li><a class="dropdown-item" th:classappend="${activePage == 'admin/application-settings'} ? 'active' : ''" href="/admin/application-settings">Налаштування</a></li>
-			            <li><hr class="dropdown-divider"></li>
-			            <li><a class="dropdown-item" th:classappend="${activePage == 'admin/statistics'} ? 'active' : ''" href="/admin/statistics">Статистика</a></li>
+			          	<li sec:authorize="hasAnyRole('MANAGER', 'ADMIN')"><a class="dropdown-item" th:classappend="${activePage == 'admin/positions'} ? 'active' : ''" href="/admin/positions">Посади</a></li>
+			          	<li sec:authorize="hasAnyRole('ADMIN')"><a class="dropdown-item" th:classappend="${activePage == 'admin/departments'} ? 'active' : ''" href="/admin/departments">Відділи</a></li>
+			          	<li sec:authorize="hasAnyRole('MANAGER', 'ADMIN')"><a class="dropdown-item" th:classappend="${activePage == 'admin/employees'} ? 'active' : ''" href="/admin/employees">Працівники</a></li>
+			            <li sec:authorize="hasAnyRole('ADMIN')"><a class="dropdown-item" th:classappend="${activePage == 'admin/users'} ? 'active' : ''" href="/admin/users">Користувачі</a></li>
+			            <li sec:authorize="hasAnyRole('ADMIN')"><a class="dropdown-item" th:classappend="${activePage == 'admin/registration-book'} ? 'active' : ''"  href="/admin/registration-book">Книга реєстрації</a></li>
+			            <li sec:authorize="hasAnyRole('ADMIN')"><a class="dropdown-item" th:classappend="${activePage == 'admin/application-settings'} ? 'active' : ''" href="/admin/application-settings">Налаштування</a></li>
+			            <li sec:authorize="hasAnyRole('ADMIN')"><hr class="dropdown-divider"></li>
+			            <li sec:authorize="hasAnyRole('ADMIN')"><a class="dropdown-item" th:classappend="${activePage == 'admin/statistics'} ? 'active' : ''" href="/admin/statistics">Статистика</a></li>
 			          </ul>
 			        </li>
 			      </ul>
