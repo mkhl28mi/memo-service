@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Логін</title>
+</head>
+<body>
+
+    <div layout:fragment="content" class="vh-100 mt-3">
+	     <div class="row justify-content-center">
+	        <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+	            <div class="card shadow border-1 p-4">
+	                <div class="card-body">
+	                    <div class="text-center mb-4">
+	                        <h3 class="fw-bold text-dark">Авторизація</h3>
+	                    </div>
+	                    <div th:if="${param.error}" class="alert alert-danger d-flex align-items-center mb-3" role="alert">
+	                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+	                        <div class="small">Неправильний логін або пароль!</div>
+	                    </div>
+	                    <form th:action="@{/login}" method="post">
+	                        <div class="mb-3">
+	                            <label for="username" class="form-label text-secondary small fw-semibold">Логін</label>
+	                            <div class="input-group">
+	                                <input type="text" 
+	                                       id="username" 
+	                                       name="username" 
+	                                       class="form-file form-control ps-1" 
+	                                       placeholder="Введіть логін"
+	                                       required 
+	                                       autofocus>
+	                            </div>
+	                        </div>
+	
+	                        <div class="mb-3">
+	                            <label for="password" class="form-label text-secondary small fw-semibold">Пароль</label>
+	                            <div class="input-group">
+	                                <input type="password" 
+	                                       id="password" 
+	                                       name="password" 
+	                                       class="form-control ps-1" 
+	                                       placeholder="Введіть пароль"
+	                                       required>
+	                            </div>
+	                        </div>
+	                        <button type="submit" class="btn btn-outline-dark w-100 py-2 fw-semibold">
+	                            Увійти <i class="bi bi-box-arrow-in-right ms-1"></i>
+	                        </button>
+	                    </form>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+    </div>
+
+</body>
+</html>

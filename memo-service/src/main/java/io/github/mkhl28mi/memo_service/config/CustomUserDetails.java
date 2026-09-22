@@ -1,4 +1,4 @@
-package io.github.mkhl28mi.memo_service.config.security;
+package io.github.mkhl28mi.memo_service.config;
 
 import java.io.Serializable;
 import java.util.Collection;

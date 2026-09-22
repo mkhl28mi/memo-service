@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import io.github.mkhl28mi.memo_service.config.security.CustomUserDetails;
+import io.github.mkhl28mi.memo_service.config.CustomUserDetails;
 import io.github.mkhl28mi.memo_service.domain.memo.comment.service.MemoCommentService;
 
 @Controller

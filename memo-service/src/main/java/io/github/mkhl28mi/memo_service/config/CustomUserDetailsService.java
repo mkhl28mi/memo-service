@@ -1,4 +1,4 @@
-package io.github.mkhl28mi.memo_service.domain.admin.user.service;
+package io.github.mkhl28mi.memo_service.config;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -6,7 +6,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.github.mkhl28mi.memo_service.config.security.CustomUserDetails;
 import io.github.mkhl28mi.memo_service.domain.admin.user.repository.UserRepository;
 
 @Service

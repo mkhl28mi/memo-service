@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import io.github.mkhl28mi.memo_service.config.security.CustomUserDetails;
+import io.github.mkhl28mi.memo_service.config.CustomUserDetails;
 import io.github.mkhl28mi.memo_service.domain.admin.employee.assignment.service.EmployeeAssignmentService;
 import io.github.mkhl28mi.memo_service.domain.admin.employee.service.EmployeeService;
 import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.service.UserAssignmentService;
@@ -62,11 +62,13 @@ public class MemoController {
 	@GetMapping("/create")
 	public String showCreateForm(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
 		var currentUserAssignmentResponse = userAssignmentService.getCurrentUserAssignmentResponseByUserId(userDetails.getId());
-
+		
 		var signer = employeeAssignmentService.getSigner(currentUserAssignmentResponse.departmentUnitResponse().departmentResponse().id());
 		
 		model.addAttribute("activePage", "memos/create");
 		model.addAttribute("memoRequest", new MemoRequest());
+		model.addAttribute("assignees", List.of(currentUserAssignmentResponse));
+		model.addAttribute("assigneeIds", List.of(currentUserAssignmentResponse.id()));
 		model.addAttribute("signers", List.of(signer));
 		model.addAttribute("signerIds", List.of(signer.id()));
 		

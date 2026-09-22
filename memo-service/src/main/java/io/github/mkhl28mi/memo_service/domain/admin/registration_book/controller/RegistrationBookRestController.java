@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.github.mkhl28mi.memo_service.config.security.CustomUserDetails;
+import io.github.mkhl28mi.memo_service.config.CustomUserDetails;
 import io.github.mkhl28mi.memo_service.domain.admin.employee.dto.response.EmployeeResponse;
 import io.github.mkhl28mi.memo_service.domain.admin.employee.service.EmployeeService;
 import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.service.UserAssignmentService;

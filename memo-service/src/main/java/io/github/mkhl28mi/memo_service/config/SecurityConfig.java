@@ -1,10 +1,9 @@
-package io.github.mkhl28mi.memo_service.config.security;
+package io.github.mkhl28mi.memo_service.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -12,8 +11,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-import io.github.mkhl28mi.memo_service.domain.admin.user.service.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
@@ -26,16 +23,20 @@ public class SecurityConfig {
 		super();
 		this.userDetailsService = userDetailsService;
 	}
-
+	
 	@Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) {
         http
             .authorizeHttpRequests(auth -> auth
-                	.requestMatchers("/", "/login", "/about", "/public/**", "/support", "/webjars/**", "/error", "/error/**").permitAll()
+                	.requestMatchers("/", "/login", "/about", "/webjars/**", "/public/**", "/errors/**").permitAll()
                 	.anyRequest().authenticated()
             )
             .authenticationProvider(authenticationProvider())
-            .formLogin(Customizer.withDefaults())
+            .formLogin(form -> form
+                    .loginPage("/login")
+                    .defaultSuccessUrl("/", true)
+                    .permitAll()
+                )
             .logout(logout -> logout
                     .logoutUrl("/logout")
                     .logoutSuccessUrl("/")
@@ -43,9 +44,6 @@ public class SecurityConfig {
                     .clearAuthentication(true)
                     .deleteCookies("JSESSIONID")
                     .permitAll()
-                )
-            .exceptionHandling(exception -> exception
-                    .accessDeniedPage("/access-denied") 
                 )
             .httpBasic(AbstractHttpConfigurer::disable);
              
