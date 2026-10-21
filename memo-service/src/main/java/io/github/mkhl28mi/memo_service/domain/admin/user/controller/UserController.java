@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import io.github.mkhl28mi.memo_service.domain.admin.user.dto.request.UserRequest;
 import io.github.mkhl28mi.memo_service.domain.admin.user.role.service.RoleService;
 import io.github.mkhl28mi.memo_service.domain.admin.user.service.UserService;
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/admin/users")
@@ -45,7 +47,16 @@ public class UserController {
 	}
 	
 	@PostMapping
-	public String addUser(@ModelAttribute UserRequest userRequest) {
+	public String addUser(@Valid @ModelAttribute UserRequest userRequest, BindingResult bindingResult, Model model) {
+		if (bindingResult.hasErrors()) {
+			model.addAttribute("activePage", "admin/users");
+			model.addAttribute("userRequest", userRequest);
+			model.addAttribute("users", userService.getUsers(""));
+			model.addAttribute("roles", roleService.getRoles());
+			
+			return "admin/users/users";
+        }
+		
 		userService.addUser(userRequest);
 		
 		return REDIRECT_USERS;
@@ -64,7 +75,16 @@ public class UserController {
 	}
 	
 	@PutMapping("/{id}")
-	public String updateUser(@PathVariable UUID id, @ModelAttribute UserRequest userRequest) {
+	public String updateUser(@PathVariable UUID id, @Valid @ModelAttribute UserRequest userRequest, BindingResult bindingResult, Model model) {
+		if (bindingResult.hasErrors()) {
+			model.addAttribute("activePage", "admin/users");
+			model.addAttribute("userRequest", userRequest);
+			model.addAttribute("users", userService.getUsers(""));
+			model.addAttribute("roles", roleService.getRoles());
+			
+			return "admin/users/users";
+        }
+		
 		userService.updateUser(id, userRequest);
 		
 		return REDIRECT_USERS;

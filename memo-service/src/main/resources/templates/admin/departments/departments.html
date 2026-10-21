@@ -17,20 +17,24 @@
 					  <div class="mb-2">
 					    <label for="name" class="form-label">Назва*</label>
 					    <input type="text" class="form-control" th:field="*{name}" required>
+					    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></span>
 					  </div>
 					  <div class="mb-2">
 					    <label for="code" class="form-label">Код*</label>
 					    <input type="text" class="form-control" th:field="*{code}" required>
+					    <span th:if="${#fields.hasErrors('code')}" th:errors="*{code}" class="text-danger"></span>
 					  </div>
 					  <div class="mb-3">
 					    <label for="description" class="form-label">Опис*</label>
 					    <input type="text" class="form-control" th:field="*{description}" required>
+					    <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger"></span>
 					  </div>
 					  <div class="mb-3">
 							<label for="positionId" class="form-label">Посада*</label>
 							<select th:field="*{positionId}" placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;" required>
 								<option th:each="position : ${positions}" th:value="${position.id}" th:text="${position.name}"></option>
 							</select>
+							<span th:if="${#fields.hasErrors('positionId')}" th:errors="*{positionId}" class="text-danger"></span>
 					  </div>
 					  <div class="mb-3 form-check">
 				      	<label class="form-check-label" for="enabled">Доступний</label>

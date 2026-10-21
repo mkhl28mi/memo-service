@@ -44,7 +44,7 @@
 							<b th:text="${printTemplateData.companyName}"></b> <br />
 							[[${printTemplateData.memoResponse.departmentResponse.description}]] ([[${printTemplateData.memoResponse.departmentResponse.name}]])<br />
 							_____________________________________________________________________<br /> <br />
-							<div th:utext="#{print.memo.title}"></div > <br /> <br />
+							<div th:utext="#{memo.print.title}"></div > <br /> <br />
 						</div>
 					</td>
 				</tr>
@@ -54,13 +54,13 @@
 						<table style="width: 100%;">
 							<tr>
 								<td style="font-size: 14pt; text-align: left; vertical-align: top; width: 30%;">
-										[[#{print.memo.date.start}]]&nbsp;[[${#temporals.format(printTemplateData.memoResponse.createdAt, 'dd.MM.yyyy')}]]&nbsp;[[#{print.memo.date.end}]]<br />
+										[[#{memo.print.date.start.text}]]&nbsp;[[${#temporals.format(printTemplateData.memoResponse.createdAt, 'dd.MM.yyyy')}]]&nbsp;[[#{memo.print.date.end.text}]]<br />
 										№&nbsp;[[${printTemplateData.memoResponse.getMemoNumberPattern()}]]<br /> <br />
 								</td>
 								<td style="width: 15%">&nbsp;</td>
 								<td style="font-size: 14pt; text-align: right; vertical-align: top; width: 55%;">
 									<div th:each="recipient, iterStat : ${printTemplateData.memoResponse.recipients}"> <b th:text="${recipient.employeeAssignmentResponse.positionResponse.targetName}"></b> <br /> <b th:text="${recipient.employeeAssignmentResponse.employeeResponse.targetFullName}"></b> <br /> <br /> </div>
-									<div th:unless="${printTemplateData.memoResponse.copyRecipients.isEmpty()}"> <b>[[#{print.memo.copy.title}]]</b><br /> <br /> </div>
+									<div th:unless="${printTemplateData.memoResponse.copyRecipients.isEmpty()}"> <b>[[#{memo.print.copy.label}]]</b><br /> <br /> </div>
 									<div th:each="copyRecipient, iterStat : ${printTemplateData.memoResponse.copyRecipients}"> <b th:text="${copyRecipient.employeeAssignmentResponse.positionResponse.targetName}"></b> <br /> <b th:text="${copyRecipient.employeeAssignmentResponse.employeeResponse.targetFullName}"></b> <br /> <br /> </div>
 								</td>
 							</tr>
@@ -93,7 +93,7 @@
 							</tr>
 							<tr th:unless="${printTemplateData.memoResponse.approvers.isEmpty()}">
 								<td style="font-size: 14pt; text-align: left; vertical-align: top;" colspan="3">
-									<br /><b>[[#{print.memo.approve.title}]]</b><br />
+									<br /><b>[[#{memo.print.approve.label}]]</b><br />
 								</td>
 							</tr>
 							<tr th:each="approver, iterStat : ${printTemplateData.memoResponse.approvers}">

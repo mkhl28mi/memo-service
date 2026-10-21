@@ -13,15 +13,16 @@
        <div class="card w-100 mb-5">
 	   	<div class="card-body">
 	   		<h5 class="card-title">Додати сектор</h5>
-			<form th:action="@{/admin/departments/{departmentId}/units (departmentId=${departmentId})}" method="post">
+			<form th:action="@{/admin/departments/{departmentId}/units (departmentId=${departmentId})}" th:object="${departmentUnitRequest}" method="post">
 				<div>
 				  <div class="mb-2">
 				    <label for="code" class="form-label">Код*</label>
-				    <input type="text" class="form-control" id="code" name="code" value="" required>
+				    <input type="text" class="form-control" th:field="*{code}" required>
+				    <span th:if="${#fields.hasErrors('code')}" th:errors="*{code}" class="text-danger"></span>
 				  </div>
 		  		  <div class="mb-3 form-check">
 			      	<label class="form-check-label" for="enabled">Доступний</label>
-				    <input type="checkbox" class="form-check-input" id="enabled" name="enabled" value="true" checked>
+				    <input type="checkbox" class="form-check-input" th:field="*{enabled}" checked>
 				  </div>
 				  <p>* - обов'язкові поля до заповнення</p>
 				  <button type="submit" class="btn btn-outline-dark">Додати</button>

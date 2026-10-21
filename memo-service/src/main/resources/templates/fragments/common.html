@@ -12,9 +12,11 @@
 			<nav class="navbar navbar-expand-lg bg-body-tertiary">
 			 <div class="container-fluid">
 			    <a class="navbar-brand" href="/" th:text="#{app.title}"></a>
+			    
 			    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-			      <span class="navbar-toggler-icon"></span>
+			    	<span class="navbar-toggler-icon"></span>
 			    </button>
+			    
 			    <div th:if="${currentUser != null}" class="collapse navbar-collapse" id="navbarSupportedContent">
 			      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 			        <li class="nav-item">
@@ -51,9 +53,24 @@
 			            <button class="btn btn-link link-body-emphasis ms-2" type="submit">Вийти</button>
 			        </form>
 			    </div>
-			    <div th:unless="${currentUser != null}">
-        			<a class="link-body-emphasis" href="/login">Увійти</a>
-    			</div>
+			    
+	    		<ul class="navbar-nav">
+	    			<li class="nav-item">
+	    				<a th:unless="${currentUser != null}" class="btn btn-link link-body-emphasis ms-2" href="/login">Увійти</a>
+	    			</li>
+	                <li class="nav-item dropdown">
+	                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+	                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-globe me-1" viewBox="0 0 16 16">
+	                            <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm7.5-6.923c-.67.204-1.335.82-1.887 1.855A7.97 7.97 0 0 0 5.145 4H7.5V1.077zM4.09 4a9.267 9.267 0 0 1 .64-1.539 6.7 6.7 0 0 1 .597-.933A7.025 7.025 0 0 0 2.255 4H4.09zm-.582 3.5c.032-.577.143-1.14.314-1.68H1.045c-.07.55-.105 1.12-.105 1.7s.035 1.15.105 1.68h2.777a11.536 11.536 0 0 1-.314-1.68zM8 14.923c.67-.204 1.335-.82 1.887-1.855.385-.724.708-1.558.918-2.468H8v4.323zM5.145 12H7.5v2.923c-.67-.204-1.335-.82-1.887-1.855-.385-.724-.708-1.558-.918-2.468zM8 12.077V12h3.855c-.21.91-.533 1.744-.918 2.468-.552 1.035-1.217 1.65-1.887 1.855V12.077zM11.91 12a9.267 9.267 0 0 1-.64 1.539 6.7 6.7 0 0 1-.597.933 7.025 7.025 0 0 0 3.072-2.472h-1.835zm.582-3.5a11.536 11.536 0 0 1-.314 1.68h2.777c.07-.55.105-1.12.105-1.7s-.035-1.15-.105-1.68h-2.777zM8 3.923c-.67.204-1.335.82-1.887 1.855-.385.724-.708 1.558-.918 2.468H8V3.923zM10.855 4H8V1.077c.67.204 1.335.82 1.887 1.855.385.724.708 1.558.918 2.468z"/>
+	                        </svg>
+	                        <span th:text="#{lang.select}">Мова</span>
+	                    </a>
+	                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+	                        <li><a class="dropdown-item" th:href="@{''(lang='uk')}">🇺🇦 Українська</a></li>
+	                        <li><a class="dropdown-item" th:href="@{''(lang='en')}">🇬🇧 English</a></li>
+	                    </ul>
+	                </li>
+	            </ul>
 			  </div>
 			</nav>
 		</header>

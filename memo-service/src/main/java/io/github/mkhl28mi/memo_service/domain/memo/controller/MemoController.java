@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +31,7 @@ import io.github.mkhl28mi.memo_service.domain.memo.dto.response.MemoResponse;
 import io.github.mkhl28mi.memo_service.domain.memo.entity.Memo.Status;
 import io.github.mkhl28mi.memo_service.domain.memo.service.MemoService;
 import io.github.mkhl28mi.memo_service.exception.BusinessException;
+import jakarta.validation.Valid;
 
 
 @Controller
@@ -76,7 +78,22 @@ public class MemoController {
 	}
 	
 	@PostMapping
-	public String createMemo(@AuthenticationPrincipal CustomUserDetails userDetails, @ModelAttribute MemoRequest memoRequest) throws BusinessException {
+	public String createMemo(@AuthenticationPrincipal CustomUserDetails userDetails, @Valid @ModelAttribute MemoRequest memoRequest, BindingResult bindingResult, Model model) throws BusinessException {
+		if (bindingResult.hasErrors()) {
+			var currentUserAssignmentResponse = userAssignmentService.getCurrentUserAssignmentResponseByUserId(userDetails.getId());
+			
+			var signer = employeeAssignmentService.getSigner(currentUserAssignmentResponse.departmentUnitResponse().departmentResponse().id());
+			
+			model.addAttribute("activePage", "memos/create");
+			model.addAttribute("memoRequest", memoRequest);
+			model.addAttribute("assignees", List.of(currentUserAssignmentResponse));
+			model.addAttribute("assigneeIds", List.of(currentUserAssignmentResponse.id()));
+			model.addAttribute("signers", List.of(signer));
+			model.addAttribute("signerIds", List.of(signer.id()));
+			
+			return "memos/create-form";
+        }
+		
 		UUID memoId = memoService.createMemo(userDetails.getUser(), memoRequest);
 		
 		return String.format("redirect:/memos/%s", memoId);
@@ -100,7 +117,23 @@ public class MemoController {
 	}
 	
 	@PutMapping("/{id}")
-	public String updateMemo(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable UUID id, @ModelAttribute MemoRequest memoRequest) throws BusinessException {
+	public String updateMemo(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable UUID id, @Valid @ModelAttribute MemoRequest memoRequest, BindingResult bindingResult, Model model) throws BusinessException {
+		if (bindingResult.hasErrors()) {
+			var memoResponse = memoService.getMemoResponseById(id);
+			
+			model.addAttribute("activePage", "memos/create");
+			model.addAttribute("memoId", id);
+			model.addAttribute("memoRequest", memoRequest);
+			model.addAttribute("recipients", memoResponse.recipients());
+			model.addAttribute("copyRecipients", memoResponse.copyRecipients());
+			model.addAttribute("signers", memoResponse.signers());
+			model.addAttribute("approvers", memoResponse.approvers());
+			model.addAttribute("assignees", List.of(memoResponse.assignee()));
+			model.addAttribute("labels", memoResponse.labels());
+			
+			return "memos/update-form";
+        }
+		
 		memoService.updateMemo(userDetails.getUser(), id, memoRequest);
 		
 		return String.format("redirect:/memos/%s", id);

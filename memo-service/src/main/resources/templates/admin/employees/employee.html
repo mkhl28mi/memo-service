@@ -18,10 +18,12 @@
 					  <div class="mb-2">
 					    <label for="fullName" class="form-label">ПІБ*</label>
 					    <input type="text" class="form-control" th:field="*{fullName}" required>
+					    <span th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}" class="text-danger"></span>
 					  </div>
 					  <div class="mb-2">
 					    <label for="targetFullName" class="form-label">ПІБ*</label>
 					    <input type="text" class="form-control" th:field="*{targetFullName}" required>
+					    <span th:if="${#fields.hasErrors('targetFullName')}" th:errors="*{targetFullName}" class="text-danger"></span>
 					  </div>
 					  <div class="mb-3 form-check">
 				      	<label class="form-check-label" for="enabled">Доступний</label>

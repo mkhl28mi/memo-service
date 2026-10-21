@@ -10,6 +10,7 @@ import org.springframework.util.Assert;
 
 import io.github.mkhl28mi.memo_service.domain.admin.department.unit.entity.DepartmentUnit;
 import io.github.mkhl28mi.memo_service.domain.admin.department.unit.service.DepartmentUnitService;
+import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.dto.request.UserAssignmentRequest;
 import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.dto.response.UserAssignmentResponse;
 import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.entity.UserAssignment;
 import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.repository.UserAssignmentRepository;
@@ -72,8 +73,8 @@ public class UserAssignmentService {
  	}
 	
 	@Transactional
-	public UserAssignmentResponse addUserAssignment(UUID departmentUintId, UUID userId) {
-		DepartmentUnit departmentUnit = departmentUnitService.getDepartmentUnitById(departmentUintId);
+	public UserAssignmentResponse addUserAssignment(UserAssignmentRequest userAssignmentRequest, UUID userId) {
+		DepartmentUnit departmentUnit = departmentUnitService.getDepartmentUnitById(userAssignmentRequest.departmentUnitId());
 		
 		Assert.state(departmentUnit.isEnabled(), "DepartmentUnit must be enabled");
 		

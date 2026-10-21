@@ -11,7 +11,7 @@
     <div layout:fragment="content" class="mx-auto w-75 mt-3 h-100">
 		<div class="card mt-3 p-2 border-dark">
 			<div class="card-header d-flex w-100 justify-content-center">
-				<h5>Критерії пошуку</h5>
+				<h5 th:utext="#{memo.registration-book.label}"></h5>
 			</div>
 			<div class="card-body border m-1">
 				<form th:action="@{/memos/registration-book}" method="get" accept-charset="UTF-8">
@@ -21,51 +21,51 @@
 					<div class="d-flex w-100 justify-content-between">
 						<div style="min-width: 300px;">
 							<div class="form-group">
-								<label for="recipientId" class="form-label">Кому:</label>
-								<select id="recipientId" name="recipientId" placeholder="Почніть вводити ПІБ або посаду..." autocomplete="off" style="width: 100%;"></select>
+								<label for="recipientId" class="form-label" th:utext="#{memo.registration-book.recipient.label}"></label>
+								<select id="recipientId" name="recipientId" th:placeholder="#{memo.registration-book.recipient.placeholder}" autocomplete="off" style="width: 100%;"></select>
 							</div>
 							<div class="form-group mt-2">
-								<label for="assigneeId" class="form-label">Виконавець:</label>
-								<select id="assigneeId" name="assigneeId" placeholder="Почніть вводити ПІБ..." autocomplete="off" style="width: 100%;"></select>
+								<label for="assigneeId" class="form-label" th:utext="#{memo.registration-book.assignee.label}"></label>
+								<select id="assigneeId" name="assigneeId" th:placeholder="#{memo.registration-book.assignee.placeholder}" autocomplete="off" style="width: 100%;"></select>
 							</div>
 							<div class="form-group mt-2">
-								<label for="label" class="form-label">Мітка:</label>
-								<select id="label" name="label" placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;">
+								<label for="label" class="form-label"  th:utext="#{memo.registration-book.label.label}"></label>
+								<select id="label" name="label" th:placeholder="#{memo.registration-book.label.placeholder}" autocomplete="off" style="width: 100%;">
 									<option th:each="l : ${labels}" th:value="${l}" th:text="${l}" th:selected="${l == label}"></option>
 								</select>
 							</div>
 						</div>
 						<div>
 							<div class="form-group">
-								<label for="year">Рік</label>
+								<label for="year" th:utext="#{memo.registration-book.year.label}"></label>
 								<input type="number" id="year" name="year" min="1900" max="2099" step="1" th:value="${year}" class="form-control mt-2" placeholder="Рік">
 							</div>
 							<div class="form-group mt-2">
-								<label for="month">Місяць</label>
-								<select class="form-select mt-2" id="month" name="month" aria-label="Місяць">
-									<option selected value="">Довільно</option>
-									<option value="1" th:selected="${month == 1}">Січень</option>
-									<option value="2" th:selected="${month == 2}">Лютий</option>
-									<option value="3" th:selected="${month == 3}">Березень</option>
-									<option value="4" th:selected="${month == 4}">Квітень</option>
-									<option value="5" th:selected="${month == 5}">Травень</option>
-									<option value="6" th:selected="${month == 6}">Червень</option>
-									<option value="7" th:selected="${month == 7}">Липень</option>
-									<option value="8" th:selected="${month == 8}">Серпень</option>
-									<option value="9" th:selected="${month == 9}">Вересень</option>
-									<option value="10" th:selected="${month == 10}">Жовтень</option>
-									<option value="11" th:selected="${month == 11}">Листопад</option>
-									<option value="12" th:selected="${month == 12}">Грудень</option>
+								<label for="month" th:utext="#{memo.registration-book.month.label}"></label>
+								<select class="form-select mt-2" id="month" name="month" th:aria-label="#{memo.registration-book.month.label}">
+									<option selected value="" th:utext="#{memo.registration-book.month.any-month.label}"></option>
+									<option value="1" th:selected="${month == 1}" th:utext="#{memo.registration-book.month.january.label}"></option>
+									<option value="2" th:selected="${month == 2}" th:utext="#{memo.registration-book.month.february.label}"></option>
+									<option value="3" th:selected="${month == 3}" th:utext="#{memo.registration-book.month.march.label}"></option>
+									<option value="4" th:selected="${month == 4}" th:utext="#{memo.registration-book.month.april.label}"></option>
+									<option value="5" th:selected="${month == 5}" th:utext="#{memo.registration-book.month.may.label}"></option>
+									<option value="6" th:selected="${month == 6}" th:utext="#{memo.registration-book.month.june.label}"></option>
+									<option value="7" th:selected="${month == 7}" th:utext="#{memo.registration-book.month.july.label}"></option>
+									<option value="8" th:selected="${month == 8}" th:utext="#{memo.registration-book.month.august.label}"></option>
+									<option value="9" th:selected="${month == 9}" th:utext="#{memo.registration-book.month.september.label}"></option>
+									<option value="10" th:selected="${month == 10}" th:utext="#{memo.registration-book.month.october.label}"></option>
+									<option value="11" th:selected="${month == 11}" th:utext="#{memo.registration-book.month.november.label}"></option>
+									<option value="12" th:selected="${month == 12}" th:utext="#{memo.registration-book.month.december.label}"></option>
 								</select>
 							</div>
 						</div>
 						<div>
 							<div class="form-group">
-								<label for="searchKeyWord">Ключове слово</label>
+								<label for="searchKeyWord" th:utext="#{memo.registration-book.keyword.label}"></label>
 								<input type="text" class="form-control mt-2" id="keyword" name="keyword" th:value="${keyword}" placeholder="Ключове слово">
-							</div>				
+							</div>
 							<div class="form-group mt-2">
-								<label for="searchMemoNumber">Номер С/З</label>
+								<label for="searchMemoNumber" th:utext="#{memo.registration-book.memo-number.label}"></label>
 								<div class="d-flex justify-content-start mt-2">
 									<input type="text" style="max-width: 70px" disabled th:value="${departmentCode + '/'}" class="form-control me-1">
 									<input type="text" style="max-width: 100px" th:value="${memoNumber}" class="form-control me-1" id="memoNumber" name="memoNumber">
@@ -76,20 +76,20 @@
 					</div>
 					<div class="d-flex w-100 justify-content-end mt-3">
 						<div>
-							<button type="submit" class="btn btn-primary">Шукати</button>
+							<button type="submit" class="btn btn-primary" th:utext="#{memo.registration-book.button.search.name}"></button>
 						</div>
 					</div>
 				</form>
 			</div>
 		</div>
     
-    	<p class="fw-bold mt-4">Сортувати за:</p>
+    	<p class="fw-bold mt-4" th:utext="#{memo.registration-book.sort-by.label}"></p>
 	    <div class="d-flex justify-content-start">
 	    	<p class="d-inline-flex gap-1">
-	    		<a th:href="@{/memos/registration-book(page=1, sortBy='sequenceNumber', sortDir=${sortBy == 'sequenceNumber' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'sequenceNumber'} ? 'active'" class="btn btn-sm" role="button" >За номером службової записки <span th:if="${sortBy == 'sequenceNumber'}" th:text="${sortDir == 'ASC' ? '▲' : '▼'}"></span></a>
-	    		<a th:href="@{/memos/registration-book(page=1, sortBy='assignee.user.fullName', sortDir=${sortBy == 'assignee.user.fullName' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'assignee.user.fullName'} ? 'active'" class="btn btn-sm" role="button">За виконавцем <span th:if="${sortBy == 'assignee.user.fullName'}" th:text="${sortDir == 'ASC' ? '▲' : '▼'}"></span></a>
-	    		<a th:href="@{/memos/registration-book(page=1, sortBy='createdAt', sortDir=${sortBy == 'createdAt' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'createdAt'} ? 'active'"  class="btn btn-sm" role="button">За датою створення <span th:if="${sortBy == 'createdAt'}" th:text="${sortDir == 'ASC' ? '▲' : '▼'}"></span></a>
-	    		<a th:href="@{/memos/registration-book(page=1, sortBy='status', sortDir=${sortBy == 'status' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'status'} ? 'active'"  class="btn btn-sm" role="button">За статусом <span th:if="${sortBy == 'status'}" th:text="${sortDir == 'ASC' ? '▲' : '▼'}"></span></a>
+	    		<a th:href="@{/memos/registration-book(page=1, sortBy='sequenceNumber', sortDir=${sortBy == 'sequenceNumber' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'sequenceNumber'} ? 'active'" class="btn btn-sm" role="button">[[#{memo.registration-book.sort-by.sequence-number.label}]] <span th:if="${sortBy == 'sequenceNumber'}" th:text="${sortDir == 'ASC' ? '▲' : '▼'}"></span></a>
+	    		<a th:href="@{/memos/registration-book(page=1, sortBy='assignee.user.fullName', sortDir=${sortBy == 'assignee.user.fullName' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'assignee.user.fullName'} ? 'active'" class="btn btn-sm" role="button">[[#{memo.registration-book.sort-by.assignee.label}]] <span th:if="${sortBy == 'assignee.user.fullName'}" th:text="${sortDir == 'ASC' ? '▲' : '▼'}"></span></a>
+	    		<a th:href="@{/memos/registration-book(page=1, sortBy='createdAt', sortDir=${sortBy == 'createdAt' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'createdAt'} ? 'active'"  class="btn btn-sm" role="button">[[#{memo.registration-book.sort-by.created-at.label}]] <span th:if="${sortBy == 'createdAt'}" th:text="${sortDir == 'ASC' ? '▲' : '▼'}"></span></a>
+	    		<a th:href="@{/memos/registration-book(page=1, sortBy='status', sortDir=${sortBy == 'status' ? reverseSortDir : 'ASC'}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}" th:classappend="${sortBy == 'status'} ? 'active'"  class="btn btn-sm" role="button">[[#{memo.registration-book.sort-by.status.label}]] <span th:if="${sortBy == 'status'}" th:text="${sortDir == 'ASC' ? '▲' : '▼'}"></span></a>
 			</p>
 	    </div>
 	    
@@ -101,7 +101,7 @@
 						<div class="text-dark"><small th:text="${#temporals.format(memo.createdAt, 'dd-MM-yyyy HH:mm')}"></small></div>
 					</div>
 					<div class="ps-5 pe-5 flex-fill">
-						<div class="fw-bold fs-6">Кому:</div>
+						<div class="fw-bold fs-6" th:utext="#{memo.registration-book.recipient.label}"></div>
 						<div class="overflow-auto w-100" style="height: 60px;">
 							<div th:each="recipient, iterStat : ${memo.recipients}" class="d-flex w-100 justify-content-start">
 								<small th:utext="${iterStat.count + '. ' + recipient.employeeAssignmentResponse.positionResponse.targetName + ' - ' + recipient.employeeAssignmentResponse.employeeResponse.targetFullName}"></small>
@@ -109,18 +109,18 @@
 						</div>
 					</div>
 					<div>
-						<div class="fw-bold fs-6">Виконавець: </div>
+						<div class="fw-bold fs-6" th:utext="#{memo.registration-book.assignee.label}"></div>
 						[[${memo.assignee.userResponse.fullName}]]
 						<div class="d-flex justify-content-end mt-2">
 							<div>
-								<a th:href="@{/memos/{id}/create-based-on (id=${memo.id})}" class="btn btn-link" data-toggle="tooltip" data-placement="right" title="Створити нову на базі цієї">
+								<a th:href="@{/memos/{id}/create-based-on (id=${memo.id})}" class="btn btn-link" data-toggle="tooltip" data-placement="right" th:title="#{memo.registration-book.create-based-on.title}">
 									<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="#212121" class="bi bi-copy" viewBox="0 0 16 16">
 									  <path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"/>
 									</svg>
 								</a>
 							</div>
 							<div th:if="${memo.status.name() == 'ON_APPROVAL' || memo.status.name() == 'REVISE_MEMO'}" class="ms-3">
-								<a th:href="@{/memos/{id} (id=${memo.id})}" onclick="return confirm('Ви дійсно хочете редагувати?');" class="btn btn-link" data-toggle="tooltip" data-placement="right" title="Редагувати">
+								<a th:href="@{/memos/{id} (id=${memo.id})}" class="btn btn-link" data-toggle="tooltip" data-placement="right" th:title="#{memo.registration-book.edit.title}">
 									<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="#212121" class="bi bi-pencil-square" viewBox="0 0 16 16">
 									  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
 									  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
@@ -128,7 +128,7 @@
 								</a>
 							</div>
 							<div th:if="${memo.status.name() == 'APPROVED'}" class="ms-3">
-								<a th:href="@{/memos/{id}/print (id=${memo.id})}" target="_blank" class="btn btn-link" data-toggle="tooltip" data-placement="right" title="Друк">
+								<a th:href="@{/memos/{id}/print (id=${memo.id})}" target="_blank" class="btn btn-link" data-toggle="tooltip" data-placement="right" th:title="#{memo.registration-book.print.title}">
 									<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="#212121" class="bi bi-printer" viewBox="0 0 16 16">
 									  <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
 									  <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"/>
@@ -145,19 +145,19 @@
 			<div class="card-footer text-body-secondary">
 				<div class="d-flex w-100 justify-content-between">
 					<div class="d-flex w-100 justify-content-start">
-						<p class="fw-bold">Мітки:&nbsp;</p>
+						<p class="fw-bold">[[#{memo.registration-book.labels.label}]] &nbsp;</p>
 						<p th:each="label : ${memo.labels}" th:text="${label.name + '&nbsp;'}"></p>
 					</div>
 					<div class="d-flex w-100 justify-content-end">
 						<div class="me-4">
-							<a th:if="${memo.hasComments}" th:href="@{/memos/{id}/comments (id=${memo.id})}" target="_blank" class="btn btn-link" data-toggle="tooltip" data-placement="right" title="Зауваження">
+							<a th:if="${memo.hasComments}" th:href="@{/memos/{id}/comments (id=${memo.id})}" target="_blank" class="btn btn-link" data-toggle="tooltip" data-placement="right" th:title="#{memo.registration-book.comments.title}">
 								<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#212121" class="bi bi-chat-square-text-fill" viewBox="0 0 16 16">
 								  <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2zm3.5 1a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1zm0 2.5a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1zm0 2.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1z"/>
 								</svg>
 							</a>
 						</div>
 						<div>
-							<a th:href="@{/memos/{id}/logs (id=${memo.id})}" target="_blank" class="btn btn-link" data-toggle="tooltip" data-placement="right" title="Взаємодія">
+							<a th:href="@{/memos/{id}/logs (id=${memo.id})}" target="_blank" class="btn btn-link" data-toggle="tooltip" data-placement="right" th:title="#{memo.registration-book.interaction.title}">
 								<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#212121" class="bi bi-list-task" viewBox="0 0 16 16">
 								  <path fill-rule="evenodd" d="M2 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5zM3 3H2v1h1z"/>
 								  <path d="M5 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M5.5 7a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1zm0 4a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1z"/>
@@ -172,12 +172,12 @@
 
 	    <div class="d-flex justify-content-between align-items-center" th:if="${totalPages > 0}">
 	        <div class="text-muted">
-	            Показано службових записок <span class="fw-bold" th:text="${memoPage.number * size + 1}"></span>
-	            з <span class="fw-bold" th:text="${memoPage.number * size + memoPage.numberOfElements}"></span>
-	            (всього: <span class="fw-bold" th:text="${memoPage.totalElements}"></span>)
+	            [[#{memo.registration-book.displayed-memos.title}]] <span class="fw-bold" th:text="${memoPage.number * size + 1}"></span>
+	            [[#{memo.registration-book.displayed-memos.from}]] <span class="fw-bold" th:text="${memoPage.number * size + memoPage.numberOfElements}"></span>
+	            [[#{memo.registration-book.displayed-memos.total}]] <span class="fw-bold" th:text="${memoPage.totalElements}"></span>)
 	        </div>
 
-	        <nav aria-label="Навігація по сторінках">
+	        <nav th:aria-label="#{memo.registration-book.displayed-memos.pagination.title}">
 	            <ul class="pagination mb-0">
 	                
 	                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
@@ -190,7 +190,7 @@
 	                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
 	                    <a class="page-link" 
 	                       th:href="@{/memos/registration-book(page=${currentPage - 1}, sortBy=${sortBy}, sortDir=${sortDir}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}">
-	                       Попередня
+	                       [[#{memo.registration-book.displayed-memos.pagination.previous}]]
 	                    </a>
 	                </li>
 	
@@ -206,7 +206,7 @@
 	                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
 	                    <a class="page-link" 
 	                       th:href="@{/memos/registration-book(page=${currentPage + 1}, sortBy=${sortBy}, sortDir=${sortDir}, recipientId=${recipientId}, assigneeId=${assigneeId}, year=${year}, month=${month}, keyword=${keyword}, label=${label}, memoNumber=${memoNumber})}">
-	                       Наступна
+	                       [[#{memo.registration-book.displayed-memos.pagination.next}]]
 	                    </a>
 	                </li>
 	

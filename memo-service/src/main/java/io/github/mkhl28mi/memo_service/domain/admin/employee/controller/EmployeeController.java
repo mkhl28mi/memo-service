@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import io.github.mkhl28mi.memo_service.domain.admin.employee.dto.request.EmployeeRequest;
 import io.github.mkhl28mi.memo_service.domain.admin.employee.service.EmployeeService;
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/admin/employees")
@@ -41,7 +43,15 @@ public class EmployeeController {
 	}
 	
 	@PostMapping
-	public String addEmployee(@ModelAttribute EmployeeRequest employeeRequest) {
+	public String addEmployee(@Valid @ModelAttribute EmployeeRequest employeeRequest, BindingResult bindingResult, Model model) {
+		if (bindingResult.hasErrors()) {
+			model.addAttribute("activePage", "admin/employees");
+			model.addAttribute("employeeRequest", employeeRequest);
+			model.addAttribute("employees", employeeService.getEmployees(""));
+			
+			return "admin/employees/employees"; 
+        }
+		
 		employeeService.addEmployee(employeeRequest);
 		
 		return REDIRECT_EMPLOYEES;
@@ -59,7 +69,15 @@ public class EmployeeController {
 	}
 	
 	@PutMapping("/{id}")
-	public String updateEmplyee(@PathVariable UUID id, @ModelAttribute EmployeeRequest employeeRequest) {
+	public String updateEmplyee(@PathVariable UUID id, @Valid @ModelAttribute EmployeeRequest employeeRequest, BindingResult bindingResult, Model model) {
+		if (bindingResult.hasErrors()) {			
+			model.addAttribute("activePage", "admin/employees");
+			model.addAttribute("employeeId", id);
+			model.addAttribute("employeeRequest", employeeRequest);
+			
+			return "admin/employees/employee"; 
+        }
+		
 		employeeService.updateEmployee(id, employeeRequest);
 		
 		return REDIRECT_EMPLOYEES;

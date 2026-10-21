@@ -9,6 +9,7 @@ import org.springframework.util.Assert;
 
 import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.entity.UserAssignment;
 import io.github.mkhl28mi.memo_service.domain.admin.user.assignment.service.UserAssignmentService;
+import io.github.mkhl28mi.memo_service.domain.memo.comment.dto.request.MemoCommentRequest;
 import io.github.mkhl28mi.memo_service.domain.memo.comment.dto.response.MemoCommentResponse;
 import io.github.mkhl28mi.memo_service.domain.memo.comment.entity.MemoComment;
 import io.github.mkhl28mi.memo_service.domain.memo.comment.repository.MemoCommentRepository;
@@ -41,7 +42,7 @@ public class MemoCommentService {
 	}
 	
 	@Transactional
-	public void addComment(UUID memoId, UUID userId, String content) {
+	public void addComment(UUID memoId, UUID userId, MemoCommentRequest memoCommentRequest) {
 		Memo memo = memoService.getMemoById(memoId);
 		
 		Assert.state((memo.getStatus() == Status.ON_APPROVAL), () -> "Memo cannot be updated" + " for user ID: " + userId);
@@ -50,7 +51,7 @@ public class MemoCommentService {
 		
 		UserAssignment currentUserAssignment = userAssignmentService.getCurrentUserAssignmentByUserId(userId);
 				
-		memoCommentRepository.save(new MemoComment(memo, currentUserAssignment, content));
+		memoCommentRepository.save(new MemoComment(memo, currentUserAssignment, memoCommentRequest.content()));
 		
 		memoService.updateMemo(memo);
 	}

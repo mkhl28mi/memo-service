@@ -6,6 +6,6 @@ public record PageSetupRequest(@Pattern(regexp = "\\d+(\\.\\d+)?$", message = "M
 		@Pattern(regexp = "\\d+(\\.\\d+)?$", message = "Must be a valid decimal number") String marginBottom,
 		@Pattern(regexp = "\\d+(\\.\\d+)?$", message = "Must be a valid decimal number") String marginLeft,
 		@Pattern(regexp = "\\d+(\\.\\d+)?$", message = "Must be a valid decimal number") String marginRight,
-		String orientation,
-		String paperSize) {
+		@Pattern(regexp = "portrait|landscape", message = "Orientation of paper must be portrait or landscape") String orientation,
+		@Pattern(regexp = "A3|A4|A5", message = "Size of paper must be A3 or A4 or A5") String paperSize) {
 }

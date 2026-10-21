@@ -18,14 +18,17 @@
 						  <div class="mb-2">
 						    <label for="name" class="form-label">Назва (Називний відмінок. Приклад: Директор програми)*</label>
 						    <input type="text" class="form-control" th:field="*{name}" required>
+						    <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></span>
 						  </div>
 						  <div class="mb-2">
 						    <label for="targetName" class="form-label">Назва (Давальний відмінок. Приклад: Директору програми)*</label>
 						    <input type="text" class="form-control" th:field="*{targetName}" required>
+						    <span th:if="${#fields.hasErrors('targetName')}" th:errors="*{targetName}" class="text-danger"></span>
 						  </div>
 						  <div class="mb-3">
 						    <label for="placementOrder" class="form-label">Порядок розміщення*</label>
 						    <input type="number" class="form-control" th:field="*{placementOrder}" required>
+						    <span th:if="${#fields.hasErrors('placementOrder')}" th:errors="*{placementOrder}" class="text-danger"></span>
 						  </div>
 					      <div class="mb-3 form-check">
 					      	<label class="form-check-label" for="enabled">Посада доступна</label>

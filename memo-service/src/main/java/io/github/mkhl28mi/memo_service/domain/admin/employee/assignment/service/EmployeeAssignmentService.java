@@ -10,6 +10,7 @@ import org.springframework.util.Assert;
 
 import io.github.mkhl28mi.memo_service.domain.admin.department.dto.response.DepartmentResponse;
 import io.github.mkhl28mi.memo_service.domain.admin.department.service.DepartmentService;
+import io.github.mkhl28mi.memo_service.domain.admin.employee.assignment.dto.request.EmployeeAssignmentRequest;
 import io.github.mkhl28mi.memo_service.domain.admin.employee.assignment.dto.response.EmployeeAssignmentResponse;
 import io.github.mkhl28mi.memo_service.domain.admin.employee.assignment.entity.EmployeeAssignment;
 import io.github.mkhl28mi.memo_service.domain.admin.employee.assignment.repository.EmployeeAssignmentRepository;
@@ -69,8 +70,8 @@ public class EmployeeAssignmentService {
 	}
 	
 	@Transactional
-	public EmployeeAssignmentResponse addEmployeeAssignment(UUID positionId, UUID employeeId) {
-		Position position = positionService.getPositionById(positionId);
+	public EmployeeAssignmentResponse addEmployeeAssignment(EmployeeAssignmentRequest employeeAssignmentRequest, UUID employeeId) {
+		Position position = positionService.getPositionById(employeeAssignmentRequest.positionId());
 		
 		Assert.state(position.isEnabled(), "Position must be enabled");
 		

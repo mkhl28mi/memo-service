@@ -15,11 +15,12 @@
 	    	<div class="card w-100 mb-5">
 	    		<div class="card-body">
 	    			<h5 class="card-title">Додати призначення</h5>
-					<form th:action="@{/admin/users/{userId}/assignments (userId=${user.id})}" method="post">
+					<form th:action="@{/admin/users/{userId}/assignments (userId=${user.id})}" th:object="${userAssignmentRequest}" method="post">
 						<div>
 						 <div class="mb-3">
 						  	<label for="departmentUnitId" class="form-label">Відділ та сектор:*</label>
-							<select id="departmentUnitId" name="departmentUnitId" placeholder="Почніть вводити назву або номер..." autocomplete="off" style="width: 100%;" required></select>
+							<select th:field="*{departmentUnitId}" placeholder="Почніть вводити назву або номер..." autocomplete="off" style="width: 100%;" required></select>
+						  	<span th:if="${#fields.hasErrors('departmentUnitId')}" th:errors="*{departmentUnitId}" class="text-danger"></span>
 						  </div>
 						  <p>* - обов'язкові поля до заповнення</p>
 						  <button type="submit" class="btn btn-outline-dark">Додати</button>

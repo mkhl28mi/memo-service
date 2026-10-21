@@ -15,11 +15,12 @@
 	    	<div class="card w-100 mb-5">
 	    		<div class="card-body">
 	    			<h5 class="card-title">Додати призначення</h5>
-					<form th:action="@{/admin/employees/{employeeId}/assignments (employeeId=${employee.id})}" method="post">
+					<form th:action="@{/admin/employees/{employeeId}/assignments (employeeId=${employee.id})}" th:object="${employeeAssignmentRequest}" method="post">
 						<div>
 						 <div class="mb-3">
 						  	<label for="positionId" class="form-label">Посада:*</label>
-							<select id="positionId" name="positionId" placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;" required></select>
+							<select th:field="*{positionId}" placeholder="Почніть вводити назву..." autocomplete="off" style="width: 100%;" required></select>
+						  	<span th:if="${#fields.hasErrors('positionId')}" th:errors="*{positionId}" class="text-danger"></span>
 						  </div>
 						  <p>* - обов'язкові поля до заповнення</p>
 						  <button type="submit" class="btn btn-outline-dark">Додати</button>

@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import io.github.mkhl28mi.memo_service.domain.admin.position.dto.request.PositionRequest;
 import io.github.mkhl28mi.memo_service.domain.admin.position.service.PositionService;
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/admin/positions")
@@ -41,7 +43,15 @@ public class PositionController {
 	}
 	
 	@PostMapping
-	public String addPosition(@ModelAttribute PositionRequest positionRequest) {
+	public String addPosition(@Valid @ModelAttribute PositionRequest positionRequest, BindingResult bindingResult, Model model) {
+		if (bindingResult.hasErrors()) {
+			model.addAttribute("activePage", "admin/positions");
+			model.addAttribute("positionRequest", positionRequest);
+			model.addAttribute("positions", positionService.getPostions(""));
+			
+	        return "admin/positions/positions";
+        }
+		
 		positionService.addPosition(positionRequest);
 		
 		return REDIRECT_POSITIONS;
@@ -57,7 +67,15 @@ public class PositionController {
 	}
 	
 	@PutMapping("/{id}")
-	public String updatePosition(@PathVariable UUID id, @ModelAttribute PositionRequest positionRequest) {
+	public String updatePosition(@PathVariable UUID id, @Valid @ModelAttribute PositionRequest positionRequest, BindingResult bindingResult, Model model) {
+		if (bindingResult.hasErrors()) {
+			model.addAttribute("activePage", "admin/positions");
+			model.addAttribute("positionId", id);
+			model.addAttribute("positionRequest", positionRequest);
+			
+			return "admin/positions/position";
+        }
+		
 		positionService.updatePosition(id, positionRequest);
 		
 		return REDIRECT_POSITIONS;

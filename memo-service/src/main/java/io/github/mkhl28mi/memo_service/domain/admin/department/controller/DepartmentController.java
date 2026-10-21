@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import io.github.mkhl28mi.memo_service.domain.admin.department.dto.request.DepartmentRequest;
 import io.github.mkhl28mi.memo_service.domain.admin.department.dto.response.DepartmentResponse;
 import io.github.mkhl28mi.memo_service.domain.admin.department.service.DepartmentService;
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/admin/departments")
@@ -37,34 +39,59 @@ public class DepartmentController {
 		model.addAttribute("activePage", "admin/departments");
 		model.addAttribute("departmentRequest", new DepartmentRequest());
 		model.addAttribute("departments", departmentService.getDepartments(search));
+		
         return "admin/departments/departments";
     }
 	
 	@PostMapping
-    public String addDepartment(@ModelAttribute DepartmentRequest departmentRequest) {
+    public String addDepartment(@Valid @ModelAttribute DepartmentRequest departmentRequest, BindingResult bindingResult, Model model) {
+		if (bindingResult.hasErrors()) {
+			model.addAttribute("activePage", "admin/departments");
+			model.addAttribute("departmentRequest", departmentRequest);
+			model.addAttribute("departments", departmentService.getDepartments(""));
+			
+            return "admin/departments/departments"; 
+        }
+		
 		departmentService.addDepartment(departmentRequest);
+		
         return REDIRECT_TO_DEPARTMENTS;
     }
 	
 	@GetMapping("/{id}")
     public String getDepartmentById(@PathVariable UUID id, Model model) {
 		DepartmentResponse departmentResponse = departmentService.getDepartmentResponseById(id);
+		
 		model.addAttribute("activePage", "admin/departments");
 		model.addAttribute("departmentId", id);
 		model.addAttribute("departmentRequest", new DepartmentRequest(departmentResponse));
 		model.addAttribute("positions", List.of(departmentResponse.positionResponse()));
+		
 		return "admin/departments/department";
     }
 	
 	@PutMapping("/{id}")
-    public String updateDepartment(@PathVariable UUID id, @ModelAttribute DepartmentRequest departmentRequest) {
+    public String updateDepartment(@PathVariable UUID id, @Valid @ModelAttribute DepartmentRequest departmentRequest, BindingResult bindingResult, Model model) {
+		if (bindingResult.hasErrors()) {
+			DepartmentResponse departmentResponse = departmentService.getDepartmentResponseById(id);
+			
+			model.addAttribute("activePage", "admin/departments");
+			model.addAttribute("departmentId", id);
+			model.addAttribute("departmentRequest", departmentRequest);
+			model.addAttribute("positions", List.of(departmentResponse.positionResponse()));
+			
+            return "admin/departments/department"; 
+        }
+		
         departmentService.updateDepartment(id, departmentRequest);
+        
         return REDIRECT_TO_DEPARTMENTS;
     }
 	
 	@DeleteMapping("/{id}")
     public String deleteDepartment(@PathVariable UUID id) {
 		departmentService.deleteDepartment(id);
+		
 		return REDIRECT_TO_DEPARTMENTS;
     }
 	

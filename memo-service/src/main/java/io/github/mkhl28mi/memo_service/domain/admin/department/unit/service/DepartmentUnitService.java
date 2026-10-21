@@ -10,6 +10,7 @@ import org.springframework.util.Assert;
 
 import io.github.mkhl28mi.memo_service.domain.admin.department.entity.Department;
 import io.github.mkhl28mi.memo_service.domain.admin.department.service.DepartmentService;
+import io.github.mkhl28mi.memo_service.domain.admin.department.unit.dto.request.DepartmentUnitRequest;
 import io.github.mkhl28mi.memo_service.domain.admin.department.unit.dto.response.DepartmentUnitResponse;
 import io.github.mkhl28mi.memo_service.domain.admin.department.unit.entity.DepartmentUnit;
 import io.github.mkhl28mi.memo_service.domain.admin.department.unit.repository.DepartmentUnitRepository;
@@ -53,21 +54,21 @@ public class DepartmentUnitService {
     }
 	
 	@Transactional
-	public DepartmentUnitResponse addDepartmentUnit(UUID departmentId, String code, boolean isEnabled) {
+	public DepartmentUnitResponse addDepartmentUnit(UUID departmentId, DepartmentUnitRequest departmentUnitRequest) {
 		Department department = departmentService.getDepartmentById(departmentId);
 		
 		Assert.state(department.isEnabled(), "Department must be enabled");
 		
-		return new DepartmentUnitResponse(departmentUnitRepository.save(new DepartmentUnit(code, department, isEnabled)));
+		return new DepartmentUnitResponse(departmentUnitRepository.save(new DepartmentUnit(departmentUnitRequest.code(), department, departmentUnitRequest.enabled())));
 	}
 	
 	@Transactional
-	public DepartmentUnitResponse updateDepartmentUnit(UUID id, String code, boolean isEnabled) throws ResourceNotFoundException {
+	public DepartmentUnitResponse updateDepartmentUnit(UUID id, DepartmentUnitRequest departmentUnitRequest) throws ResourceNotFoundException {
 		DepartmentUnit departmentUnit = departmentUnitRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("DepartmentUnit not found with ID: " + id));
 		
-		departmentUnit.setCode(code);
-		departmentUnit.setEnabled(isEnabled);
+		departmentUnit.setCode(departmentUnitRequest.code());
+		departmentUnit.setEnabled(departmentUnitRequest.enabled());
 		
 		return new DepartmentUnitResponse(departmentUnitRepository.save(departmentUnit));
 	}

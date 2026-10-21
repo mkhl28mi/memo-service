@@ -9,7 +9,8 @@ import io.github.mkhl28mi.memo_service.domain.memo.label.dto.response.MemoLabelR
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
-public record MemoRequest(@NotEmpty(message = "Content cannot be empty") String content,
+public record MemoRequest(
+		@NotEmpty(message = "Content cannot be empty") String content,
 		@NotEmpty(message = "Recipients are required. At least 1") List<UUID> recipientIds,
 		@NotNull(message = "Copy recipients are required") List<UUID> copyRecipientIds,
 		@NotEmpty(message = "Signers are required. At least 1") List<UUID> signerIds,

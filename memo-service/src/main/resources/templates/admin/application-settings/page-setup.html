@@ -19,27 +19,36 @@
 							<input type="number" class="form-control" th:field="*{marginTop}" min="0" step="0.5" required>
 							<span class="input-group-text">мм</span>
 						</div>
+						<span th:if="${#fields.hasErrors('marginTop')}" th:errors="*{marginTop}" class="text-danger"></span>
+						
 						<label for="marginBottom" class="form-label">Нижнє поле*</label> 
 						<div class="input-group mb-2">
 							<input type="number" class="form-control" th:field="*{marginBottom}" min="0" step="0.5" required>
 							<span class="input-group-text unit-label">мм</span>
 						</div>
+						<span th:if="${#fields.hasErrors('marginBottom')}" th:errors="*{marginBottom}" class="text-danger"></span>
+						
 						<label for="marginLeft" class="form-label">Ліве поле*</label> 
 						<div class="input-group mb-3">
 							<input type="number" class="form-control" th:field="*{marginLeft}" min="0" step="0.5" required>
 							<span class="input-group-text unit-label">мм</span>
 						</div>
+						<span th:if="${#fields.hasErrors('marginLeft')}" th:errors="*{marginLeft}" class="text-danger"></span>
+						
 						<label for="marginRight" class="form-label">Праве поле*</label>
 						<div class="input-group mb-3">
 							<input type="number" class="form-control" th:field="*{marginRight}" min="0" step="0.5" required>
 							<span class="input-group-text unit-label">мм</span>
 						</div>
+						<span th:if="${#fields.hasErrors('marginRight')}" th:errors="*{marginRight}" class="text-danger"></span>
+						
 						<div class="mb-3">
 							<label for="orientation" class="form-label">Орієнтація*</label>
 							<select class="form-select" th:field="*{orientation}" required>
 								<option th:value="portrait" th:text="Вертикальна"></option>
 								<option th:value="landscape" th:text="Горизонтальна"></option>
 							</select>
+							<span th:if="${#fields.hasErrors('orientation')}" th:errors="*{orientation}" class="text-danger"></span>
 						</div>
 						<div class="mb-3">
 							<label for="paperSize" class="form-label">Розмір паперу*</label>
@@ -48,6 +57,7 @@
 								<option th:value="A4" th:text="A4"></option>
 								<option th:value="A5" th:text="A5"></option>
 							</select>
+							<span th:if="${#fields.hasErrors('paperSize')}" th:errors="*{paperSize}" class="text-danger"></span>
 						</div>
 						<p>* - обов'язкові поля до заповнення</p>
 						<button type="submit" class="btn btn-outline-dark">Зберегти</button>
