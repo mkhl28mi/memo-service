@@ -1,5 +1,6 @@
 package io.github.mkhl28mi.memo_service.domain.admin.employee.controller;
 
+import java.io.IOException;
 import java.util.UUID;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,10 +15,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import io.github.mkhl28mi.memo_service.domain.admin.employee.assignment.service.EmployeeAssignmentService;
 import io.github.mkhl28mi.memo_service.domain.admin.employee.dto.request.EmployeeRequest;
 import io.github.mkhl28mi.memo_service.domain.admin.employee.service.EmployeeService;
 import jakarta.validation.Valid;
+import jakarta.xml.bind.JAXBException;
 
 @Controller
 @RequestMapping("/admin/employees")
@@ -28,11 +32,14 @@ public class EmployeeController {
 	
 	private final EmployeeService employeeService;
 	
-	public EmployeeController(EmployeeService employeeService) {
+	private final EmployeeAssignmentService employeeAssignmentService;
+	
+	public EmployeeController(EmployeeService employeeService, EmployeeAssignmentService employeeAssignmentService) {
 		super();
 		this.employeeService = employeeService;
+		this.employeeAssignmentService = employeeAssignmentService;
 	}
-	
+
 	@GetMapping
 	public String getEmployees(@RequestParam(required = false) String search, Model model) {
 		model.addAttribute("activePage", "admin/employees");
@@ -53,6 +60,24 @@ public class EmployeeController {
         }
 		
 		employeeService.addEmployee(employeeRequest);
+		
+		return REDIRECT_EMPLOYEES;
+	}
+	
+	@PostMapping("/upload")
+	public String uploadEmoloyeeXmlFile(@RequestParam MultipartFile file) throws JAXBException, IOException {
+		if (file.isEmpty()) { return REDIRECT_EMPLOYEES; }
+		
+		employeeService.parseAndSaveEmployees(file);
+		
+		return REDIRECT_EMPLOYEES;
+	}
+	
+	@PostMapping("/assignments/upload")
+	public String uploadEmployeeAssignmentXmlFile(@RequestParam MultipartFile file) throws JAXBException, IOException {
+		if (file.isEmpty()) { return REDIRECT_EMPLOYEES; }
+		
+		employeeAssignmentService.parseAndSaveEmployeeAssignments(file);
 		
 		return REDIRECT_EMPLOYEES;
 	}

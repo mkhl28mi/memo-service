@@ -1,12 +1,16 @@
 package io.github.mkhl28mi.memo_service.domain.admin.employee.assignment.service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.web.multipart.MultipartFile;
 
 import io.github.mkhl28mi.memo_service.domain.admin.department.dto.response.DepartmentResponse;
 import io.github.mkhl28mi.memo_service.domain.admin.department.service.DepartmentService;
@@ -14,11 +18,17 @@ import io.github.mkhl28mi.memo_service.domain.admin.employee.assignment.dto.requ
 import io.github.mkhl28mi.memo_service.domain.admin.employee.assignment.dto.response.EmployeeAssignmentResponse;
 import io.github.mkhl28mi.memo_service.domain.admin.employee.assignment.entity.EmployeeAssignment;
 import io.github.mkhl28mi.memo_service.domain.admin.employee.assignment.repository.EmployeeAssignmentRepository;
+import io.github.mkhl28mi.memo_service.domain.admin.employee.dto.xml_parsing.EmployeeDto;
+import io.github.mkhl28mi.memo_service.domain.admin.employee.dto.xml_parsing.EmployeeListDto;
+import io.github.mkhl28mi.memo_service.domain.admin.employee.dto.xml_parsing.PositionDto;
 import io.github.mkhl28mi.memo_service.domain.admin.employee.entity.Employee;
 import io.github.mkhl28mi.memo_service.domain.admin.employee.service.EmployeeService;
 import io.github.mkhl28mi.memo_service.domain.admin.position.entity.Position;
 import io.github.mkhl28mi.memo_service.domain.admin.position.service.PositionService;
 import io.github.mkhl28mi.memo_service.exception.ResourceNotFoundException;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 
 
 @Service
@@ -92,6 +102,35 @@ public class EmployeeAssignmentService {
 		employeeAssignment.setEndDate(LocalDateTime.now());
 		
 		employeeAssignmentRepository.save(employeeAssignment);
+	}
+	
+	@Transactional
+	public void parseAndSaveEmployeeAssignments(MultipartFile file) throws JAXBException, IOException {
+		JAXBContext context = JAXBContext.newInstance(EmployeeListDto.class);
+		
+		Unmarshaller unmarshaller = context.createUnmarshaller();
+		
+		EmployeeListDto employeeListDto = (EmployeeListDto) unmarshaller.unmarshal(file.getInputStream());
+		
+		var employeeAssignments = new ArrayList<EmployeeAssignment>();
+		
+		for (EmployeeDto employeeDto : new HashSet<EmployeeDto>(employeeListDto.getEmployees())) {
+			Employee employee = employeeService.getEmployeeByFullName(employeeDto.getFullName())
+					.orElseThrow(() -> new ResourceNotFoundException("Employee not found with full name: " + employeeDto.getFullName()));
+			
+			Assert.state(employee.isEnabled(), "Employee must be enabled");
+			
+			for (PositionDto positionDto : employeeDto.getPositions()) {
+				Position position = positionService.getPositionByName(positionDto.getName())
+						.orElseThrow(() -> new ResourceNotFoundException("Position not found with name: " + positionDto.getName()));
+				
+				Assert.state(position.isEnabled(), "Position must be enabled");
+				
+				employeeAssignments.add(new EmployeeAssignment(position, employee, LocalDateTime.now(), null));
+			}
+		}
+
+		employeeAssignmentRepository.saveAll(employeeAssignments);
 	}
 	
 }

@@ -1,17 +1,26 @@
 package io.github.mkhl28mi.memo_service.domain.admin.position.service;
 
+import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import io.github.mkhl28mi.memo_service.domain.admin.employee.dto.xml_parsing.EmployeeDto;
+import io.github.mkhl28mi.memo_service.domain.admin.employee.dto.xml_parsing.EmployeeListDto;
+import io.github.mkhl28mi.memo_service.domain.admin.employee.dto.xml_parsing.PositionDto;
 import io.github.mkhl28mi.memo_service.domain.admin.position.dto.request.PositionRequest;
 import io.github.mkhl28mi.memo_service.domain.admin.position.dto.response.PositionResponse;
 import io.github.mkhl28mi.memo_service.domain.admin.position.entity.Position;
 import io.github.mkhl28mi.memo_service.domain.admin.position.repository.PositionRepository;
 import io.github.mkhl28mi.memo_service.exception.ResourceNotFoundException;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 
 @Service
 @Transactional(readOnly = true)
@@ -78,6 +87,29 @@ public class PositionService {
 	@Transactional
 	public void deletePosition(UUID id) {
 		positionRepository.deleteById(id);
+	}
+	
+	@Transactional
+	public void parseAndSavePositions(MultipartFile file) throws JAXBException, IOException {
+		JAXBContext context = JAXBContext.newInstance(EmployeeListDto.class);
+		
+		Unmarshaller unmarshaller = context.createUnmarshaller();
+		
+		EmployeeListDto employeeListDto = (EmployeeListDto) unmarshaller.unmarshal(file.getInputStream());
+		
+		var positionDtos = new HashSet<PositionDto>();
+		
+		for (EmployeeDto employeeDto : employeeListDto.getEmployees()) {
+			for (PositionDto positionDto : employeeDto.getPositions()) {
+				positionDtos.add(positionDto);
+			}
+		}
+		
+		List<Position> positions = positionDtos.stream()
+				.map(p -> new Position(p.getName(), p.getTargetName(), Integer.parseInt(p.getPlacementOrder()), true))
+				.toList();
+		
+		positionRepository.saveAll(positions);
 	}
 	
     private static List<PositionResponse> mapToPositionResponse(List<Position> positions) {
