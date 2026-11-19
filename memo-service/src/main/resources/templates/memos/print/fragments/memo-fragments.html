@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+
+	<!-- Один отримувач (основний або у копії) -->
+	<div th:fragment="recipient(person)">
+		<b th:text="${person.employeeAssignmentResponse.positionResponse.targetName}"></b> <br />
+		<b th:text="${person.employeeAssignmentResponse.employeeResponse.targetFullName}"></b> <br /> <br />
+	</div>
+
+	<!-- Один рядок підписанта або погоджувача -->
+	<table>
+		<tr th:fragment="signRow(person)">
+			<td class="sign-position">
+				<br /><b th:text="${person.employeeAssignmentResponse.positionResponse.name}"></b><br />
+			</td>
+			<td class="sign-gap">&nbsp;</td>
+			<td class="sign-name">
+				<br /><b th:text="${person.employeeAssignmentResponse.employeeResponse.fullName}"></b>
+			</td>
+		</tr>
+	</table>
+
+</body>
+</html>
